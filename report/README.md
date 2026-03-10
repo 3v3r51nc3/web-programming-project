@@ -9,8 +9,8 @@ This folder contains the main LaTeX report for `soroosh_branch`.
 
 The document is organized into:
 
-- a `Backend` section
-- a `Frontend` section
+- a `Backend` section with `Django` and `Node.js and Express`
+- a `Frontend` section with `HTML`, `CSS`, and `React`
 - an appendix for learning notes, practice commands, and active-learning prompts
 
 ## Build
