@@ -1,0 +1,98 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  urlcolor=blue,
+  pdftitle={EventHub Project Report},
+  pdfauthor={EventHub Team}
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{EventHub Project Report}
+\fancyhead[R]{Draft Template}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.65em}
+
+\newcommand{\placeholder}[1]{\textit{#1}}
+
+\title{\Huge EventHub Project Report}
+\author{Team Members: \placeholder{Maksym DOLHOV and Mehdi AGHAEI}}
+\date{\placeholder{final submission date --> 5 avril 2026!}}
+
+\begin{document}
+
+\maketitle
+
+\section*{Purpose}
+
+This document is a clean writing template for the final project report. Replace every placeholder sentence with the actual implementation details once the frontend, backend, integration, and deployment work are finished.
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\placeholder{Summarize the project goal, the course context, the team organization, and the final expected deliverable.}
+
+\section{Backend}
+
+\subsection{Django}
+
+\placeholder{Describe the Django backend architecture, the data model, the REST API, the business rules, the authentication and roles, and the testing strategy.}
+
+\begin{itemize}
+  \item \placeholder{Explain the Event, Participant, and Registration models.}
+  \item \placeholder{Explain the dedicated many-to-many relation through Registration.}
+  \item \placeholder{Explain validation rules and error handling.}
+  \item \placeholder{Explain permissions, roles, and authentication once implemented.}
+\end{itemize}
+
+\subsection{Node.js and Express}
+
+\placeholder{Describe the simplified comparative backend, its routes, its database choice, its middleware, and the analytical comparison with Django.}
+
+\begin{itemize}
+  \item \placeholder{State which entities were implemented in Express.}
+  \item \placeholder{Explain the CRUD routes and middleware.}
+  \item \placeholder{Compare Django and Node.js / Express in structure, philosophy, complexity, scalability, and ecosystem.}
+\end{itemize}
+
+\section{Frontend}
+
+\subsection{HTML}
+
+\placeholder{Describe the page structure, semantic layout, form markup, and how the main screens are organized.}
+
+\subsection{CSS}
+
+\placeholder{Describe the design system, layout rules, responsive behavior, and styling choices.}
+
+\subsection{React}
+
+\placeholder{Describe the component structure, hooks, routing, state handling, API calls, loading states, error states, token storage, and route protection.}
+
+\section{Integration and Deployment}
+
+\placeholder{Explain how the frontend connects to the Django backend, how environment variables are configured, how the production deployment works, and how the final public version was tested.}
+
+\section{Conclusion}
+
+\placeholder{Summarize what was built, what worked well, what was difficult, and what could be improved in a future iteration.}
+
+\appendix
+
+\section{Appendix}
+
+\placeholder{Use the appendix for additional notes, commands, screenshots, comparisons, or supporting material that would interrupt the main flow of the report.}
+
+\end{document}
