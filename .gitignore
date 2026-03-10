@@ -42,3 +42,14 @@ packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
 
 .venv/
+
+# Project-specific generated files
+frontend/node_modules/
+frontend/dist/
+node/node_modules/
+node/.env
+report/build/
+report/*.aux
+report/*.log
+report/*.out
+report/*.toc
