@@ -1,17 +1,25 @@
 # EventHub Report
 
-This folder contains the main LaTeX report for `soroosh_branch`.
+This folder contains the clean LaTeX writing template for the final project report.
 
-## Structure
+## Files
 
-- `report.tex`: the source document
-- `report.pdf`: compiled output kept at the folder root
+- `report.tex`: editable report source
+- `report.pdf`: compiled preview
 
-The document is organized into:
+## Writing Structure
 
-- a `Backend` section with `Django` and `Node.js and Express`
-- a `Frontend` section with `HTML`, `CSS`, and `React`
-- an appendix for learning notes, practice commands, and active-learning prompts
+- Introduction
+- Backend
+  - Django
+  - Node.js and Express
+- Frontend
+  - HTML
+  - CSS
+  - React
+- Integration and Deployment
+- Conclusion
+- Appendix
 
 ## Build
 

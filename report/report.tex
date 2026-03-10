@@ -1,445 +1,98 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[a4paper,margin=2.1cm]{geometry}
-\usepackage{microtype}
+\usepackage[a4paper,margin=2.4cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
-\usepackage[dvipsnames]{xcolor}
-\usepackage{booktabs}
-\usepackage{tabularx}
-\usepackage{longtable}
-\usepackage{array}
 \usepackage{fancyhdr}
-\usepackage{listings}
-\usepackage{graphicx}
 
 \hypersetup{
   colorlinks=true,
-  linkcolor=MidnightBlue,
-  urlcolor=BrickRed,
+  linkcolor=blue,
+  urlcolor=blue,
   pdftitle={EventHub Project Report},
-  pdfauthor={Soroosh Aghaei}
+  pdfauthor={EventHub Team}
 }
-
-\definecolor{panel}{HTML}{FFF8EE}
-\definecolor{panelline}{HTML}{D7B98A}
-\definecolor{codebg}{HTML}{F4F8F4}
-\definecolor{shellbg}{HTML}{17211C}
-\definecolor{textink}{HTML}{182620}
 
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{EventHub Project Report}
-\fancyhead[R]{March 10, 2026}
+\fancyhead[R]{Draft Template}
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{14pt}
 
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.55em}
-\linespread{1.05}
+\setlength{\parskip}{0.65em}
 
-\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\placeholder}[1]{\textit{#1}}
 
-\lstdefinestyle{code}{
-  basicstyle=\ttfamily\small,
-  backgroundcolor=\color{codebg},
-  frame=single,
-  rulecolor=\color{panelline},
-  showstringspaces=false,
-  breaklines=true,
-  tabsize=2
-}
-
-\lstdefinestyle{terminal}{
-  basicstyle=\ttfamily\small\color{white},
-  backgroundcolor=\color{shellbg},
-  frame=single,
-  rulecolor=\color{panelline},
-  showstringspaces=false,
-  breaklines=true
-}
-
-\newcommand{\SummaryBox}[1]{%
-  \begin{center}
-  \setlength{\fboxsep}{10pt}%
-  \fcolorbox{panelline}{panel}{\parbox{0.94\linewidth}{#1}}%
-  \end{center}
-}
-
-\title{\Huge EventHub Project Report\\[0.4em]\Large soroosh\_branch documentation update}
-\author{Soroosh Aghaei}
-\date{March 10, 2026}
+\title{\Huge EventHub Project Report}
+\author{Team Members: \placeholder{Maksym DOLHOV and Mehdi AGHAEI}}
+\date{\placeholder{final submission date --> 5 avril 2026!}}
 
 \begin{document}
 
 \maketitle
 
-\SummaryBox{
-This report is intentionally organized into two main sections only: \textbf{Backend} and \textbf{Frontend}. The backend section is split into \textbf{Django} and \textbf{Node.js and Express}. The frontend section is split into \textbf{HTML}, \textbf{CSS}, and \textbf{React}. The appendix at the end keeps the learning notes, practice commands, and active-learning material in one place for revision before implementation, integration, and defense.
-}
+\section*{Purpose}
+
+This document is a clean writing template for the final project report. Replace every placeholder sentence with the actual implementation details once the frontend, backend, integration, and deployment work are finished.
 
 \tableofcontents
 \newpage
 
-This document is written from \texttt{soroosh\_branch}. The frontend work and the report live on this branch, while the current Django backend implementation lives on the separate \texttt{backend} branch. The final merge target remains \texttt{main}.
+\section{Introduction}
+
+\placeholder{Summarize the project goal, the course context, the team organization, and the final expected deliverable.}
 
 \section{Backend}
 
 \subsection{Django}
 
-The real backend implementation currently lives on the \texttt{backend} branch inside the \texttt{backend/} Django project. This is the main server-side stack for the project and the part that the React frontend is expected to consume after integration.
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{Django file} & \textbf{Current role} \\
-\midrule
-\texttt{backend/api/models.py} & Defines the data model for events, participants, and registrations \\
-\texttt{backend/api/serializers.py} & Adds API serialization and business-rule validation \\
-\texttt{backend/api/views.py} & Exposes CRUD behavior through DRF \texttt{ModelViewSet} classes \\
-\texttt{backend/api/urls.py} & Registers the REST routes under \texttt{/api/} \\
-\texttt{backend/backend/settings.py} & Configures Django, SQLite, REST Framework, and local frontend origin expectations \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-The Django model layer already contains the three core entities required by the project:
+\placeholder{Describe the Django backend architecture, the data model, the REST API, the business rules, the authentication and roles, and the testing strategy.}
 
 \begin{itemize}
-  \item \texttt{Event}: stores title, description, date, location, capacity, and creation timestamp,
-  \item \texttt{Participant}: stores participant identity and unique email,
-  \item \texttt{Registration}: links participants to events and stores registration status.
-\end{itemize}
-
-The \texttt{Registration} table is the most important relation because it expresses the real project logic instead of reducing the system to unrelated lists.
-
-\begin{lstlisting}[style=code, language=Python, caption={Django relation at the center of the backend}]
-class Registration(models.Model):
-    STATUS_CHOICES = [
-        ('confirmed', 'Confirmed'),
-        ('cancelled', 'Cancelled'),
-    ]
-
-    event = models.ForeignKey(
-        Event,
-        on_delete=models.CASCADE,
-        related_name='registrations',
-    )
-    participant = models.ForeignKey(
-        Participant,
-        on_delete=models.CASCADE,
-        related_name='registrations',
-    )
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed')
-
-    class Meta:
-        unique_together = ('event', 'participant')
-\end{lstlisting}
-
-The Django serializer layer is already doing real validation work. That matters because the backend must reject invalid requests even if the frontend forgets to validate them.
-
-\begin{lstlisting}[style=code, language=Python, caption={Django validation already present on the backend branch}]
-def validate(self, attrs):
-    event = attrs.get("event", getattr(self.instance, "event", None))
-    participant = attrs.get("participant", getattr(self.instance, "participant", None))
-    status_value = attrs.get("status", getattr(self.instance, "status", "confirmed"))
-
-    if not event or not participant:
-        return attrs
-
-    if event.date < timezone.now():
-        raise serializers.ValidationError("Cannot register for an event in the past.")
-
-    duplicate_qs = Registration.objects.filter(event=event, participant=participant)
-    if self.instance:
-        duplicate_qs = duplicate_qs.exclude(pk=self.instance.pk)
-
-    if duplicate_qs.exists():
-        raise serializers.ValidationError("This participant is already registered for this event.")
-
-    if status_value == "confirmed":
-        confirmed_qs = Registration.objects.filter(event=event, status="confirmed")
-        if confirmed_qs.count() >= event.capacity:
-            raise serializers.ValidationError("Event capacity has been reached.")
-
-    return attrs
-\end{lstlisting}
-
-At API level, the current Django branch already exposes the expected CRUD routes:
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{Endpoint} & \textbf{Purpose} \\
-\midrule
-\texttt{GET /api/events/} & List events \\
-\texttt{POST /api/events/} & Create an event \\
-\texttt{GET /api/participants/} & List participants \\
-\texttt{POST /api/participants/} & Create a participant \\
-\texttt{GET /api/registrations/} & List registrations \\
-\texttt{POST /api/registrations/} & Create a registration \\
-\texttt{GET/PUT/PATCH/DELETE /api/<resource>/<id>/} & Read or modify one object \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-The current Django status is strong but unfinished:
-
-\begin{itemize}
-  \item authentication is still missing,
-  \item tests are still empty,
-  \item the settings file contains a duplicated \texttt{MIDDLEWARE} definition, which currently removes the intended CORS middleware,
-  \item the backend is ready for integration planning, not yet for final delivery.
+  \item \placeholder{Explain the Event, Participant, and Registration models.}
+  \item \placeholder{Explain the dedicated many-to-many relation through Registration.}
+  \item \placeholder{Explain validation rules and error handling.}
+  \item \placeholder{Explain permissions, roles, and authentication once implemented.}
 \end{itemize}
 
 \subsection{Node.js and Express}
 
-The second backend subsection is the comparative Node.js and Express track. In this project, Node.js is the runtime and Express is the HTTP framework built on top of it. This stack is not the main backend. Its role is to provide a smaller comparison point against Django for the course work.
-
-On \texttt{soroosh\_branch}, the \texttt{node/} folder is currently a documentation placeholder rather than a finished implementation. That is important to state clearly in the report: the Node.js and Express part is planned and documented, but not yet built to the same level as the Django backend.
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{Node.js and Express item} & \textbf{Current meaning in the project} \\
-\midrule
-\texttt{node/README.md} & Defines the comparative-study goal and minimal target scope \\
-Node.js & JavaScript runtime used to execute backend code outside the browser \\
-Express & Lightweight web framework that handles routes and middleware \\
-Project role & Smaller backend used for comparison with Django, not the main production path \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-The intended Node.js and Express slice is deliberately small:
+\placeholder{Describe the simplified comparative backend, its routes, its database choice, its middleware, and the analytical comparison with Django.}
 
 \begin{itemize}
-  \item one or two entities only,
-  \item CRUD routes,
-  \item basic middleware and error handling,
-  \item material for comparing structure, speed of setup, and complexity against Django.
-\end{itemize}
-
-A minimal Express route for this comparative backend would look like this:
-
-\begin{lstlisting}[style=code, caption={Planned Express shape for the comparative backend}]
-import express from 'express';
-
-const app = express();
-app.use(express.json());
-
-app.get('/api/events', (req, res) => {
-  res.json([{ id: 1, title: 'Sample event', status: 'open' }]);
-});
-\end{lstlisting}
-
-The Node.js and Express subsection exists in the report for two reasons:
-
-\begin{itemize}
-  \item to show that the project understands the difference between the main backend and the comparative backend,
-  \item to document that the repository still needs real implementation work in \texttt{node/} before the comparison can be demonstrated concretely.
+  \item \placeholder{State which entities were implemented in Express.}
+  \item \placeholder{Explain the CRUD routes and middleware.}
+  \item \placeholder{Compare Django and Node.js / Express in structure, philosophy, complexity, scalability, and ecosystem.}
 \end{itemize}
 
 \section{Frontend}
 
 \subsection{HTML}
 
-Even though the frontend is written in React, the visible structure is still HTML generated from JSX. The current screen in \texttt{frontend/src/App.jsx} already uses semantic layout elements to organize the page clearly.
-
-\begin{lstlisting}[style=code, caption={Current HTML structure expressed through JSX}]
-<div className="page-shell">
-  <header className="hero">
-    ...
-  </header>
-
-  <section className="architecture-strip">
-    ...
-  </section>
-
-  <main className="content-grid">
-    <section className="card-panel">...</section>
-    <section className="card-panel">...</section>
-    <section className="card-panel wide-panel">...</section>
-  </main>
-</div>
-\end{lstlisting}
-
-This HTML layer matters because it defines the page skeleton before styling and logic are applied. In the current frontend state, the HTML structure already covers:
-
-\begin{itemize}
-  \item a hero header for the project identity,
-  \item a middle architecture strip showing the frontend-backend relation,
-  \item a main content area with cards for deliverables, API expectations, study path, and branch workflow,
-  \item lists, headings, \texttt{code} blocks, and \texttt{pre} blocks for technical content.
-\end{itemize}
-
-So the HTML subsection of the frontend is not only presentation markup. It is the semantic organization of the EventHub workspace page and the base that future screens such as login, dashboard, events, and participants will extend.
+\placeholder{Describe the page structure, semantic layout, form markup, and how the main screens are organized.}
 
 \subsection{CSS}
 
-The CSS part of the frontend currently lives mainly in \texttt{frontend/src/App.css} and \texttt{frontend/src/index.css}. It is responsible for layout, color, spacing, responsive behavior, and the overall visual identity of the project.
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{CSS file} & \textbf{Current responsibility} \\
-\midrule
-\texttt{frontend/src/index.css} & Global font setup, background gradients, root colors, base typography, and body defaults \\
-\texttt{frontend/src/App.css} & Page layout, cards, badges, architecture strip, code panels, and responsive grid behavior \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-The current CSS choices are deliberate:
-
-\begin{itemize}
-  \item the layout uses CSS grid for the hero and the content cards,
-  \item the design uses warm paper colors and dark green accents instead of the default Vite style,
-  \item the UI stays responsive through media queries at tablet and mobile widths,
-  \item the project avoids Bootstrap so the styling remains custom and course-specific.
-\end{itemize}
-
-\begin{lstlisting}[style=code, caption={Example of the current CSS layout approach}]
-.content-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.5rem;
-}
-
-@media (max-width: 980px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-}
-\end{lstlisting}
-
-This CSS subsection is important in the report because the frontend is already visually directed. It is no longer a blank starter project. It already has a layout system, a color system, and a responsive strategy.
+\placeholder{Describe the design system, layout rules, responsive behavior, and styling choices.}
 
 \subsection{React}
 
-The React part of the frontend is the logic layer. The project uses React 19 with Vite, and the current \texttt{App.jsx} file works as a structured workspace page for the EventHub project.
+\placeholder{Describe the component structure, hooks, routing, state handling, API calls, loading states, error states, token storage, and route protection.}
 
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{React file or concept} & \textbf{Role in the current frontend} \\
-\midrule
-\texttt{frontend/package.json} & Defines the React and Vite toolchain \\
-\texttt{frontend/src/App.jsx} & Main React component that renders the project workspace screen \\
-Array mapping & Renders study cards, endpoints, and branch cards dynamically \\
-\texttt{VITE\_API\_BASE\_URL} & Keeps the backend target configurable without changing source code \\
-\bottomrule
-\end{tabularx}
-\end{center}
+\section{Integration and Deployment}
 
-The current React component already performs several useful project tasks:
+\placeholder{Explain how the frontend connects to the Django backend, how environment variables are configured, how the production deployment works, and how the final public version was tested.}
 
-\begin{itemize}
-  \item it stores structured frontend data in arrays and renders them with reusable card patterns,
-  \item it shows the active backend target from an environment variable,
-  \item it documents the expected REST endpoints directly in the UI,
-  \item it includes a sample fetch pattern that the future application pages can reuse.
-\end{itemize}
+\section{Conclusion}
 
-\begin{lstlisting}[style=code, caption={React environment variable pattern already used in the project}]
-const apiBase =
-  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api'
-\end{lstlisting}
-
-\begin{lstlisting}[style=code, caption={React fetch pattern documented for future integration}]
-async function loadEvents(token) {
-  const response = await fetch(`${API}/events/`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to load events');
-  }
-
-  return response.json();
-}
-\end{lstlisting}
-
-The React layer is still not the final SPA. The branch still needs the actual assignment pages:
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{Required React page} & \textbf{Missing work} \\
-\midrule
-Login & Token request, form handling, and error feedback \\
-Dashboard & Protected page layout and summary blocks \\
-Events list & Real fetch logic, filters, loading, and empty-state handling \\
-Event details & Single-record loading and registration actions \\
-Participants & List rendering and CRUD interaction flow \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-So the React subsection should be described as \textbf{integration-ready and structurally useful, but not yet the final routed application}.
+\placeholder{Summarize what was built, what worked well, what was difficult, and what could be improved in a future iteration.}
 
 \appendix
 
-\section{Learning Notes, Practice, and Active Learning}
+\section{Appendix}
 
-\subsection{Learning notes to memorize}
-
-\begin{itemize}
-  \item React components turn state into interface.
-  \item Vite gives a fast frontend development server and build tool.
-  \item Django REST Framework exposes models through serializers and viewsets.
-  \item A many-to-many business process is often easier to control through an explicit bridge model such as \texttt{Registration}.
-  \item Validation belongs in the backend even if the frontend also checks the same rule.
-  \item Environment variables decouple frontend code from one fixed server address.
-  \item CORS must be correct before a browser-based frontend can call a backend on another origin.
-  \item Branch separation is useful only if the merge plan stays clear: \texttt{soroosh\_branch} for frontend and report work, \texttt{backend} for the API, and \texttt{main} for the final integrated result.
-\end{itemize}
-
-\subsection{Practice commands}
-
-\begin{longtable}{@{}p{0.34\linewidth}p{0.6\linewidth}@{}}
-\toprule
-\textbf{Command} & \textbf{Why it matters} \\
-\midrule
-\endhead
-\texttt{git checkout soroosh\_branch} & Return to the branch that contains the report and the current frontend workspace. \\
-\texttt{cd frontend} & Enter the React application folder. \\
-\texttt{npm install} & Install frontend dependencies before local development. \\
-\texttt{npm run dev} & Start the Vite development server. \\
-\texttt{git checkout backend} & Move to the branch that contains the Django API implementation. \\
-\texttt{pip install -r requirements.txt} & Install backend Python dependencies on the backend branch. \\
-\texttt{python manage.py migrate} & Create the SQLite schema from migrations. \\
-\texttt{python manage.py runserver} & Start the Django backend locally. \\
-\texttt{git checkout main} & Inspect the final merge target before delivery. \\
-\bottomrule
-\end{longtable}
-
-\subsection{Active-learning prompts and short answers}
-
-\begin{longtable}{@{}p{0.48\linewidth}p{0.46\linewidth}@{}}
-\toprule
-\textbf{Prompt} & \textbf{Short answer} \\
-\midrule
-\endhead
-Why is \texttt{Registration} not replaced by a simple many-to-many field? & Because the project needs extra registration data and backend rules such as status, duplicate checks, and capacity limits. \\
-Why should the backend reject duplicates even if the frontend also checks them? & Because client-side checks can be bypassed and two requests can arrive at the same time. \\
-What is the purpose of \texttt{VITE\_API\_BASE\_URL}? & It lets the frontend switch backend targets without changing source code. \\
-Why is the current frontend not yet the final SPA? & It documents the roadmap and integration contract, but it does not yet contain the actual routed assignment pages. \\
-What is the difference between Node.js and Express? & Node.js is the runtime, while Express is a web framework running on Node.js. \\
-Why is CORS relevant in this project? & The frontend and backend run on different local origins during development, so the browser needs explicit permission from the backend. \\
-Which branch currently owns the real backend code? & The \texttt{backend} branch. \\
-Which branch currently owns the report and frontend workspace? & \texttt{soroosh\_branch}. \\
-\bottomrule
-\end{longtable}
-
-\subsection{Quick oral-defense recap}
-
-If the project status must be summarized in a few sentences:
-
-\SummaryBox{
-The backend already exists on the \texttt{backend} branch as a Django REST API with three related models and serializer-based validation. The frontend already exists on \texttt{soroosh\_branch} as a React and Vite workspace that defines the UI direction and the integration contract. The next milestone is not redesign; it is true cross-branch integration followed by a merge into \texttt{main}.
-}
+\placeholder{Use the appendix for additional notes, commands, screenshots, comparisons, or supporting material that would interrupt the main flow of the report.}
 
 \end{document}
