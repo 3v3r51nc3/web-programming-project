@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 """
 ASGI config for backend project.
 

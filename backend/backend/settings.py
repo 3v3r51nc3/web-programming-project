@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 """
 Django settings for backend project.
 

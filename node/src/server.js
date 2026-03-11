@@ -1,3 +1,4 @@
+// Backend developer: Maksym DOLHOV
 import express from 'express'
 
 const app = express()

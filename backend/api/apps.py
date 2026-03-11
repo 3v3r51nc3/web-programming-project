@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from django.apps import AppConfig
 
 

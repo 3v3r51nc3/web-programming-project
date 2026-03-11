@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from rest_framework.views import exception_handler
 
 

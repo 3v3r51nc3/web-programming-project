@@ -42,6 +42,8 @@ packages/react-devtools-shell/dist
 packages/react-devtools-timeline/dist
 
 .venv/
+**/__pycache__/
+backend/db.sqlite3
 
 # Project-specific generated files
 frontend/node_modules/
@@ -53,3 +55,10 @@ report/*.aux
 report/*.log
 report/*.out
 report/*.toc
+report/presentation/*.aux
+report/presentation/*.log
+report/presentation/*.out
+report/presentation/*.toc
+report/presentation/*.nav
+report/presentation/*.snm
+report/presentation/*.vrb

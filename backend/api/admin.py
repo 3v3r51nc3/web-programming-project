@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from django.contrib import admin
 from .models import Event, Participant, Registration
 

@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 """
 URL configuration for backend project.
 

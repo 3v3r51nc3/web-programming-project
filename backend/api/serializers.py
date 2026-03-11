@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from rest_framework import serializers
 from django.utils import timezone
 from .models import Event, Participant, Registration

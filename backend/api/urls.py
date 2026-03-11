@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from rest_framework.routers import DefaultRouter
 from .views import EventViewSet, ParticipantViewSet, RegistrationViewSet
 

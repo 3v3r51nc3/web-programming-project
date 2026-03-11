@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 from django.db import models
 
 # Create your models here.

@@ -1,98 +1,4011 @@
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage[a4paper,margin=2.1cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
 \usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{microtype}
 
 \hypersetup{
   colorlinks=true,
-  linkcolor=blue,
-  urlcolor=blue,
+  linkcolor=MidnightBlue,
+  urlcolor=BrickRed,
   pdftitle={EventHub Project Report},
   pdfauthor={EventHub Team}
 }
 
+\definecolor{panel}{HTML}{FFF8EE}
+\definecolor{linegold}{HTML}{D7B98A}
+\definecolor{softgreen}{HTML}{F4F8F4}
+\definecolor{shellbg}{HTML}{17211C}
+\definecolor{ink}{HTML}{182620}
+\definecolor{warmtext}{HTML}{8A6A3B}
+\definecolor{skywash}{HTML}{EAF4FF}
+\definecolor{mintwash}{HTML}{EDF8F1}
+\definecolor{rosewash}{HTML}{FFF0EC}
+\definecolor{sunwash}{HTML}{FFF4CF}
+
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{EventHub Project Report}
-\fancyhead[R]{Draft Template}
+\fancyhead[R]{March 11, 2026}
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{14pt}
 
 \setlength{\parindent}{0pt}
-\setlength{\parskip}{0.65em}
+\setlength{\parskip}{0.55em}
+\setlength{\emergencystretch}{1.5em}
+\renewcommand{\arraystretch}{1.12}
 
-\newcommand{\placeholder}[1]{\textit{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\lstdefinestyle{code}{
+  basicstyle=\ttfamily\small,
+  backgroundcolor=\color{softgreen},
+  frame=single,
+  rulecolor=\color{linegold},
+  showstringspaces=false,
+  breaklines=true,
+  tabsize=2
+}
+
+\lstdefinestyle{terminal}{
+  basicstyle=\ttfamily\small\color{white},
+  backgroundcolor=\color{shellbg},
+  frame=single,
+  rulecolor=\color{linegold},
+  showstringspaces=false,
+  breaklines=true
+}
+
+\lstdefinelanguage{JavaScript}{
+  keywords={const,let,import,from,export,default,return,if,else,async,await,function},
+  sensitive=true,
+  comment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]',
+  morestring=[b]"
+}
+
+\newcommand{\PanelBox}[1]{%
+  \begin{center}
+  \setlength{\fboxsep}{10pt}%
+  \fcolorbox{linegold}{panel}{\parbox{0.94\linewidth}{#1}}%
+  \end{center}
+}
+
+\newcommand{\LearningCallout}[2]{%
+  \begin{center}
+  \setlength{\fboxsep}{10pt}%
+  \fcolorbox{linegold}{#1}{\parbox{0.94\linewidth}{#2}}%
+  \end{center}
+}
+
+\newcommand{\MemoryBox}[1]{%
+  \LearningCallout{skywash}{\textbf{Memory hook.} #1}%
+}
+
+\newcommand{\MistakeBox}[1]{%
+  \LearningCallout{rosewash}{\textbf{Common mistake.} #1}%
+}
+
+\newcommand{\ChecklistBox}[1]{%
+  \LearningCallout{mintwash}{\textbf{Checklist.} #1}%
+}
+
+\newcommand{\CodePill}[1]{%
+  \fcolorbox{black}{white}{\strut{\ttfamily\footnotesize #1}}%
+}
+
+\newcommand{\ArchitectureFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(168,66)
+  \put(4,56){\makebox(0,0)[l]{\small \textbf{Main application flow}}}
+  \put(4,38){\fcolorbox{black}{skywash}{\parbox[c][11mm][c]{24mm}{\centering Browser}}}
+  \put(38,38){\fcolorbox{black}{mintwash}{\parbox[c][11mm][c]{30mm}{\centering React SPA}}}
+  \put(80,38){\fcolorbox{black}{panel}{\parbox[c][11mm][c]{32mm}{\centering Django REST API}}}
+  \put(124,38){\fcolorbox{black}{rosewash}{\parbox[c][11mm][c]{28mm}{\centering Database}}}
+  \put(28,43){\vector(1,0){8}}
+  \put(70,43){\vector(1,0){8}}
+  \put(114,43){\vector(1,0){8}}
+  \put(4,18){\makebox(0,0)[l]{\small \textbf{Comparison path}}}
+  \put(54,6){\fcolorbox{black}{softgreen}{\parbox[c][11mm][c]{52mm}{\centering Node.js / Express comparison backend}}}
+  \put(53,38){\vector(0,-1){18}}
+  \put(55,22){\makebox(0,0)[l]{\small same frontend can also test}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\FrontendFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(145,26)
+  \put(4,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering HTML}}}
+  \put(38,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering CSS}}}
+  \put(72,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering JavaScript}}}
+  \put(106,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering React}}}
+  \put(28,12){\vector(1,0){8}}
+  \put(62,12){\vector(1,0){8}}
+  \put(96,12){\vector(1,0){8}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\BackendFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(150,28)
+  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Request}}}
+  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering URL}}}
+  \put(64,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering View}}}
+  \put(96,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Serializer}}}
+  \put(128,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering Model}}}
+  \put(26,13){\vector(1,0){6}}
+  \put(56,13){\vector(1,0){6}}
+  \put(88,13){\vector(1,0){6}}
+  \put(120,13){\vector(1,0){6}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\BackendJourneyFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(166,52)
+  \put(4,26){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering Browser}}}
+  \put(34,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering Route}}}
+  \put(64,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering ViewSet}}}
+  \put(94,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{26mm}{\centering Serializer}}}
+  \put(126,26){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{24mm}{\centering Model/DB}}}
+  \put(28,31){\vector(1,0){4}}
+  \put(58,31){\vector(1,0){4}}
+  \put(88,31){\vector(1,0){4}}
+  \put(120,31){\vector(1,0){4}}
+  \put(126,8){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering JSON}}}
+  \put(138,26){\vector(0,-1){8}}
+  \put(124,13){\vector(-1,0){90}}
+  \put(30,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering UI update}}}
+  \put(18,13){\vector(0,1){13}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\RegistrationFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(162,52)
+  \put(6,16){\fcolorbox{black}{skywash}{\parbox[c][20mm][c]{38mm}{\centering
+    \textbf{Event}\\[1mm]
+    id\\
+    title\\
+    date\\
+    location
+  }}}
+  \put(61,16){\fcolorbox{black}{panel}{\parbox[c][20mm][c]{40mm}{\centering
+    \textbf{Registration}\\[1mm]
+    id\\
+    event\_id\\
+    participant\_id
+  }}}
+  \put(118,16){\fcolorbox{black}{rosewash}{\parbox[c][20mm][c]{38mm}{\centering
+    \textbf{Participant}\\[1mm]
+    id\\
+    first\_name\\
+    last\_name\\
+    email
+  }}}
+  \put(44,26){\vector(1,0){15}}
+  \put(103,26){\vector(1,0){13}}
+  \put(45,32){\makebox(0,0)[l]{\small one event can have many registrations}}
+  \put(104,12){\makebox(0,0)[l]{\small one participant can have many registrations}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\ValidationDecisionFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(166,42)
+  \put(4,16){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{28mm}{\centering POST request}}}
+  \put(42,16){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{30mm}{\centering Validate rules}}}
+  \put(82,24){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering Save}}}
+  \put(82,4){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{30mm}{\centering Reject 400}}}
+  \put(34,21){\vector(1,0){6}}
+  \put(72,21){\vector(1,1){8}}
+  \put(72,21){\vector(1,-1){8}}
+  \put(110,29){\makebox(0,0)[l]{\small valid}}
+  \put(110,9){\makebox(0,0)[l]{\small duplicate / bad data}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\FrontendPracticeFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(150,28)
+  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Read}}}
+  \put(38,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Code}}}
+  \put(72,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Render}}}
+  \put(106,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Explain}}}
+  \put(30,13){\vector(1,0){6}}
+  \put(64,13){\vector(1,0){6}}
+  \put(98,13){\vector(1,0){6}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\BackendPracticeFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(155,28)
+  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Client}}}
+  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Route}}}
+  \put(64,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering Validate}}}
+  \put(98,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Save}}}
+  \put(126,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering JSON}}}
+  \put(28,13){\vector(1,0){4}}
+  \put(58,13){\vector(1,0){4}}
+  \put(94,13){\vector(1,0){2}}
+  \put(122,13){\vector(1,0){2}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\ExamPracticeFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(158,28)
+  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering QCM}}}
+  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Analysis}}}
+  \put(66,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Code}}}
+  \put(98,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Practice}}}
+  \put(130,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Review}}}
+  \put(28,13){\vector(1,0){4}}
+  \put(62,13){\vector(1,0){2}}
+  \put(94,13){\vector(1,0){2}}
+  \put(126,13){\vector(1,0){2}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\RenderPipelineFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,30)
+  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering HTML}}}
+  \put(30,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering DOM}}}
+  \put(58,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering CSSOM}}}
+  \put(86,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Render}}}
+  \put(116,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{20mm}{\centering Layout}}}
+  \put(142,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{16mm}{\centering Paint}}}
+  \put(24,14){\vector(1,0){4}}
+  \put(52,14){\vector(1,0){4}}
+  \put(80,14){\vector(1,0){4}}
+  \put(112,14){\vector(1,0){2}}
+  \put(138,14){\vector(1,0){2}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\ReactStateFlowFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,30)
+  \put(4,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering User Event}}}
+  \put(34,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering State}}}
+  \put(62,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Render}}}
+  \put(90,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Effect}}}
+  \put(118,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering API}}}
+  \put(142,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{14mm}{\centering JSON}}}
+  \put(28,14){\vector(1,0){4}}
+  \put(56,14){\vector(1,0){4}}
+  \put(84,14){\vector(1,0){4}}
+  \put(112,14){\vector(1,0){4}}
+  \put(136,14){\vector(1,0){4}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\CoverageFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,30)
+  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Web}}}
+  \put(28,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering HTML}}}
+  \put(54,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering CSS}}}
+  \put(80,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering JS}}}
+  \put(106,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering React}}}
+  \put(132,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering API}}}
+  \put(24,14){\vector(1,0){2}}
+  \put(50,14){\vector(1,0){2}}
+  \put(76,14){\vector(1,0){2}}
+  \put(102,14){\vector(1,0){2}}
+  \put(128,14){\vector(1,0){2}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\DivClassWindowFigure}{%
+\begin{center}
+\noindent\makebox[\linewidth][c]{%
+\begin{minipage}[t]{0.28\linewidth}
+\centering
+\fcolorbox{linegold}{skywash}{%
+\parbox[t][58mm][t]{0.86\linewidth}{\centering
+\textbf{HTML Boxes}\par
+\vspace{0.9em}
+\CodePill{div.page-shell}\par\vspace{0.55em}
+\CodePill{div.event-card}\par\vspace{0.55em}
+\CodePill{button.join-btn}\par
+\vspace{1.0em}
+{\footnotesize Plain tags define the wrapper, the card, and the action button.}
+}}
+\end{minipage}
+\hspace{0.012\linewidth}
+\raisebox{22mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.012\linewidth}
+\begin{minipage}[t]{0.28\linewidth}
+\centering
+\fcolorbox{linegold}{panel}{%
+\parbox[t][58mm][t]{0.86\linewidth}{\centering
+\textbf{CSS Classes}\par
+\vspace{0.9em}
+\CodePill{.page-shell}\par
+{\footnotesize background\\ spacing}\par\vspace{0.7em}
+\CodePill{.event-card}\par
+{\footnotesize border\\ radius}\par\vspace{0.7em}
+\CodePill{.join-btn}\par
+{\footnotesize color\\ shape}
+}}
+\end{minipage}
+\hspace{0.012\linewidth}
+\raisebox{22mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.012\linewidth}
+\begin{minipage}[t]{0.28\linewidth}
+\centering
+\fcolorbox{linegold}{white}{%
+\parbox[t][58mm][t]{0.86\linewidth}{\centering
+\textbf{Browser Result}\par
+\vspace{0.75em}
+\fcolorbox{black}{softgreen}{\parbox[c][31mm][c]{0.72\linewidth}{\centering
+\fcolorbox{linegold}{panel}{\parbox[c][21mm][c]{0.74\linewidth}{\centering
+{\color{warmtext}\scriptsize UPCOMING}\\[0.8mm]
+{\bfseries\small Hackathon}\\[0.4mm]
+{\scriptsize Paris}\\[1.3mm]
+\fcolorbox{black}{ink}{\parbox[c][4mm][c]{12mm}{\centering \textcolor{white}{\tiny Join}}}
+}}
+}}\par
+\vspace{0.8em}
+{\footnotesize The browser merges structure and style into one visible card.}
+}}
+\end{minipage}
+}
+\end{center}
+}
+
+\newcommand{\FrontendColorSwatchFigure}{%
+\begin{center}
+\fcolorbox{linegold}{white}{%
+\parbox{0.91\linewidth}{%
+\centering \textbf{Palette and Class Legend}\\[0.8em]
+\begin{minipage}[t]{0.47\linewidth}
+\fcolorbox{black}{softgreen}{\parbox[c][7mm][c]{12mm}{\centering}}
+\hspace{0.8em}
+\parbox[t]{0.72\linewidth}{\texttt{.page-shell}: pale page background}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\fcolorbox{black}{panel}{\parbox[c][7mm][c]{12mm}{\centering}}
+\hspace{0.8em}
+\parbox[t]{0.72\linewidth}{\texttt{.event-card}: cream card surface}
+\end{minipage}\\[0.8em]
+\begin{minipage}[t]{0.47\linewidth}
+\fcolorbox{black}{ink}{\parbox[c][7mm][c]{12mm}{\centering \textcolor{white}{\tiny BTN}}}
+\hspace{0.8em}
+\parbox[t]{0.72\linewidth}{\texttt{.join-btn}: dark accent button}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\fcolorbox{black}{white}{\parbox[c][7mm][c]{12mm}{\centering \textcolor{warmtext}{\bfseries Aa}}}
+\hspace{0.8em}
+\parbox[t]{0.72\linewidth}{\texttt{.eyebrow}: warm text accent}
+\end{minipage}
+}}
+\end{center}
+}
+
+\newcommand{\BoxModelFigure}{%
+\begin{center}
+\noindent\makebox[\linewidth][c]{%
+\begin{minipage}[c]{0.37\linewidth}
+\centering
+\fcolorbox{black}{softgreen}{\parbox[c][37mm][c]{0.84\linewidth}{\centering
+\scriptsize\textbf{margin}\\[1mm]
+\fcolorbox{black}{linegold}{\parbox[c][25mm][c]{0.68\linewidth}{\centering
+\scriptsize\textbf{border}\\[1mm]
+\fcolorbox{black}{panel}{\parbox[c][16mm][c]{0.62\linewidth}{\centering
+\scriptsize\textbf{padding}\\[1mm]
+\fcolorbox{black}{white}{\parbox[c][6mm][c]{16mm}{\centering content}}
+}}
+}}
+}}
+\end{minipage}
+\hspace{0.03\linewidth}
+\begin{minipage}[c]{0.51\linewidth}
+\centering
+\fcolorbox{linegold}{white}{\parbox[c][37mm][c]{0.92\linewidth}{\raggedright
+\textbf{How to read the layers}\par
+\vspace{0.6em}
+\textbf{margin}: outside space between two elements\par
+\textbf{border}: the visible edge of the card or button\par
+\textbf{padding}: inside breathing room around the content\par
+\textbf{content}: the text, image, or button label itself
+}}
+\end{minipage}
+}
+\end{center}
+}
+
+\newcommand{\ResponsiveLayoutFigure}{%
+\begin{center}
+\noindent\makebox[\linewidth][c]{%
+\begin{minipage}[c]{0.38\linewidth}
+\centering
+\fcolorbox{linegold}{skywash}{\parbox[c][39mm][c]{0.82\linewidth}{\centering
+\textbf{Desktop layout}\\[0.9em]
+\fcolorbox{black}{panel}{\parbox[c][12mm][c]{0.26\linewidth}{\centering Card 1}}
+\hspace{1.6mm}
+\fcolorbox{black}{panel}{\parbox[c][12mm][c]{0.26\linewidth}{\centering Card 2}}\\[1.5mm]
+{\scriptsize two columns + gap}
+}}
+\end{minipage}
+\hspace{0.035\linewidth}
+\begin{minipage}[c]{0.12\linewidth}
+\centering
+\Large \textcolor{warmtext}{$\Rightarrow$}\\[-0.25em]
+\footnotesize at 900px
+\end{minipage}
+\hspace{0.02\linewidth}
+\begin{minipage}[c]{0.28\linewidth}
+\centering
+\fcolorbox{linegold}{mintwash}{\parbox[c][39mm][c]{0.82\linewidth}{\centering
+\textbf{Mobile layout}\\[0.9em]
+\fcolorbox{black}{panel}{\parbox[c][8mm][c]{0.46\linewidth}{\centering Card 1}}\\[1.7mm]
+\fcolorbox{black}{panel}{\parbox[c][8mm][c]{0.46\linewidth}{\centering Card 2}}\\[1.5mm]
+{\scriptsize one column}
+}}
+\end{minipage}
+}
+\end{center}
+}
+
+\newcommand{\BackendEndpointFigure}{%
+\begin{center}
+\fcolorbox{linegold}{white}{%
+\parbox{0.92\linewidth}{%
+\centering \textbf{API Endpoint Map}\\[0.8em]
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{skywash}{\parbox[t][27mm][t]{0.86\linewidth}{\centering
+\textbf{Events}\\[0.5em]
+\CodePill{GET /api/events/}\\[0.45em]
+\CodePill{POST /api/events/}\\[0.45em]
+\CodePill{PATCH /api/events/1/}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{panel}{\parbox[t][27mm][t]{0.86\linewidth}{\centering
+\textbf{Participants}\\[0.5em]
+\CodePill{GET /api/participants/}\\[0.45em]
+\CodePill{POST /api/participants/}\\[0.45em]
+\CodePill{DELETE /api/participants/1/}
+}}
+\end{minipage}
+\par\vspace{0.8em}
+\begin{minipage}[t]{0.56\linewidth}
+\centering
+\fcolorbox{black}{rosewash}{\parbox[t][27mm][t]{0.86\linewidth}{\centering
+\textbf{Registrations}\\[0.5em]
+\CodePill{GET /api/registrations/}\\[0.45em]
+\CodePill{POST /api/registrations/}\\[0.45em]
+\CodePill{PATCH /api/registrations/1/}
+}}
+\end{minipage}
+}}
+\end{center}
+}
+
+\newcommand{\SerializerLifecycleFigure}{%
+\begin{center}
+\noindent\makebox[\linewidth][c]{%
+\begin{minipage}[c]{0.18\linewidth}
+\centering
+\fcolorbox{black}{skywash}{\parbox[c][18mm][c]{0.84\linewidth}{\centering
+\textbf{1. Raw input}\\
+\scriptsize JSON fields arrive
+}}
+\end{minipage}
+\hspace{0.01\linewidth}
+\raisebox{8mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.01\linewidth}
+\begin{minipage}[c]{0.18\linewidth}
+\centering
+\fcolorbox{black}{panel}{\parbox[c][18mm][c]{0.84\linewidth}{\centering
+\textbf{2. Validate}\\
+\scriptsize required fields and rules
+}}
+\end{minipage}
+\hspace{0.01\linewidth}
+\raisebox{8mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.01\linewidth}
+\begin{minipage}[c]{0.18\linewidth}
+\centering
+\fcolorbox{black}{mintwash}{\parbox[c][18mm][c]{0.84\linewidth}{\centering
+\textbf{3. Clean data}\\
+\scriptsize safe Python values
+}}
+\end{minipage}
+\hspace{0.01\linewidth}
+\raisebox{8mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.01\linewidth}
+\begin{minipage}[c]{0.18\linewidth}
+\centering
+\fcolorbox{black}{softgreen}{\parbox[c][18mm][c]{0.84\linewidth}{\centering
+\textbf{4. Save}\\
+\scriptsize create or update model
+}}
+\end{minipage}
+\hspace{0.01\linewidth}
+\raisebox{8mm}{\Large\textcolor{warmtext}{$\Rightarrow$}}
+\hspace{0.01\linewidth}
+\begin{minipage}[c]{0.18\linewidth}
+\centering
+\fcolorbox{black}{rosewash}{\parbox[c][18mm][c]{0.84\linewidth}{\centering
+\textbf{5. Response}\\
+\scriptsize JSON goes back out
+}}
+\end{minipage}
+}
+\end{center}
+}
+
+\newcommand{\RoleWindowFigure}{%
+\begin{center}
+\fcolorbox{linegold}{white}{%
+\parbox{0.94\linewidth}{%
+\centering \textbf{Role-Based Behavior in the Interface}\\[0.8em]
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{mintwash}{\parbox[t][40mm][t]{0.88\linewidth}{\centering
+\textbf{Editor / Admin view}\\[0.7em]
+\fcolorbox{black}{white}{\parbox[c][23mm][c]{0.76\linewidth}{\centering
+Events list\\[0.8em]
+\fcolorbox{black}{ink}{\parbox[c][4mm][c]{18mm}{\centering \textcolor{white}{\tiny Create}}}
+\hspace{1.4mm}
+\fcolorbox{black}{ink}{\parbox[c][4mm][c]{14mm}{\centering \textcolor{white}{\tiny Edit}}}
+\hspace{1.4mm}
+\fcolorbox{black}{ink}{\parbox[c][4mm][c]{18mm}{\centering \textcolor{white}{\tiny Delete}}}
+}}\\[0.8em]
+{\footnotesize can create, update, and delete}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{rosewash}{\parbox[t][40mm][t]{0.88\linewidth}{\centering
+\textbf{Viewer view}\\[0.7em]
+\fcolorbox{black}{white}{\parbox[c][23mm][c]{0.76\linewidth}{\centering
+Events list\\[0.8em]
+\fcolorbox{black}{panel}{\parbox[c][4mm][c]{18mm}{\centering \tiny Read only}}
+\hspace{1.4mm}
+\fcolorbox{black}{panel}{\parbox[c][4mm][c]{18mm}{\centering \tiny Filter}}
+}}\\[0.8em]
+{\footnotesize buttons for dangerous actions are absent}
+}}
+\end{minipage}
+}}
+\end{center}
+}
+
+\newcommand{\DjangoExpressFigure}{%
+\begin{center}
+\fcolorbox{linegold}{white}{%
+\parbox{0.94\linewidth}{%
+\centering \textbf{Framework Comparison at a Glance}\\[0.8em]
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{skywash}{\parbox[t][46mm][t]{0.88\linewidth}{\centering
+\textbf{Django}\\[0.8em]
+\CodePill{Python framework}\\[0.55em]
+\CodePill{models + admin + serializers}\\[0.55em]
+\CodePill{fast CRUD setup}\\[0.9em]
+{\footnotesize strongest for structured business applications}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.47\linewidth}
+\centering
+\fcolorbox{black}{sunwash}{\parbox[t][46mm][t]{0.88\linewidth}{\centering
+\textbf{Node.js / Express}\\[0.8em]
+\CodePill{JS runtime + lightweight framework}\\[0.55em]
+\CodePill{manual routing and middleware}\\[0.55em]
+\CodePill{flexible small APIs}\\[0.9em]
+{\footnotesize strongest when custom structure matters more than built-ins}
+}}
+\end{minipage}
+}}
+\end{center}
+}
+
+\newcommand{\HooksMemoryFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,48)
+  \put(4,28){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering User types}}}
+  \put(34,28){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering onChange}}}
+  \put(64,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering setState}}}
+  \put(94,28){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering new state}}}
+  \put(124,28){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{24mm}{\centering re-render}}}
+  \put(28,33){\vector(1,0){4}}
+  \put(58,33){\vector(1,0){4}}
+  \put(88,33){\vector(1,0){4}}
+  \put(118,33){\vector(1,0){4}}
+  \put(34,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering useEffect}}}
+  \put(70,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{24mm}{\centering fetch}}}
+  \put(102,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering setEvents}}}
+  \put(122,28){\vector(-1,-1){20}}
+  \put(64,13){\vector(1,0){4}}
+  \put(96,13){\vector(1,0){4}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\CSSDebugFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,48)
+  \put(4,18){\fcolorbox{black}{skywash}{\parbox[c][12mm][c]{26mm}{\centering Browser result}}}
+  \put(36,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{24mm}{\centering Inspect}}}
+  \put(66,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{26mm}{\centering className}}}
+  \put(98,18){\fcolorbox{black}{mintwash}{\parbox[c][12mm][c]{24mm}{\centering CSS rule}}}
+  \put(128,18){\fcolorbox{black}{rosewash}{\parbox[c][12mm][c]{24mm}{\centering Fix}}}
+  \put(30,24){\vector(1,0){4}}
+  \put(60,24){\vector(1,0){4}}
+  \put(92,24){\vector(1,0){4}}
+  \put(122,24){\vector(1,0){4}}
+  \put(34,4){\makebox(0,0)[l]{\small read the page from the screen back to the stylesheet}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\BackendCreateFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(162,50)
+  \put(2,24){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering Form}}}
+  \put(30,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{28mm}{\centering POST JSON}}}
+  \put(64,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{22mm}{\centering Route}}}
+  \put(92,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering ViewSet}}}
+  \put(122,24){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{28mm}{\centering Serializer}}}
+  \put(122,4){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{28mm}{\centering Save + 201}}}
+  \put(26,29){\vector(1,0){2}}
+  \put(58,29){\vector(1,0){4}}
+  \put(86,29){\vector(1,0){4}}
+  \put(116,29){\vector(1,0){4}}
+  \put(136,24){\vector(0,-1){8}}
+  \put(116,9){\vector(-1,0){88}}
+  \put(26,14){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering JSON response}}}
+  \put(16,14){\vector(0,1){10}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\RoleFlowFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,48)
+  \put(4,18){\fcolorbox{black}{skywash}{\parbox[c][12mm][c]{24mm}{\centering Login}}}
+  \put(34,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{28mm}{\centering Auth check}}}
+  \put(70,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{28mm}{\centering editor/admin}}}
+  \put(70,6){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{28mm}{\centering viewer}}}
+  \put(106,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{34mm}{\centering create, edit, delete}}}
+  \put(106,6){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{34mm}{\centering read and filter only}}}
+  \put(28,24){\vector(1,0){4}}
+  \put(62,24){\vector(1,1){6}}
+  \put(62,24){\vector(1,-1){6}}
+  \put(98,33){\vector(1,0){6}}
+  \put(98,11){\vector(1,0){6}}
+\end{picture}
+\end{center}
+}
+
+\newcommand{\DefenseFlowFigure}{%
+\begin{center}
+\setlength{\unitlength}{1mm}
+\begin{picture}(160,34)
+  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Login}}}
+  \put(28,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering Create event}}}
+  \put(60,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{30mm}{\centering Create participant}}}
+  \put(94,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Register}}}
+  \put(124,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering Filter}}}
+  \put(146,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{12mm}{\centering Role}}}
+  \put(24,14){\vector(1,0){2}}
+  \put(56,14){\vector(1,0){2}}
+  \put(90,14){\vector(1,0){2}}
+  \put(120,14){\vector(1,0){2}}
+  \put(142,14){\vector(1,0){2}}
+\end{picture}
+\end{center}
+}
 
 \title{\Huge EventHub Project Report}
-\author{Team Members: \placeholder{Maksym DOLHOV and Mehdi AGHAEI}}
-\date{\placeholder{final submission date --> 5 avril 2026!}}
+\author{
+  \begin{tabular}{c c}
+    Mehdi AGHAEI & Maksym DOLHOV \\
+    \small Frontend Developer & \small Backend Developer
+  \end{tabular}\\[0.6em]
+  \small Universite Paris Cite
+}
+\date{March 11, 2026}
 
 \begin{document}
 
+\begin{center}
+\includegraphics[width=0.32\textwidth]{upcite-logo.png}
+\end{center}
+\vspace{0.4em}
 \maketitle
 
-\section*{Purpose}
-
-This document is a clean writing template for the final project report. Replace every placeholder sentence with the actual implementation details once the frontend, backend, integration, and deployment work are finished.
+\PanelBox{
+EventHub is a full-stack course project built around one central goal: develop a responsive Single Page Application (SPA) for event and participant management, implement the main backend with Django, and compare that backend approach with a smaller Node.js and Express backend. The report documents the architecture, the responsibilities of each technology, and a guided appendix that teaches the project step by step from the basics.
+}
 
 \tableofcontents
 \newpage
 
+\section*{Main Technical Report}
+\addcontentsline{toc}{section}{Main Technical Report (Formal 6--8 pages)}
+
+\PanelBox{
+This first part is the \textbf{formal technical report}. It is the main submission section of the document and is intended to stand on its own as a concise 6--8 page description of the project goals, architecture, technology choices, repository organization, and implementation plan. Everything after the appendix heading is supporting material for learning, revision, and exam preparation.
+}
+
 \section{Introduction}
 
-\placeholder{Summarize the project goal, the course context, the team organization, and the final expected deliverable.}
+EventHub is a full-stack web application project whose goal is to deliver a responsive Single Page Application (SPA) for managing events, participants, and registrations. The project must combine a modern frontend with a structured backend, and it must also document a technical comparison between two backend styles: a primary implementation in \textbf{Django} and a smaller comparative implementation in \textbf{Node.js and Express}. The report therefore addresses both software construction and software justification.
 
-\section{Backend}
+From a course perspective, the project is designed to connect the main web-programming layers in one coherent system. The frontend is responsible for interaction, responsive layout, navigation, and rendering. The backend is responsible for data modeling, validation, routing, and JSON responses. The two parts communicate through HTTP requests and REST-style API endpoints. The final application must show that these layers are not isolated topics from different lectures, but one integrated engineering workflow.
 
-\subsection{Django}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Team member} & \textbf{Main role} \\
+\midrule
+Mehdi AGHAEI & Frontend developer responsible for the React interface, responsive HTML/CSS structure, and user-facing interaction flow \\
+Maksym DOLHOV & Backend developer responsible for the Django API, backend validation logic, and the Node.js / Express comparison backend \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-\placeholder{Describe the Django backend architecture, the data model, the REST API, the business rules, the authentication and roles, and the testing strategy.}
+\section{Project Scope and Requirements}
 
-\begin{itemize}
-  \item \placeholder{Explain the Event, Participant, and Registration models.}
-  \item \placeholder{Explain the dedicated many-to-many relation through Registration.}
-  \item \placeholder{Explain validation rules and error handling.}
-  \item \placeholder{Explain permissions, roles, and authentication once implemented.}
-\end{itemize}
+The technical scope of EventHub is driven by the assignment requirements and by the team's chosen repository organization. The application must provide clear screens for event information, participant data, and the registration relationship that links them. It must remain usable on desktop and mobile screens, which makes responsive design a core requirement rather than a cosmetic improvement. The project must also explain why Django is appropriate as the main backend while still keeping a Node.js and Express version for comparison.
 
-\subsection{Node.js and Express}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Requirement} & \textbf{Technical response in EventHub} \\
+\midrule
+Responsive SPA & React frontend with component-based rendering and CSS layouts that adapt to smaller screens \\
+Main backend in Django & Relational models, serializers, viewsets, validation rules, and REST endpoints \\
+Backend comparison & Separate Node.js and Express service kept smaller and used as a comparative study backend \\
+Event registration logic & Dedicated \texttt{Registration} model instead of a hidden many-to-many shortcut \\
+Team collaboration & One repository with separate folders for frontend, Django backend, Node backend, and report material \\
+Deployment readiness & Environment configuration, production builds, verification commands, and final public hosting plan \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-\placeholder{Describe the simplified comparative backend, its routes, its database choice, its middleware, and the analytical comparison with Django.}
+In practical terms, the project must solve two problems at once. First, it must produce a usable web application. Second, it must show that the team understands why each layer exists and how the layers connect. That is why the report emphasizes architecture and data flow rather than presenting the work as a collection of unrelated files.
 
-\begin{itemize}
-  \item \placeholder{State which entities were implemented in Express.}
-  \item \placeholder{Explain the CRUD routes and middleware.}
-  \item \placeholder{Compare Django and Node.js / Express in structure, philosophy, complexity, scalability, and ecosystem.}
-\end{itemize}
+\section{System Architecture}
 
-\section{Frontend}
+The architecture follows a clear full-stack separation. The browser loads the React SPA, the SPA sends requests to the Django REST API for the main application logic, the database stores persistent data, and a smaller Node.js and Express backend is kept in the repository as a comparative path. This separation keeps responsibilities clear and allows frontend and backend work to progress in parallel.
 
-\subsection{HTML}
+\ArchitectureFigure
 
-\placeholder{Describe the page structure, semantic layout, form markup, and how the main screens are organized.}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Layer} & \textbf{Responsibility} \\
+\midrule
+Browser & Hosts the visible user interface and executes frontend JavaScript \\
+React SPA & Renders pages, manages state, sends API requests, and updates the UI without full reloads \\
+Django REST API & Applies the main business rules, validates data, and exposes the official CRUD endpoints \\
+Database & Persists events, participants, and registrations safely across sessions \\
+Node.js / Express & Provides a smaller comparison backend to contrast flexibility with Django's stronger default structure \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-\subsection{CSS}
+The architecture is intentionally asymmetric: Django is the main service, and Express is the comparative service. This is an important design decision. The assignment does not ask for two equal production backends. It asks for one serious backend implementation and one smaller comparison that makes the trade-offs visible. In EventHub, the main system flow therefore goes through Django, while Node.js and Express are retained to support analysis and comparison.
 
-\placeholder{Describe the design system, layout rules, responsive behavior, and styling choices.}
+\section{Backend Design}
 
-\subsection{React}
+\subsection{Django as the primary backend}
 
-\placeholder{Describe the component structure, hooks, routing, state handling, API calls, loading states, error states, token storage, and route protection.}
+Django is the main backend because the project is centered on structured relational data and on business rules that should be enforced consistently. Events, participants, and registrations form a classic business-domain model. Django is well suited for this because it provides models, migrations, validation, an administrative interface, and a predictable project structure. Instead of building every backend concern manually, the team can use Django's conventions to keep the code organized and maintainable.
 
-\section{Integration and Deployment}
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Django element} & \textbf{Project role} \\
+\midrule
+Models & Define the database structure for events, participants, and registrations \\
+Migrations & Apply schema changes safely to the database \\
+Serializers & Convert model objects to JSON and validate incoming request payloads \\
+ViewSets & Expose CRUD behavior with a compact REST-oriented structure \\
+Router and URLs & Connect endpoints such as \texttt{/api/events/} to the correct logic \\
+Admin & Provide a fast inspection and management interface during development and testing \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
-\placeholder{Explain how the frontend connects to the Django backend, how environment variables are configured, how the production deployment works, and how the final public version was tested.}
+The most important modeling decision is the explicit \texttt{Registration} model. This model does more than link two tables. It provides a place where business logic can live. For example, it can prevent duplicate registrations, record registration-specific metadata, and later support richer states such as approval or payment status.
+
+\RegistrationFigure
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Entity} & \textbf{Purpose} \\
+\midrule
+Event & Stores the title, date, location, and scheduling information for one event \\
+Participant & Stores the identity data of a person who can register for events \\
+Registration & Stores the explicit link between one participant and one event, which makes validation and reporting easier \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{API organization and validation}
+
+The API must expose the core resources of the application in a consistent way. The frontend should not depend on custom ad hoc endpoints when standard resource-based endpoints are sufficient. A compact REST structure therefore remains the clearest choice for the main project.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}l l Y@{}}
+\toprule
+\textbf{Method} & \textbf{Endpoint} & \textbf{Role} \\
+\midrule
+GET & \texttt{/api/events/} & Retrieve the list of events for the frontend \\
+POST & \texttt{/api/events/} & Create a new event from validated form data \\
+GET & \texttt{/api/participants/} & Retrieve participants and support administration tasks \\
+POST & \texttt{/api/registrations/} & Create a new event registration after validation \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Validation is a major backend responsibility. The frontend may offer helpful messages, but only the backend can be trusted as the final decision point. In EventHub this means the backend must reject invalid or duplicate registrations, enforce unique participant information where necessary, and return clear error messages when a rule is violated. This approach keeps the data trustworthy even if the frontend is bypassed or a malformed request is sent manually.
+
+\subsection{Node.js and Express as the comparison backend}
+
+Node.js and Express are kept in the project to make the backend comparison concrete. \textbf{Node.js} is the JavaScript runtime. \textbf{Express} is the lightweight framework that defines routes and HTTP behavior. In this project, the Node backend is intentionally smaller. Its role is to illustrate a more manual style of backend development rather than to replace the Django service.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Criterion} & \textbf{Django} & \textbf{Node.js / Express} \\
+\midrule
+Project role & Main backend & Comparative backend \\
+Structure & Strong defaults and conventions & Flexible and lightweight organization \\
+CRUD productivity & Very strong for relational business apps & Good for smaller custom APIs, but more manual \\
+Validation style & Model and serializer driven & Middleware and custom logic driven \\
+Administration support & Built-in admin tools & Must be built manually or omitted \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+This comparison supports the report argument directly: Django is the better primary backend for EventHub because the application is model-heavy and validation-heavy, while Express remains useful as a teaching and comparison tool.
+
+\section{Frontend Design}
+
+\FrontendFigure
+
+The frontend is a React SPA whose job is to provide a responsive interface for the main user workflows of the application. The frontend must not only display data, but also organize navigation, handle user input, show loading states, display validation feedback, and update the screen after API responses. That makes the frontend a real application layer rather than a simple HTML showcase.
+
+\subsection{HTML, CSS, and React responsibilities}
+
+The frontend is built on three complementary layers. HTML provides semantic structure. CSS provides visual layout and responsive behavior. React organizes the page into reusable components and keeps the visible interface synchronized with state changes. A weakness in any one of these layers reduces the quality of the final SPA.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Frontend layer} & \textbf{Design role in EventHub} \\
+\midrule
+HTML / JSX & Builds semantic structures such as headers, forms, cards, and sections \\
+CSS & Controls spacing, colors, grid or flex layouts, and mobile adaptations \\
+JavaScript & Handles events, filtering logic, API requests, and state transitions \\
+React & Composes the interface into pages and reusable components with predictable rendering \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Planned screens and user workflows}
+
+The frontend design is organized around the main user tasks rather than around isolated widgets. Each page exists to support one clear operation in the project domain.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Screen or module} & \textbf{Purpose} \\
+\midrule
+Login / access control page & Entry point for authenticated or role-based access flows \\
+Dashboard & Overview of the application and quick access to major actions \\
+Events list & Discover, browse, and filter the available events \\
+Event detail / registration view & Show one event clearly and allow the registration workflow \\
+Participants page & Manage participant information and support CRUD operations \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Responsive design is treated as a functional requirement. The page must remain readable on desktop and mobile widths, which means the CSS strategy must favor flexible grids, meaningful spacing, scalable typography, and component layouts that can collapse from multiple columns to one column without breaking the content hierarchy.
+
+\subsection{Frontend-to-backend communication}
+
+The frontend communicates with the backend through JSON-based HTTP requests. In practice, this means the React components must support at least three states whenever data is loaded from the API: loading, success, and error. This is a core part of the UI architecture because a professional SPA cannot assume that network requests always succeed immediately.
+
+The same principle applies to forms. When a user submits data, the frontend should send a structured request, wait for the backend response, and then either update the screen or render a clear validation message. The frontend therefore acts as a disciplined API client, not as a source of truth about the data model.
+
+\section{Integration, Repository Structure, and Deployment Plan}
+
+Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface.
+
+\BackendJourneyFigure
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Repository area} & \textbf{Role in the final integrated branch} \\
+\midrule
+\texttt{frontend/} & React SPA and its styles, components, and build configuration \\
+\texttt{backend/} & Django project and REST API implementation \\
+\texttt{node/} & Node.js and Express comparison backend \\
+\texttt{report/} & Formal report and supporting appendix material \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+This repository structure supports teamwork cleanly. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the point where the pieces are brought together and verified as one submission-ready repository. This workflow is compatible with branch-based collaboration as long as the final submitted branch contains all required folders and a working integrated structure.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Integration concern} & \textbf{Planned handling} \\
+\midrule
+CORS and local development & Backend configured to allow frontend development requests during integration \\
+Data exchange & JSON payloads with stable field names and predictable validation responses \\
+Frontend verification & Build and lint commands confirm that the SPA compiles and remains structurally valid \\
+Backend verification & Migrations, endpoint checks, and test execution confirm backend consistency \\
+Deployment & Separate production-ready frontend and backend hosting with environment-specific configuration \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript.
 
 \section{Conclusion}
 
-\placeholder{Summarize what was built, what worked well, what was difficult, and what could be improved in a future iteration.}
+The main technical argument of EventHub is straightforward. A responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend form a coherent academic project because each layer has a clear and defensible role. Django is the correct main backend choice for the application domain, React is the correct frontend model for a SPA, and the repository structure supports parallel team work and later integration.
+
+For that reason, the formal report ends here and the rest of the document is deliberately treated as supporting material. The appendices that follow contain detailed learning notes, solved examples, exam practice, and topic-based revision content so that the project remains useful both as a technical submission and as a study document.
+
+\clearpage
+\section*{Supporting Material}
+\addcontentsline{toc}{section}{Supporting Material}
 
 \appendix
 
-\section{Appendix}
+\PanelBox{
+This appendix is written as a \textbf{self-contained beginner guide}. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it.
+}
 
-\placeholder{Use the appendix for additional notes, commands, screenshots, comparisons, or supporting material that would interrupt the main flow of the report.}
+\section{Frontend Learning Path}
+
+\subsection{Basic concepts}
+
+\FrontendFigure
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+HTML & Structures the page content: headings, forms, buttons, sections, inputs \\
+CSS & Styles the page and makes it responsive \\
+JavaScript & Adds behavior such as events, logic, and asynchronous requests \\
+React & Organizes the frontend as components and updates the UI when state changes \\
+API & The communication contract between frontend and backend, usually through JSON over HTTP \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\LearningCallout{skywash}{\textbf{Memory hook.} Frontend work is easiest to remember in this order: \textbf{HTML = structure}, \textbf{CSS = appearance}, \textbf{JavaScript = behavior}, \textbf{React = state-driven organization}. If one layer feels confusing, ask first which of these four jobs you are actually solving.}
+
+\subsection{What each frontend technology does}
+
+\textbf{HTML} answers the question: \emph{what is on the page?}
+
+\textbf{CSS} answers the question: \emph{what does the page look like on different screens?}
+
+\textbf{JavaScript} answers the question: \emph{what happens when the user clicks, types, or requests data?}
+
+\textbf{React} answers the question: \emph{how do we keep the interface synchronized with the current application state?}
+
+\subsection{How divs and CSS classes become design}
+
+A \texttt{div} is only a generic rectangular container. By itself, it does not create a card, a panel, spacing, rounded corners, or color. The visible design appears when a CSS class is attached to the element and the browser applies the rules defined for that class.
+
+\DivClassWindowFigure
+
+\FrontendColorSwatchFigure
+
+\begin{lstlisting}[style=code, caption={HTML structure with div containers and classes}]
+<div class="page-shell">
+  <div class="event-card">
+    <p class="eyebrow">Upcoming event</p>
+    <h2>Spring Hackathon</h2>
+    <p class="event-meta">Paris - 21 April</p>
+    <button class="join-btn">Join</button>
+  </div>
+</div>
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, caption={CSS classes that turn plain boxes into a design}]
+.page-shell {
+  min-height: 100vh;
+  padding: 2rem;
+  background: #f4f8f4;
+}
+
+.event-card {
+  max-width: 28rem;
+  padding: 1.5rem;
+  border: 1px solid #d7b98a;
+  border-radius: 20px;
+  background: #fff8ee;
+}
+
+.eyebrow {
+  color: #8a6a3b;
+  text-transform: uppercase;
+}
+
+.join-btn {
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+  background: #182620;
+  color: white;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Design result in a browser window}]
++--------------------------------------------------+
+| pale green page background                       |
+|  +--------------------------------------------+  |
+|  | cream card                                 |  |
+|  | UPCOMING EVENT                             |  |
+|  | Spring Hackathon                           |  |
+|  | Paris - 21 April                           |  |
+|  | [ dark green Join button ]                 |  |
+|  +--------------------------------------------+  |
++--------------------------------------------------+
+\end{lstlisting}
+
+The key rule is simple: HTML gives boxes and labels, CSS classes give visual behavior, and the browser combines both to produce the final design that the user sees.
+
+\subsection{Padding, margin, border, and the visible box model}
+
+Students often write a \texttt{div} and then wonder why the result still looks flat or stuck to the edges. The answer is the box model. Every visible card, alert, button, menu, or section is built from the same four layers: content, padding, border, and margin.
+
+\BoxModelFigure
+
+\begin{lstlisting}[style=code, caption={A simple card that shows padding and margin clearly}]
+<section class="layout">
+  <div class="note-card">Registration opens at 10:00.</div>
+  <div class="note-card">Bring your student ID.</div>
+</section>
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, caption={CSS that creates visible spacing around and inside each div}]
+.layout {
+  background: #edf4ed;
+  padding: 24px;
+}
+
+.note-card {
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 2px solid #d7b98a;
+  border-radius: 14px;
+  background: #fff8ee;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={What the browser shows after applying the classes}]
+page area
++--------------------------------------------------+
+| layout padding                                  |
+|   +------------------------------------------+   |
+|   | note-card padding                        |   |
+|   | Registration opens at 10:00.            |   |
+|   +------------------------------------------+   |
+|             <- margin-bottom gap ->             |
+|   +------------------------------------------+   |
+|   | note-card padding                        |   |
+|   | Bring your student ID.                  |   |
+|   +------------------------------------------+   |
++--------------------------------------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} Padding creates breathing space inside the card, so text does not touch the border. Margin creates separation outside the card, so two blocks do not collide. When students understand this visual rule, most early CSS layout mistakes become much easier to fix.
+
+\subsection{Mini Active Learning: frontend structure and CSS}
+
+\LearningCallout{mintwash}{
+\textbf{Question 1.} Why does a plain \texttt{div} usually look invisible at first?\\
+\textbf{Answer.} Because a \texttt{div} is only a generic container. It becomes visually meaningful only after CSS adds spacing, borders, colors, size, and layout rules.\\[0.6em]
+\textbf{Question 2.} What is the difference between padding and margin?\\
+\textbf{Answer.} Padding is inside the element around the content. Margin is outside the element and separates it from neighboring elements.\\[0.6em]
+\textbf{Question 3.} If two cards are touching each other vertically, which property is the first one to check?\\
+\textbf{Answer.} Usually \texttt{margin-bottom} on the first card or \texttt{gap} on the parent layout.
+}
+
+\subsection{Step 1: create the frontend entry point}
+
+The first job is to have one React entry file and one top-level component.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Minimal React entry point}]
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.jsx'
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected result}]
+The browser mounts the React application inside #root.
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{Line-by-line explanation.}\\
+\texttt{import \{ StrictMode \} from 'react'} loads a helper that warns about unsafe patterns during development.\\
+\texttt{createRoot(...)} tells React where to render the application in the HTML page.\\
+\texttt{App} is the main component that contains your visible interface.\\
+\texttt{<StrictMode><App /></StrictMode>} means: render the App component inside the root container.
+}
+
+\subsection{Step 2: write the first component}
+
+The first component can be simple. The purpose is to confirm that the frontend is alive and structured correctly before adding real application features.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Simple React component}]
+function App() {
+  return (
+    <main className="app-shell">
+      <section className="hello-card">
+        <p className="eyebrow">Web Programming 2026</p>
+        <h1>Hello, World.</h1>
+        <p className="message">
+          This frontend is the starting point for EventHub.
+        </p>
+      </section>
+    </main>
+  )
+}
+
+export default App
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Visible output}]
+Web Programming 2026
+Hello, World.
+This frontend is the starting point for EventHub.
+\end{lstlisting}
+
+\LearningCallout{skywash}{
+\textbf{Why this works.}\\
+\texttt{function App()} defines one React component.\\
+\texttt{return (...)} tells React what HTML-like structure must appear on screen.\\
+\texttt{className} is the React version of the HTML \texttt{class} attribute.\\
+The component is small on purpose: first verify that React renders correctly, then grow the page step by step.
+}
+
+\subsection{Step 3: understand the HTML structure}
+
+Even inside React, it is important to think in HTML structure first. A good SPA screen still needs a clear semantic layout.
+
+\begin{lstlisting}[style=code, caption={Example semantic structure}]
+<main>
+  <header>
+    <h1>EventHub</h1>
+  </header>
+
+  <section>
+    <h2>Events</h2>
+  </section>
+
+  <section>
+    <h2>Participants</h2>
+  </section>
+</main>
+\end{lstlisting}
+
+This is the right mindset: first define the structure of the page, then style it, then connect it to live data.
+
+\subsection{Step 4: use CSS to make the page responsive}
+
+Responsive design means the same screen must stay readable on large and small devices.
+
+\begin{lstlisting}[style=code, caption={Example responsive CSS}]
+.content-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected effect}]
+Desktop: two columns
+Mobile: one column
+\end{lstlisting}
+
+\ResponsiveLayoutFigure
+
+This drawing shows the same content adapting to screen width without changing the data itself. Good responsive design keeps the content hierarchy stable while the layout becomes simpler and easier to read on smaller screens.
+
+\subsection{Step 5: understand JavaScript in the frontend}
+
+JavaScript is what allows the page to react to user actions and backend data.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Basic JavaScript data handling}]
+const events = [
+  { id: 1, title: 'Hackathon' },
+  { id: 2, title: 'Workshop' },
+]
+
+for (const event of events) {
+  console.log(event.title)
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Console output}]
+Hackathon
+Workshop
+\end{lstlisting}
+
+\subsection{Step 6: fetch data from an API}
+
+At this point the SPA stops being static. It becomes a real application by loading data from the backend.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Basic fetch pattern}]
+async function loadEvents() {
+  const response = await fetch('http://localhost:8000/api/events/')
+
+  if (!response.ok) {
+    throw new Error('Failed to load events')
+  }
+
+  return response.json()
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Typical JSON result}]
+[
+  {
+    "id": 1,
+    "title": "Spring Hackathon",
+    "location": "Paris"
+  }
+]
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{How to read this fetch code.}\\
+\texttt{await fetch(...)} sends an HTTP request to the backend.\\
+\texttt{response.ok} checks whether the server answered successfully.\\
+\texttt{throw new Error(...)} stops the normal flow and moves to the error path if the server failed.\\
+\texttt{return response.json()} converts the HTTP response body into JavaScript data that React can render.
+}
+
+\subsection{Mini Active Learning: React and API flow}
+
+\LearningCallout{skywash}{
+\textbf{Question 1.} Why does a SPA need a loading state during \texttt{fetch()}?\\
+\textbf{Answer.} Because the request is asynchronous and the UI must explain what is happening while waiting for the backend.\\[0.6em]
+\textbf{Question 2.} Where does the JSON response come from in this project?\\
+\textbf{Answer.} From the backend API, mainly the Django REST API.\\[0.6em]
+\textbf{Question 3.} Why is JavaScript still essential even when React is used?\\
+\textbf{Answer.} Because React components still rely on JavaScript for arrays, objects, conditions, loops, events, asynchronous code, and state updates.
+}
+
+\subsection{Step 7: move from basics to the actual required pages}
+
+Once the basics are understood, the frontend can be built page by page:
+
+\begin{enumerate}
+  \item Login page
+  \item Dashboard
+  \item Events list with filtering
+  \item Event details with registrations
+  \item Participants page
+\end{enumerate}
+
+The correct order is important. Start with static layout, then add local state, then connect the backend, then add route protection and authentication.
+
+\subsection{Step 8: read JSX from outside to inside}
+
+Beginners often try to read JSX line by line without first seeing the full component tree. A better method is to read JSX from the outside to the inside. First identify the page shell, then the big sections, then the repeated child components, and only after that read the small props and text details.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={A small dashboard read from outside to inside}]
+function Dashboard({ events, query, setQuery }) {
+  return (
+    <main className="dashboard-shell">
+      <header className="hero">
+        <h1>EventHub</h1>
+        <p>Manage events and participants.</p>
+      </header>
+
+      <section className="toolbar">
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search events"
+        />
+      </section>
+
+      <section className="event-grid">
+        {events.map((event) => (
+          <EventCard
+            key={event.id}
+            title={event.title}
+            location={event.location}
+          />
+        ))}
+      </section>
+    </main>
+  )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Mental reading order}]
+1. main.dashboard-shell  -> the whole page
+2. header.hero           -> the top introduction area
+3. section.toolbar       -> the controls area
+4. section.event-grid    -> the repeated cards area
+5. EventCard props       -> the data each card receives
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{How to read the code above.}\\
+\texttt{function Dashboard(...)} defines one component that receives data and handlers from a parent.\\
+\texttt{<main className="dashboard-shell">} is the outer page container. Think of it as the full screen.\\
+\texttt{<header className="hero">} is a semantic block for the title area. It is not only visual; it also improves structure.\\
+\texttt{value=\{query\}} means the input displays the current React state.\\
+\texttt{onChange=(event) => setQuery(...)} means each keystroke updates state.\\
+\texttt{events.map(...)} means the array is transformed into repeated visible cards.
+}
+
+\MemoryBox{When JSX feels dense, do not start with the smallest tag. First ask: what is the page shell, what are the major sections, and what part repeats from data.}
+
+\MistakeBox{Many students memorize JSX as if it were magic HTML. That makes the code harder to remember. JSX is still JavaScript returning a UI tree. The tree is the important mental model.}
+
+\subsection{Step 9: understand \texttt{useState} as component memory}
+
+State is what makes React feel alive. The easiest way to remember it is this: \texttt{useState} gives the component memory between renders. A normal local variable disappears after a render. State survives and tells React to render again when it changes.
+
+\HooksMemoryFigure
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={One input and one boolean state}]
+import { useState } from 'react'
+
+function SearchPanel() {
+  const [query, setQuery] = useState('')
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <section className="search-panel">
+      <button onClick={() => setIsOpen(!isOpen)}>
+        Toggle filters
+      </button>
+
+      {isOpen && (
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search events"
+        />
+      )}
+    </section>
+  )
+}
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYYY@{}}
+\toprule
+\textbf{Moment} & \textbf{query} & \textbf{isOpen} & \textbf{Visible result} \\
+\midrule
+First render & empty string & false & button only \\
+User clicks button & empty string & true & input appears \\
+User types ``par'' & ``par'' & true & input shows ``par'' \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\LearningCallout{skywash}{
+\textbf{Why this is memorable.}\\
+\texttt{const [query, setQuery] = useState('')} creates one pair: the current state value and the function that updates it.\\
+The component does not mutate the screen directly. It changes state.\\
+React sees the new state and produces the new UI.\\
+This is the core React sentence: \textbf{change state -> React re-renders -> UI updates}.
+}
+
+\ChecklistBox{
+When you see \texttt{useState}, ask four questions in order. What value is stored. What event changes it. Which JSX reads it. What visual change appears after the update.
+}
+
+\MistakeBox{Do not write \texttt{query = 'par'} inside a component and expect React to update the screen. Direct assignment does not trigger React rendering. Use the setter function.}
+
+\subsection{Step 10: understand \texttt{useEffect} and dependency arrays}
+
+\texttt{useEffect} is for work that happens because the component exists or because some external value changed. Fetching data from the backend is the most common example in this project. The important memory rule is: rendering describes the screen, while \texttt{useEffect} handles side effects around the screen.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={A safe loading effect with explicit states}]
+import { useEffect, useState } from 'react'
+
+function EventsPage() {
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadEvents() {
+      try {
+        setLoading(true)
+        setError('')
+
+        const response = await fetch('http://localhost:8000/api/events/')
+
+        if (!response.ok) {
+          throw new Error('Request failed')
+        }
+
+        const data = await response.json()
+
+        if (!cancelled) {
+          setEvents(data)
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setError('Unable to load events')
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false)
+        }
+      }
+    }
+
+    loadEvents()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+}
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Dependency form} & \textbf{Meaning} \\
+\midrule
+\texttt{[]} & run once after the first render \\
+\texttt{[query]} & run again when \texttt{query} changes \\
+no dependency array & run after every render \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[style=terminal, caption={Visible states the user can see}]
+Loading events...
+[ list of cards after success ]
+[ Unable to load events ] after failure
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{How to memorize this effect.}\\
+The first render happens with empty data.\\
+Then the effect runs and asks the backend for JSON.\\
+When the JSON arrives, the component updates state.\\
+That state update triggers a new render with real data on screen.\\
+So the sequence is: \textbf{first render -> effect -> fetch -> state update -> second render}.
+}
+
+\MistakeBox{The classic \texttt{useEffect} bug is an infinite loop. It appears when the effect changes a state value and that same value is also a dependency in a way that retriggers the effect forever.}
+
+\subsection{Step 11: debug CSS classes, spacing, and flat-looking divs}
+
+When a frontend looks wrong, the best debugging order is visual, not emotional. Start from what the browser shows, inspect the element, verify the class name, check which rule is applied, and only then change CSS. This method is easier to remember than random guessing.
+
+\CSSDebugFigure
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={HTML or JSX side}]
+<article className="event-card featured-card">
+  <h3>Spring Hackathon</h3>
+  <p>Paris - April 21</p>
+</article>
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, caption={Broken CSS selector that explains why nothing seems to happen}]
+.eventCard {
+  padding: 1rem;
+  border-radius: 16px;
+  background: #fff8ee;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, caption={Correct selector that matches the actual class name}]
+.event-card {
+  padding: 1rem;
+  border: 1px solid #d7b98a;
+  border-radius: 16px;
+  background: #fff8ee;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={What the learner should notice}]
+Broken: plain text on the page, no cream card, no border
+Fixed : cream card, rounded corners, visible spacing
+\end{lstlisting}
+
+\LearningCallout{rosewash}{
+\textbf{Why beginners lose time here.}\\
+If the class name in JSX is \texttt{event-card} but the stylesheet uses \texttt{.eventCard}, the rule will not match.\\
+If the selector is correct but the page still looks flat, then inspect padding, margin, background, and border one by one.\\
+Reading from the browser result back to the CSS rule is the fastest debugging pattern.
+}
+
+\ChecklistBox{
+Use this four-step repair method for any flat or broken layout.\\
+1. Is the right class attached in JSX or HTML?\\
+2. Does the selector in CSS match exactly?\\
+3. Does the element have visible padding, margin, border, or background?\\
+4. Does the responsive rule change the layout at the expected breakpoint?
+}
+
+\subsection{Step 12: derive filtered UI instead of storing duplicate state}
+
+One of the most important React habits is to store the smallest necessary state and derive the rest. In a search page, the real state is usually the original list plus the query. The filtered list is computed from those two values. It does not need its own permanent state variable.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={A compact but realistic filtered page}]
+import { useState } from 'react'
+
+function EventsScreen({ events }) {
+  const [query, setQuery] = useState('')
+
+  const filteredEvents = events.filter((event) => {
+    const haystack = `${event.title} ${event.location}`.toLowerCase()
+    return haystack.includes(query.toLowerCase())
+  })
+
+  return (
+    <main className="events-screen">
+      <input
+        value={query}
+        onChange={(event) => setQuery(event.target.value)}
+        placeholder="Search title or location"
+      />
+
+      <p className="helper-text">
+        {filteredEvents.length} result(s)
+      </p>
+
+      <section className="event-grid">
+        {filteredEvents.map((event) => (
+          <EventCard
+            key={event.id}
+            title={event.title}
+            location={event.location}
+          />
+        ))}
+      </section>
+    </main>
+  )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Visible behavior}]
+Query: "par"
+Visible cards: events whose title or location contains "par"
+Result count updates immediately after each keystroke
+\end{lstlisting}
+
+\LearningCallout{skywash}{
+\textbf{Code reading focus.}\\
+\texttt{query} is state because it changes over time.\\
+\texttt{filteredEvents} is not state here; it is derived from \texttt{events} and \texttt{query}.\\
+That makes the component easier to reason about because there is only one source of truth for the search text.
+}
+
+\MemoryBox{When React state starts to feel too big, ask: is this value truly stored, or can it be computed from existing state. That one question prevents many bugs.}
+
+\subsection{Worked Active Learning: Frontend}
+
+This active-learning block contains 15 frontend exercises. Each one asks a real development question, gives a short code target, shows the expected visual result, and explains the engineering idea behind the step.
+
+\LearningCallout{rosewash}{
+\textbf{How to use this section.} Every exercise below is already solved. Read it in this order: question, exact code answer, expected browser result, then explanation. If you are a beginner, copy the solved code into a small practice file and run it before moving to the next exercise.
+}
+
+\FrontendPracticeFigure
+
+\subsubsection*{Exercise 1: Semantic page shell}
+\textbf{Question.} How do you create a readable page before writing any CSS?
+
+\begin{lstlisting}[style=code]
+<main>
+  <header>
+    <h1>EventHub</h1>
+    <p>Manage events and registrations.</p>
+  </header>
+
+  <section>
+    <h2>Upcoming events</h2>
+  </section>
+</main>
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
++----------------------------------+
+| EventHub                         |
+| Manage events and registrations. |
+| Upcoming events                  |
++----------------------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} This is the HTML-first mindset. If the structure is already clear with plain text, the later React and CSS layers stay easier to understand and debug.
+
+\subsubsection*{Exercise 2: Event card styling}
+\textbf{Question.} How do you visually separate one event from another?
+
+\begin{lstlisting}[style=code]
+.event-card {
+  padding: 1rem;
+  border: 1px solid #d7b98a;
+  border-radius: 16px;
+  background: #fff8ee;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
++------------------------------+
+| Spring Hackathon             |
+| Paris, April 21              |
++------------------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} A card is a basic UI pattern. The border, padding, and background create separation so the user can scan content without confusion.
+
+\subsubsection*{Exercise 3: Responsive two-column grid}
+\textbf{Question.} How do you show two columns on desktop and one on mobile?
+
+\begin{lstlisting}[style=code]
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Desktop: [Card 1] [Card 2]
+Mobile:
+[Card 1]
+[Card 2]
+\end{lstlisting}
+
+\textbf{Explanation.} Responsiveness is one of the assignment constraints. The media query changes layout without changing the content structure.
+
+\subsubsection*{Exercise 4: Primary button states}
+\textbf{Question.} How do you make an action button feel interactive?
+
+\begin{lstlisting}[style=code]
+.primary-btn {
+  background: #182620;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 999px;
+}
+
+.primary-btn:hover {
+  background: #2a3d34;
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+[ Create Event ]
+hover -> darker background
+\end{lstlisting}
+
+\textbf{Explanation.} A hover state gives feedback before the click. That feedback is small, but it strongly improves usability.
+
+\subsubsection*{Exercise 5: Basic JavaScript data loop}
+\textbf{Question.} How do you inspect a list of events before rendering it?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const events = [
+  { id: 1, title: 'Hackathon' },
+  { id: 2, title: 'Workshop' },
+]
+
+for (const event of events) {
+  console.log(event.title)
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Hackathon
+Workshop
+\end{lstlisting}
+
+\textbf{Explanation.} Before React renders anything, JavaScript still does the real data work. This exercise reinforces arrays, objects, and loops.
+
+\subsubsection*{Exercise 6: First reusable React component}
+\textbf{Question.} How do you avoid duplicating card markup?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+function EventCard({ title, location }) {
+  return (
+    <article className="event-card">
+      <h3>{title}</h3>
+      <p>{location}</p>
+    </article>
+  )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
++------------------+
+| Hackathon        |
+| Paris            |
++------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} React components let one idea be written once and reused many times. That is the core reason React fits a SPA.
+
+\subsubsection*{Exercise 7: Render a list with \texttt{map}}
+\textbf{Question.} How do you turn data into repeated components?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const events = [
+  { id: 1, title: 'Hackathon', location: 'Paris' },
+  { id: 2, title: 'Meetup', location: 'Lyon' },
+]
+
+function EventList() {
+  return events.map((event) => (
+    <EventCard
+      key={event.id}
+      title={event.title}
+      location={event.location}
+    />
+  ))
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
++------------------+  +------------------+
+| Hackathon        |  | Meetup           |
+| Paris            |  | Lyon             |
++------------------+  +------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} Most CRUD screens are list screens. This exercise shows the standard React pattern for transforming arrays into visible UI.
+
+\subsubsection*{Exercise 8: Controlled input with \texttt{useState}}
+\textbf{Question.} How do you keep an input synchronized with React state?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+import { useState } from 'react'
+
+function SearchBox() {
+  const [query, setQuery] = useState('')
+
+  return (
+    <input
+      value={query}
+      onChange={(event) => setQuery(event.target.value)}
+      placeholder="Search events"
+    />
+  )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Type: "par"
+State value: "par"
+\end{lstlisting}
+
+\textbf{Explanation.} A controlled input means React owns the value. That makes filtering, validation, and form submission predictable.
+
+\subsubsection*{Exercise 9: Filter visible events}
+\textbf{Question.} How do you show only events that match the search text?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const filteredEvents = events.filter((event) =>
+  event.title.toLowerCase().includes(query.toLowerCase())
+)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Query: "work"
+Visible result:
+Workshop
+\end{lstlisting}
+
+\textbf{Explanation.} Filtering is a small but real feature. It also teaches derived data: the UI is computed from the original state, not copied into new permanent state.
+
+\subsubsection*{Exercise 10: Load data from the API}
+\textbf{Question.} How does the frontend fetch real backend data?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+import { useEffect, useState } from 'react'
+
+function EventsPage() {
+  const [events, setEvents] = useState([])
+
+  useEffect(() => {
+    fetch('http://localhost:8000/api/events/')
+      .then((response) => response.json())
+      .then(setEvents)
+  }, [])
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+GET /api/events/
+200 OK
+[{"id":1,"title":"Spring Hackathon"}]
+\end{lstlisting}
+
+\textbf{Explanation.} This is the moment when the SPA stops being static. The browser becomes a client of the Django API.
+
+\subsubsection*{Exercise 11: Add a loading state}
+\textbf{Question.} What should users see while waiting for the server?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const [loading, setLoading] = useState(true)
+
+if (loading) {
+  return <p>Loading events...</p>
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Loading events...
+\end{lstlisting}
+
+\textbf{Explanation.} A loading state explains delay instead of showing a blank page. It is a required quality pattern in serious SPAs.
+
+\subsubsection*{Exercise 12: Add an error state}
+\textbf{Question.} What should the interface do if the API fails?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const [error, setError] = useState('')
+
+fetch('http://localhost:8000/api/events/')
+  .catch(() => setError('Unable to load events'))
+
+if (error) {
+  return <p className="error-box">{error}</p>
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+[ Unable to load events ]
+\end{lstlisting}
+
+\textbf{Explanation.} Robust UIs must handle failure. This exercise teaches that API integration is not only about the success path.
+
+\subsubsection*{Exercise 13: Build a controlled form}
+\textbf{Question.} How do you collect new participant data in React?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const [form, setForm] = useState({ firstName: '', email: '' })
+
+function updateField(event) {
+  setForm({
+    ...form,
+    [event.target.name]: event.target.value,
+  })
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+firstName = "Mehdi"
+email = "mehdi@example.com"
+\end{lstlisting}
+
+\textbf{Explanation.} Real forms usually have multiple fields. This pattern scales better than writing one state variable per input.
+
+\subsubsection*{Exercise 14: Submit a POST request}
+\textbf{Question.} How do you send a new participant to the backend?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+await fetch('http://localhost:8000/api/participants/', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(form),
+})
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+POST /api/participants/
+201 Created
+\end{lstlisting}
+
+\textbf{Explanation.} This is the CRUD creation path. It connects frontend form state to a real backend action.
+
+\subsubsection*{Exercise 15: Assemble a mini dashboard}
+\textbf{Question.} How do the small pieces become one SPA screen?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+function Dashboard() {
+  return (
+    <main>
+      <SearchBox />
+      <section className="grid">
+        <EventCard title="Hackathon" location="Paris" />
+        <EventCard title="Meetup" location="Lyon" />
+      </section>
+    </main>
+  )
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
++--------------------------------------+
+| Search events [.................]    |
+| [Hackathon | Paris] [Meetup | Lyon] |
++--------------------------------------+
+\end{lstlisting}
+
+\textbf{Explanation.} A SPA is built by composing small reliable pieces. This final frontend exercise shows how layout, state, and components come together into one page.
+
+\section{Backend Learning Path}
+
+\subsection{Basic concepts}
+
+\BackendFigure
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+API & A set of endpoints that frontend and backend use to communicate \\
+Django & Python framework that provides models, admin, views, and strong structure \\
+Node.js & JavaScript runtime for backend execution \\
+Express & Lightweight backend framework built on Node.js \\
+Serializer & Converts model objects to JSON and validates incoming request data \\
+Model & Python class that represents a database table \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\LearningCallout{rosewash}{\textbf{Memory hook.} Backend reasoning is easiest to remember as one chain: \textbf{request -> route -> validation -> database -> JSON response}. If one part breaks, inspect the chain from left to right.}
+
+\subsection{What the backend technologies do}
+
+\textbf{Django} is responsible for the main backend of EventHub. It stores the data model, applies the business rules, and exposes the official REST API.
+
+\textbf{Node.js} lets JavaScript run outside the browser.
+
+\textbf{Express} makes it easier to build routes and middleware on top of Node.js.
+
+\textbf{The API} is the contract between frontend and backend. For example, when the frontend calls \texttt{GET /api/events/}, the backend must return structured JSON.
+
+\subsection{How one request travels through the backend}
+
+The backend becomes much easier to remember when it is visualized as a journey. A request starts in the browser, reaches a route, enters a view, passes through validation, reads or writes data, and then returns JSON to the frontend.
+
+\BackendJourneyFigure
+
+\begin{lstlisting}[style=terminal, caption={One complete request-response story}]
+Browser -> GET /api/events/
+Route matches /api/events/
+ViewSet reads Event objects
+Serializer converts Python objects to JSON
+Server -> 200 OK
+[
+  { "id": 1, "title": "Spring Hackathon" }
+]
+React receives JSON and updates the page
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{Memory sentence.} The browser does not talk directly to the database. It talks to the API, and the API decides what data becomes JSON.
+}
+
+\subsection{Mini Active Learning: backend request flow}
+
+\LearningCallout{skywash}{
+\textbf{Question 1.} Why is a serializer important even if the model already exists?\\
+\textbf{Answer.} Because the serializer controls how Python objects become JSON and how incoming request data is validated before saving.\\[0.6em]
+\textbf{Question 2.} What comes back to the frontend after a successful backend request?\\
+\textbf{Answer.} A structured HTTP response, often with JSON and a success status such as \texttt{200 OK} or \texttt{201 Created}.\\[0.6em]
+\textbf{Question 3.} Why should the browser never talk directly to the database?\\
+\textbf{Answer.} Because the backend must protect security, validation rules, permissions, and response formatting.
+}
+
+\subsection{Step 1: model the real entities}
+
+The project requires three main entities: events, participants, and registrations.
+
+\begin{lstlisting}[style=code, language=Python, caption={Core Django models}]
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    date = models.DateTimeField()
+    location = models.CharField(max_length=200)
+
+
+class Participant(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+
+
+class Registration(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+\end{lstlisting}
+
+This structure is critical because the assignment explicitly requires a dedicated many-to-many relationship through a registration model.
+
+\LearningCallout{skywash}{
+\textbf{Line-by-line explanation.}\\
+\texttt{class Event(models.Model)} means: create a database-backed Django model named Event.\\
+\texttt{CharField} stores short text such as a title or a location.\\
+\texttt{DateTimeField} stores both the date and the time.\\
+\texttt{ForeignKey(..., on\_delete=models.CASCADE)} means a registration points to one event or participant, and if the parent is deleted, its registrations are deleted too.
+}
+
+\subsection{How Event, Registration, and Participant fit together}
+
+Students often understand the three model names separately but forget how they connect. The easiest memory trick is to think of \texttt{Registration} as the bridge table in the middle.
+
+\RegistrationFigure
+
+\LearningCallout{rosewash}{
+\textbf{Memory sentence.} An event does not directly store all participant details, and a participant does not directly store all event details. The \texttt{Registration} model links them cleanly and can store business rules around that link.
+}
+
+\subsection{Step 2: run migrations}
+
+After creating or changing models, Django migrations update the database schema.
+
+\begin{lstlisting}[style=terminal, caption={Migration commands}]
+python manage.py makemigrations
+python manage.py migrate
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected result}]
+Migrations for 'api':
+  api/migrations/0001_initial.py
+Applying api.0001_initial... OK
+\end{lstlisting}
+
+\subsection{Step 3: create serializers}
+
+Serializers make the API usable because they transform Python objects into JSON and validate requests.
+
+\begin{lstlisting}[style=code, language=Python, caption={Example serializer}]
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = "__all__"
+\end{lstlisting}
+
+\subsection{Step 4: expose the API through views and routes}
+
+\begin{lstlisting}[style=code, language=Python, caption={Simple Django REST ViewSet}]
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all().order_by("id")
+    serializer_class = EventSerializer
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, language=Python, caption={Router registration}]
+router = DefaultRouter()
+router.register(r"events", EventViewSet)
+router.register(r"participants", ParticipantViewSet)
+router.register(r"registrations", RegistrationViewSet)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected endpoint examples}]
+GET    /api/events/
+POST   /api/events/
+GET    /api/participants/
+POST   /api/registrations/
+\end{lstlisting}
+
+\BackendEndpointFigure
+
+\subsection{Step 5: understand validation}
+
+The backend must protect the application rules. For example, one participant cannot register twice for the same event.
+
+\begin{lstlisting}[style=code, language=Python, caption={Business validation example}]
+if duplicate_qs.exists():
+    raise serializers.ValidationError(
+        "This participant is already registered for this event."
+    )
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected error response idea}]
+{
+  "error": true,
+  "status_code": 400,
+  "details": {
+    "non_field_errors": [
+      "This participant is already registered for this event."
+    ]
+  }
+}
+\end{lstlisting}
+
+\ValidationDecisionFigure
+
+\subsection{Mini Active Learning: backend validation}
+
+\LearningCallout{mintwash}{
+\textbf{Question 1.} Why is duplicate-registration protection a backend concern and not only a frontend concern?\\
+\textbf{Answer.} Because frontend checks can be bypassed. The backend is the final authority and must enforce business rules for every request.\\[0.6em]
+\textbf{Question 2.} What should the API return when validation fails?\\
+\textbf{Answer.} A clear error response, typically with a \texttt{400} status and a message explaining what rule was violated.\\[0.6em]
+\textbf{Question 3.} What is the mental model for validation?\\
+\textbf{Answer.} Every incoming write request must pass through a decision gate: valid data is saved, invalid data is rejected.
+}
+
+\subsection{Step 6: build the Node.js and Express comparison backend}
+
+The comparative backend should stay smaller than Django. Its job is not to replace Django. Its job is to make the comparison concrete.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Minimal Express server}]
+import express from 'express'
+
+const app = express()
+app.use(express.json())
+
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'eventhub-node-backend',
+  })
+})
+
+app.listen(3001)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Expected JSON output}]
+{
+  "status": "ok",
+  "service": "eventhub-node-backend"
+}
+\end{lstlisting}
+
+\subsection{Step 7: compare Django and Express clearly}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Criterion} & \textbf{Django} & \textbf{Node.js / Express} \\
+\midrule
+Structure & Strong and opinionated & Flexible and lightweight \\
+Speed of setup & Fast for CRUD business apps & Fast for small custom APIs \\
+Admin tools & Built-in admin & Manual setup required \\
+Validation & Strong model and serializer flow & More manual organization \\
+Project role here & Main backend & Comparative backend \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\LearningCallout{skywash}{
+\textbf{Memory comparison.} Django gives a strong default structure for business applications. Express gives a lighter starting point but requires more manual organization. For EventHub, that is why Django is the main backend and Express is the comparison backend.
+}
+
+\subsection{Step 8: read one POST request from the form to the database}
+
+The easiest way to remember backend logic is to follow one concrete write request. Imagine the user fills the participant form and clicks submit. The browser sends JSON, the route sends the request to the correct view, the serializer validates the data, the model is saved, and the backend answers with a success response.
+
+\BackendCreateFigure
+
+\begin{lstlisting}[style=terminal, caption={One realistic creation request}]
+POST /api/participants/
+Content-Type: application/json
+
+{
+  "first_name": "Mehdi",
+  "last_name": "Aghaei",
+  "email": "mehdi@example.com"
+}
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, language=Python, caption={The viewset receives the request and delegates the heavy work}]
+class ParticipantViewSet(viewsets.ModelViewSet):
+    queryset = Participant.objects.all().order_by('id')
+    serializer_class = ParticipantSerializer
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal, caption={Successful response}]
+201 Created
+{
+  "id": 3,
+  "first_name": "Mehdi",
+  "last_name": "Aghaei",
+  "email": "mehdi@example.com"
+}
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{What actually happened.}\\
+The browser did not create the database row directly.\\
+It sent JSON to the API endpoint.\\
+The viewset selected the serializer and the model flow for that endpoint.\\
+The serializer checked whether the fields were acceptable.\\
+Django saved the new model row and returned JSON describing the created object.
+}
+
+\MemoryBox{For write requests, memorize one chain only: \textbf{form -> JSON -> route -> serializer -> model save -> response}. If you remember that chain, most backend code becomes easier to place mentally.}
+
+\subsection{Step 9: understand the serializer lifecycle}
+
+Students often know that a serializer exists, but they do not know what job it actually performs. The serializer is the conversion and validation gate. Incoming request data enters as raw JSON-like data. The serializer checks it, transforms it into validated Python data, and then creates or updates model instances.
+
+\begin{lstlisting}[style=code, language=Python, caption={A serializer with explicit business validation}]
+class RegistrationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Registration
+        fields = '__all__'
+
+    def validate(self, attrs):
+        duplicate = Registration.objects.filter(
+            event=attrs['event'],
+            participant=attrs['participant'],
+        ).exists()
+
+        if duplicate:
+            raise serializers.ValidationError(
+                'This participant is already registered for this event.'
+            )
+
+        return attrs
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Serializer stage} & \textbf{What it means in plain language} \\
+\midrule
+Raw input & request data arrives from the browser as JSON fields \\
+Validation & the serializer checks required fields and business rules \\
+Validated data & the backend now trusts the cleaned values \\
+Save & Django creates or updates the model row \\
+Response & the serializer turns the saved object back into JSON \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[style=terminal, caption={Validation failure that the frontend must understand}]
+400 Bad Request
+{
+  "non_field_errors": [
+    "This participant is already registered for this event."
+  ]
+}
+\end{lstlisting}
+
+\SerializerLifecycleFigure
+
+\MistakeBox{A frequent beginner error is to think that the serializer is only for output formatting. In reality it also protects the backend by validating incoming data before save.}
+
+\ChecklistBox{
+When reading serializer code, ask in this order. Which model is connected. Which fields are exposed. Which custom rules are checked. What JSON shape will return to the frontend.
+}
+
+\subsection{Step 10: understand login, permissions, and role-based behavior}
+
+Role-based behavior is one of the most important defense topics because the jury may ask you to prove that not all users can do the same actions. Even before a full production authentication system is finished, the concept should be understood completely.
+
+\RoleFlowFigure
+
+\begin{lstlisting}[style=code, language=Python, caption={Read-only access for anonymous users, write access for authenticated users}]
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all().order_by('id')
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, language=Python, caption={One simple custom role permission example}]
+from rest_framework.permissions import BasePermission, SAFE_METHODS
+
+class IsEditorOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+
+        return (
+            request.user.is_authenticated
+            and request.user.groups.filter(name='editor').exists()
+        )
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{User type} & \textbf{Allowed actions} & \textbf{Visible frontend effect} \\
+\midrule
+Anonymous or viewer & login, list, search, read details & create buttons hidden or disabled \\
+Editor or admin & read plus create, update, delete & forms and action buttons available \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\RoleWindowFigure
+
+\LearningCallout{rosewash}{
+\textbf{What to say during the defense.}\\
+Authentication answers: who is this user.\\
+Permissions answer: what is this user allowed to do.\\
+Role-based behavior means the UI and the API must agree. If the frontend hides a button but the backend still allows everyone to post, the protection is incomplete.
+}
+
+\subsection{Step 11: compare the same endpoint in Django and Express}
+
+The cleanest comparison between Django and Express is to implement the same tiny endpoint in both technologies and read them side by side. The important lesson is not only that the syntax differs. The deeper lesson is that Django gives more structure by default, while Express gives more manual control.
+
+\begin{lstlisting}[style=code, language=Python, caption={One health endpoint in Django REST Framework}]
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET'])
+def health(request):
+    return Response({
+        'status': 'ok',
+        'service': 'eventhub-django-backend',
+    })
+\end{lstlisting}
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={The same idea in Express}]
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'ok',
+    service: 'eventhub-node-backend',
+  })
+})
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Reading point} & \textbf{Django} & \textbf{Express} \\
+\midrule
+Runtime language & Python & JavaScript \\
+Routing style & decorator or router and viewset system & direct route callback \\
+Validation ecosystem & built into a broader framework flow & chosen manually per project \\
+Typical feeling & more structure up front & more freedom up front \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\DjangoExpressFigure
+
+\MemoryBox{Node.js is the runtime. Express is the lightweight framework. Django is a full Python framework. Remembering these three roles clearly prevents many oral-defense mistakes.}
+
+\subsection{Step 12: debug the backend without panic}
+
+When a backend request fails, the right method is to debug in layers. Do not jump immediately into React. First verify that the server runs, then that the route exists, then that the request body is correct, then that validation passes, and only after that inspect the frontend integration.
+
+\begin{lstlisting}[style=terminal, caption={Fast backend verification commands}]
+python manage.py runserver
+python manage.py makemigrations
+python manage.py migrate
+curl http://localhost:8000/api/events/
+\end{lstlisting}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Symptom} & \textbf{Likely cause} & \textbf{First check} \\
+\midrule
+404 on an endpoint & wrong URL or missing router entry & API route registration \\
+400 on POST & validation or missing field & serializer errors and request body \\
+401 or 403 & authentication or permission failure & login state and permission classes \\
+500 server error & exception in code & terminal traceback and recent code changes \\
+Frontend shows nothing & request failed before render & test the endpoint with \texttt{curl} first \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\ChecklistBox{
+Use this order every time. Is the Django server running. Does the endpoint exist. Does the request body match the serializer fields. Does validation accept the data. Does the JSON response match what React expects.
+}
+
+\subsection{Mini Active Learning: backend comparison}
+
+\LearningCallout{rosewash}{
+\textbf{Question 1.} Why is Django the better main backend choice for this project?\\
+\textbf{Answer.} Because the project needs relational models, validation, admin support, and a structured CRUD API, all of which Django provides efficiently.\\[0.6em]
+\textbf{Question 2.} Why keep Node.js and Express at all?\\
+\textbf{Answer.} Because the course asks for a comparison and Express is useful for understanding a more manual, lightweight backend style.\\[0.6em]
+\textbf{Question 3.} What should be memorized for the oral defense?\\
+\textbf{Answer.} Django = structured full framework, Express = minimal flexible framework, Node.js = runtime, API = communication contract.
+}
+
+\subsection{Worked Active Learning: Backend}
+
+This active-learning block contains 15 backend exercises. It moves from core Django modeling and API flow to a small Express comparison so the report teaches both implementation and reasoning.
+
+\LearningCallout{mintwash}{
+\textbf{How to use this section.} Every backend exercise below is fully solved. Do not read it as a homework sheet. Read it as a guided correction: identify the goal, study the exact code answer, then compare the JSON or terminal result with the explanation.
+}
+
+\BackendPracticeFigure
+
+\subsubsection*{Exercise 16: Identify the first API endpoint}
+\textbf{Question.} What is the simplest useful backend endpoint for EventHub?
+
+\begin{lstlisting}[style=code]
+GET /api/events/
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+[
+  {
+    "id": 1,
+    "title": "Spring Hackathon"
+  }
+]
+\end{lstlisting}
+
+\textbf{Explanation.} Starting with a read-only endpoint reduces complexity. It lets the frontend team connect early, even before create and update actions exist.
+
+\subsubsection*{Exercise 17: Define the \texttt{Event} model}
+\textbf{Question.} Which fields does one event need at minimum?
+
+\begin{lstlisting}[style=code, language=Python]
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    date = models.DateTimeField()
+    location = models.CharField(max_length=200)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Table created: api_event
+Columns: id, title, date, location
+\end{lstlisting}
+
+\textbf{Explanation.} Backend design starts with domain entities. If the model is weak, every serializer, view, and frontend screen becomes harder to build.
+
+\subsubsection*{Exercise 18: Define the \texttt{Participant} model}
+\textbf{Question.} How do you represent a person who can join many events?
+
+\begin{lstlisting}[style=code, language=Python]
+class Participant(models.Model):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Table created: api_participant
+Unique field: email
+\end{lstlisting}
+
+\textbf{Explanation.} The unique email constraint is a real business rule. It prevents multiple participant records that actually describe the same person.
+
+\subsubsection*{Exercise 19: Create the \texttt{Registration} relation}
+\textbf{Question.} Why use a dedicated registration table instead of a direct many-to-many field only?
+
+\begin{lstlisting}[style=code, language=Python]
+class Registration(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Event 1 <-> Participant 5
+stored as one explicit registration row
+\end{lstlisting}
+
+\textbf{Explanation.} A dedicated relation is more academic and more practical. It allows later fields such as status, registration date, or payment state.
+
+\subsubsection*{Exercise 20: Prevent duplicate registrations}
+\textbf{Question.} How do you stop the same participant from joining the same event twice?
+
+\begin{lstlisting}[style=code, language=Python]
+class Registration(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    participant = models.ForeignKey(Participant, on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['event', 'participant'],
+                name='unique_event_participant',
+            )
+        ]
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Duplicate insert -> IntegrityError or validation failure
+\end{lstlisting}
+
+\textbf{Explanation.} Constraints protect data even when the frontend makes mistakes. That is one of the main jobs of a serious backend.
+
+\subsubsection*{Exercise 21: Run migrations}
+\textbf{Question.} What turns model code into real database tables?
+
+\begin{lstlisting}[style=terminal]
+python manage.py makemigrations
+python manage.py migrate
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Migrations for 'api':
+  api/migrations/0001_initial.py
+Applying api.0001_initial... OK
+\end{lstlisting}
+
+\textbf{Explanation.} Migrations are the bridge between Python definitions and the real database schema. Without them, the backend models exist only in source code.
+
+\subsubsection*{Exercise 22: Serialize model data}
+\textbf{Question.} How does Django convert model objects into JSON?
+
+\begin{lstlisting}[style=code, language=Python]
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = '__all__'
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+{
+  "id": 1,
+  "title": "Spring Hackathon",
+  "location": "Paris"
+}
+\end{lstlisting}
+
+\textbf{Explanation.} Serializers are the translation layer of the API. They also become the natural place for request validation.
+
+\subsubsection*{Exercise 23: Add business validation}
+\textbf{Question.} Where should custom registration checks live?
+
+\begin{lstlisting}[style=code, language=Python]
+def validate(self, attrs):
+    if Registration.objects.filter(
+        event=attrs['event'],
+        participant=attrs['participant'],
+    ).exists():
+        raise serializers.ValidationError(
+            'Participant already registered.'
+        )
+    return attrs
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+400 Bad Request
+{"non_field_errors":["Participant already registered."]}
+\end{lstlisting}
+
+\textbf{Explanation.} This exercise teaches the difference between data shape and business rule. A request can be syntactically valid and still violate domain logic.
+
+\subsubsection*{Exercise 24: Expose CRUD with a viewset}
+\textbf{Question.} How do you create one class that supports list, create, retrieve, update, and delete?
+
+\begin{lstlisting}[style=code, language=Python]
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all().order_by('id')
+    serializer_class = EventSerializer
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+GET    /api/events/
+POST   /api/events/
+PATCH  /api/events/1/
+DELETE /api/events/1/
+\end{lstlisting}
+
+\textbf{Explanation.} Django REST Framework reduces boilerplate. For course work, this is a strong reason to prefer Django as the primary backend.
+
+\subsubsection*{Exercise 25: Register API routes}
+\textbf{Question.} How do URLs connect to the viewsets?
+
+\begin{lstlisting}[style=code, language=Python]
+router = DefaultRouter()
+router.register(r'events', EventViewSet)
+router.register(r'participants', ParticipantViewSet)
+router.register(r'registrations', RegistrationViewSet)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+/api/events/
+/api/participants/
+/api/registrations/
+\end{lstlisting}
+
+\textbf{Explanation.} Routing is the public map of the backend. Clear route design helps both teammates and future testers.
+
+\subsubsection*{Exercise 26: Test the endpoint manually}
+\textbf{Question.} How can you verify the API before connecting React?
+
+\begin{lstlisting}[style=terminal]
+curl http://localhost:8000/api/events/
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+[{"id":1,"title":"Spring Hackathon","location":"Paris"}]
+\end{lstlisting}
+
+\textbf{Explanation.} Direct endpoint testing isolates backend bugs. If \texttt{curl} fails, the problem is not in React.
+
+\subsubsection*{Exercise 27: Protect the API}
+\textbf{Question.} How do you restrict modification endpoints to authenticated users?
+
+\begin{lstlisting}[style=code, language=Python]
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+class EventViewSet(viewsets.ModelViewSet):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Anonymous GET  -> 200 OK
+Anonymous POST -> 401 Unauthorized
+\end{lstlisting}
+
+\textbf{Explanation.} Permissions are part of the assignment logic, not an optional detail. A project with roles needs route protection from the start.
+
+\subsubsection*{Exercise 28: Start a minimal Express server}
+\textbf{Question.} What is the smallest valid Node.js and Express backend for comparison?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+import express from 'express'
+
+const app = express()
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok' })
+})
+
+app.listen(3001)
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+GET /api/health
+{"status":"ok"}
+\end{lstlisting}
+
+\textbf{Explanation.} This demonstrates the Express philosophy: less built-in structure, faster start, and more manual control.
+
+\subsubsection*{Exercise 29: Add a simple Express collection route}
+\textbf{Question.} How do you return a small JSON list in Express?
+
+\begin{lstlisting}[style=code, language=JavaScript]
+const events = [
+  { id: 1, title: 'Node Meetup' },
+  { id: 2, title: 'API Lab' },
+]
+
+app.get('/api/events', (req, res) => {
+  res.json(events)
+})
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+[
+  {"id":1,"title":"Node Meetup"},
+  {"id":2,"title":"API Lab"}
+]
+\end{lstlisting}
+
+\textbf{Explanation.} This exercise shows how transparent Express is. What you gain in simplicity, you later repay with more manual architecture.
+
+\subsubsection*{Exercise 30: Write the backend comparison}
+\textbf{Question.} After implementing both backends, what should the report conclude?
+
+\begin{lstlisting}[style=code]
+Django  -> stronger structure, admin, serializers, faster CRUD setup
+Express -> lighter, flexible, easier to customize route by route
+\end{lstlisting}
+
+\begin{lstlisting}[style=terminal]
+Decision for EventHub:
+Main backend = Django
+Comparison backend = Node.js / Express
+\end{lstlisting}
+
+\textbf{Explanation.} The final exercise is reflective on purpose. A project report should not only show code; it should justify technology choices with concrete evidence from implementation.
+
+\section{Project Construction Order}
+
+The best step-by-step order for this project is:
+
+\begin{enumerate}
+  \item finalize the Django models and API,
+  \item prepare the smaller Node.js and Express comparison backend,
+  \item build the React pages and responsive layout,
+  \item connect the frontend to the Django API,
+  \item add authentication, roles, loading states, and route protection,
+  \item test the whole system,
+  \item deploy frontend and backend,
+  \item finish the report and defense material.
+\end{enumerate}
+
+\section{Memorization, Debugging, and Defense Atlas}
+
+This section makes the appendix more useful as a complete study document. It turns the project into something you can revise quickly before coding sessions, oral defense preparation, and the CC1 exam. The goal is not only to know the final answer, but to remember \emph{why} each answer is correct and \emph{how} to recover when something breaks.
+
+\subsection{One-sentence memory ladders}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Layer} & \textbf{One-sentence memory} & \textbf{Question to ask yourself} \\
+\midrule
+HTML & HTML gives the page its structure and meaning. & What content blocks exist on this screen? \\
+CSS & CSS decides spacing, color, layout, and responsiveness. & Why does this box look wrong or collide with another box? \\
+JavaScript & JavaScript reacts to user actions and transforms data. & Which event or condition changes the behavior? \\
+React & React redraws the UI from state instead of manual DOM edits. & Which state changed, and which JSX reads it? \\
+API & The API is the contract between frontend and backend. & What JSON shape is sent or returned here? \\
+Django & Django gives strong structure for models, validation, and CRUD APIs. & Which model, serializer, and route are involved? \\
+Node.js & Node.js is the runtime that executes JavaScript on the server. & Is this about the runtime or the framework built on top of it? \\
+Express & Express is a lightweight routing and middleware framework. & What route and middleware chain handle this request? \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\MemoryBox{If you ever feel lost, reduce the problem to one layer. Ask first: is this structure, style, behavior, state, or API communication. That one question often tells you where to debug.}
+
+\subsection{Live demonstration storyboard}
+
+The defense requires a live demonstration, so it is worth preparing the exact story in advance. A good demo is short, calm, and structured. Each click should prove one requirement and one technical idea at the same time.
+
+\DefenseFlowFigure
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Demo step} & \textbf{What you do live} & \textbf{What it proves technically} \\
+\midrule
+1. Login & sign in with an editor or admin account & authentication works and the app can identify the user \\
+2. Create event & fill the event form and submit it & frontend form state, POST request, serializer, and database save all work \\
+3. Create participant & submit a participant form & another CRUD creation path works from UI to backend \\
+4. Register participant & connect one participant to one event & the relation model and business flow are correct \\
+5. Filter results & type inside the search input & JavaScript or React state changes update the visible list \\
+6. Role behavior & switch to a viewer account and compare the UI & permissions are enforced in both frontend behavior and backend policy \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\LearningCallout{skywash}{
+\textbf{Minimal defense script.}\\
+``First I log in as an editor. Now I create a new event. The event appears in the list, which shows the POST request and database save worked. Next I create a participant, then register that participant for the event. After that I filter the list with a search query. Finally I switch to a viewer account to show that creation actions are no longer available.''\\
+This script is simple on purpose. During a defense, clarity is stronger than showing too many features too quickly.
+}
+
+\subsection{What the examiner can ask after each click}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Action shown in the demo} & \textbf{Typical follow-up question and the right idea to answer} \\
+\midrule
+Login & How is the user recognized? Answer: by the authentication system, session or token, and backend permission checks. \\
+Create event & What endpoint receives this form? Answer: the event creation API endpoint using \texttt{POST}. \\
+Create participant & Where is validation performed? Answer: in the backend serializer and model rules, not only in the frontend. \\
+Register participant & Why use a separate registration model? Answer: because the relation itself is a first-class business entity. \\
+Filter results & Is filtering done in frontend or backend? Answer: it can be frontend-side for already-loaded lists, or backend-side for larger datasets. \\
+Role behavior & Why hide buttons if the backend already protects routes? Answer: hiding buttons improves UX, but backend protection remains the final authority. \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Frontend debugging atlas}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Symptom} & \textbf{Likely frontend cause} & \textbf{Fast repair method} \\
+\midrule
+Nothing appears on screen & wrong component export, wrong import, or render error & check browser console and the root component import chain \\
+Styles do not apply & class mismatch or stylesheet not imported & inspect the element and compare class names exactly \\
+Cards touch each other & missing margin, gap, or parent layout spacing & check the container layout first, then the card spacing \\
+Input does not update & missing \texttt{value} or \texttt{onChange} pairing & confirm the component is a controlled input \\
+List does not refresh after typing & derived filtering logic not connected to state & verify which JSX reads the search state \\
+API data never appears & fetch error or wrong endpoint URL & check loading and error states, then test the endpoint directly \\
+Page reloads on submit & missing \texttt{preventDefault()} & stop the default form action before custom logic \\
+Route change reloads the page & plain \texttt{<a>} used instead of client-side routing & use router navigation primitives for SPA behavior \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[style=terminal, caption={A simple frontend repair order}]
+1. Read the browser result.
+2. Open the console for errors.
+3. Inspect the element.
+4. Verify className and CSS selector match.
+5. Verify state changes after the event.
+6. Test the API separately if data is missing.
+\end{lstlisting}
+
+\MistakeBox{Do not debug three layers at once. If the UI is empty, first decide whether the problem is render logic, CSS visibility, or API loading. One layer at a time is faster and more memorable.}
+
+\subsection{Backend debugging atlas}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Symptom} & \textbf{Likely backend cause} & \textbf{Fast repair method} \\
+\midrule
+\texttt{404 Not Found} & route missing or wrong path prefix & verify router registration and the full API URL \\
+\texttt{400 Bad Request} & validation error or missing field & read serializer errors and compare with request JSON \\
+\texttt{401 Unauthorized} & user not authenticated & verify login and auth headers or session \\
+\texttt{403 Forbidden} & authenticated but not allowed & inspect permission classes and user role \\
+\texttt{500 Internal Server Error} & Python exception inside view, serializer, or model & read the traceback carefully from top to bottom \\
+Duplicate relation created & missing unique constraint or validation rule & add constraint plus serializer validation \\
+Frontend expects field not returned by API & serializer field mismatch & compare JSON response with frontend property names \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\begin{lstlisting}[style=terminal, caption={A simple backend repair order}]
+1. Confirm the server is running.
+2. Call the endpoint directly with curl.
+3. Read the status code.
+4. Read the JSON error body.
+5. Read the serializer or permission class.
+6. Only then reconnect the frontend.
+\end{lstlisting}
+
+\ChecklistBox{
+For backend debugging, the status code is a memory shortcut.\\
+\texttt{404} means path or route.\\
+\texttt{400} means data or validation.\\
+\texttt{401/403} means authentication or permission.\\
+\texttt{500} means code exception.
+}
+
+\subsection{Annotated mini walkthrough: login to protected action}
+
+Even if the exact authentication implementation changes later, the logic should stay easy to remember. The flow below teaches the concept that the defense will test.
+
+\begin{lstlisting}[style=terminal, caption={Protected-action story}]
+User logs in
+-> backend verifies credentials
+-> frontend stores login state
+-> user opens create-event form
+-> frontend sends authenticated POST request
+-> backend permission class checks the role
+-> allowed user gets 201 Created
+-> viewer gets 403 Forbidden
+\end{lstlisting}
+
+\LearningCallout{mintwash}{
+\textbf{Why this story matters.}\\
+The project does not only need forms and lists. It also needs controlled behavior depending on who the user is.\\
+That is why role-based behavior must be explained both in the UI and in the API layer.
+}
+
+\subsection{Memorable code-reading rules}
+
+\begin{enumerate}
+  \item In HTML, read from the biggest semantic block to the smallest element.
+  \item In CSS, read selectors first, then layout properties, then spacing, then colors.
+  \item In JavaScript, find the event source first: click, submit, input, timer, or fetch.
+  \item In React, find the state variables before reading the JSX.
+  \item In backend code, find the endpoint first, then the serializer, then the model.
+  \item In debugging, trust visible evidence before guesses: status codes, console errors, and actual rendered output.
+\end{enumerate}
+
+\subsection{Quick oral-defense answers to memorize}
+
+\begin{enumerate}
+  \item \textbf{Why React for the frontend?} Because the project requires a SPA with reusable components, state-driven UI updates, and easy API integration.
+  \item \textbf{Why Django for the main backend?} Because the project needs relational data modeling, validation, and fast CRUD setup with strong structure.
+  \item \textbf{Why keep Node.js and Express?} Because the assignment asks for comparison, and Express shows a lighter and more manual backend style.
+  \item \textbf{Why a separate Registration model?} Because the relationship between events and participants is itself an important business object.
+  \item \textbf{Why loading and error states?} Because asynchronous UI must explain what is happening to the user at all times.
+  \item \textbf{Why backend validation too?} Because frontend checks can be bypassed, so the backend must be the final authority.
+\end{enumerate}
+
+\section{Complete Independent Study Bank}
+
+This section is the full theory-and-practice revision layer of the appendix. It reorganizes the complete learning path by topic so that the document can be used on its own, without consulting any outside document. The goal is simple: one self-contained study bank that moves from web foundations to React, APIs, and exam-style practice.
+
+\CoverageFigure
+
+\subsection{Topic roadmap}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lYY@{}}
+\toprule
+\textbf{Topic area} & \textbf{What is included} & \textbf{How this section is used} \\
+\midrule
+Web architecture and deployment & client/server roles, HTTP, HTTPS, REST, stacks, deployment basics & use this first to understand how all other layers fit together \\
+HTML structure and semantics & tags, links, images, forms, document structure, accessibility basics & use this before CSS and JavaScript practice \\
+CSS and responsive design & selectors, box model, Flexbox, Grid, media queries, responsive thinking & use this with the frontend visual exercises and box-model examples \\
+JavaScript and DOM & syntax drills, functions, loops, events, DOM selection, validation logic & use this before React hooks and API work \\
+React fundamentals & components, props, state, lists, controlled inputs, SPA thinking & use this before advanced React and routing questions \\
+React, APIs, and security & \texttt{useEffect}, loading/error states, JSON, JWT, routing, protected flows & use this before the final CC1 and defense preparation sections \\
+Hands-on practice & frontend and backend exercises, practical tasks, and implementation order & use this after the theory bank to turn knowledge into execution \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\PanelBox{
+Study strategy: work through these sections in order. Each topic block below gives direct questions, answers, and explanations so that the appendix remains complete on its own. The aim is not traceability to external files; the aim is memorization, understanding, and exam readiness from one PDF.
+}
+
+\subsection{Web architecture, REST, and deployment}
+
+\begin{enumerate}
+  \item \textbf{Question.} What is the main role of the client in web development?\\
+  \textbf{Answer.} Display the interface and handle user interactions.\\
+  \textbf{Explanation.} The client is the browser-facing layer. It renders the UI, captures clicks and form input, and sends requests to the server.
+
+  \item \textbf{Question.} Which component handles business logic and talks to the database?\\
+  \textbf{Answer.} The server.\\
+  \textbf{Explanation.} This is the backend role in the client-server model.
+
+  \item \textbf{Question.} What does HTTP stand for?\\
+  \textbf{Answer.} HyperText Transfer Protocol.\\
+  \textbf{Explanation.} It is the protocol used for request-response communication on the web.
+
+  \item \textbf{Question.} What is the key difference between HTTP and HTTPS?\\
+  \textbf{Answer.} HTTPS encrypts the communication.\\
+  \textbf{Explanation.} HTTPS adds TLS security, which protects transmitted data.
+
+  \item \textbf{Question.} What does REST stand for?\\
+  \textbf{Answer.} Representational State Transfer.\\
+  \textbf{Explanation.} REST is one of the dominant architectural styles for modern web APIs.
+
+  \item \textbf{Question.} Which option is \emph{not} a REST principle?\\
+  \textbf{Answer.} Keeping hidden client session state on the server for every request.\\
+  \textbf{Explanation.} REST requires stateless requests, meaning each request must carry what it needs.
+
+  \item \textbf{Question.} Which HTTP method is normally used to retrieve data?\\
+  \textbf{Answer.} \texttt{GET}.\\
+  \textbf{Explanation.} In REST, \texttt{GET} corresponds to reading resources.
+
+  \item \textbf{Question.} Which technologies are used to build the user interface?\\
+  \textbf{Answer.} HTML, CSS, and JavaScript.\\
+  \textbf{Explanation.} These are the three classic frontend layers.
+
+  \item \textbf{Question.} Which framework is commonly used for modern frontend SPAs?\\
+  \textbf{Answer.} React.\\
+  \textbf{Explanation.} React is the frontend library chosen in the project and emphasized in later lectures.
+
+  \item \textbf{Question.} What is a technology stack?\\
+  \textbf{Answer.} The combination of frontend, backend, and database technologies used in one system.\\
+  \textbf{Explanation.} Example: React + Django + PostgreSQL is a stack.
+
+  \item \textbf{Question.} Which of the following is a relational database?\\
+  \textbf{Answer.} MySQL.\\
+  \textbf{Explanation.} Relational databases store structured data in related tables.
+
+  \item \textbf{Question.} Which database type is designed for flexible schema and unstructured data?\\
+  \textbf{Answer.} NoSQL database.\\
+  \textbf{Explanation.} NoSQL models are often chosen when the schema must stay flexible.
+
+  \item \textbf{Question.} What is the main purpose of deployment?\\
+  \textbf{Answer.} To make the application publicly accessible.\\
+  \textbf{Explanation.} A deployed application is reachable by users outside the local machine.
+
+  \item \textbf{Question.} Which of the following is a common PaaS deployment platform?\\
+  \textbf{Answer.} Netlify.\\
+  \textbf{Explanation.} Netlify is widely used for frontend hosting and static deployment.
+
+  \item \textbf{Question.} Which statement correctly describes the request-response cycle?\\
+  \textbf{Answer.} The client sends a request and the server sends a response.\\
+  \textbf{Explanation.} This is the basic communication loop behind web applications.
+\end{enumerate}
+
+\subsection{HTML structure and semantics}
+
+\begin{enumerate}
+  \item \textbf{Question.} What does HTML stand for?\\
+  \textbf{Answer.} HyperText Markup Language.\\
+  \textbf{Explanation.} HTML structures content; it is not a programming language.
+
+  \item \textbf{Question.} How many tags does a normal non-empty element usually have?\\
+  \textbf{Answer.} Two: an opening tag and a closing tag.\\
+  \textbf{Explanation.} Example: \texttt{<p>...</p>}.
+
+  \item \textbf{Question.} What is the difference between an opening tag and a closing tag?\\
+  \textbf{Answer.} The closing tag has a slash in front of the tag name.\\
+  \textbf{Explanation.} Example: \texttt{<section>} versus \texttt{</section>}.
+
+  \item \textbf{Question.} What kind of tag is \texttt{<br />}?\\
+  \textbf{Answer.} A line-break tag.\\
+  \textbf{Explanation.} It creates a line break and is treated as an empty element.
+
+  \item \textbf{Question.} Is \texttt{<body>} an opening tag or a closing tag?\\
+  \textbf{Answer.} Opening tag.\\
+  \textbf{Explanation.} It begins the visible content part of the page.
+
+  \item \textbf{Question.} Is \texttt{</body>} an opening tag or a closing tag?\\
+  \textbf{Answer.} Closing tag.\\
+  \textbf{Explanation.} It ends the visible content part of the page.
+
+  \item \textbf{Question.} Where should the \texttt{meta} tag be placed in a valid HTML document?\\
+  \textbf{Answer.} The \texttt{meta} tag belongs in the \texttt{head} of an HTML document.\\
+  \textbf{Explanation.} This is a useful correction: metadata is document-level information, not something limited to one specific page type.
+
+  \item \textbf{Question.} What is the correct pattern for an image element?\\
+  \textbf{Answer.} Use \texttt{src} and \texttt{alt}, for example \texttt{<img src="image.jpg" alt="Description">}.\\
+  \textbf{Explanation.} The \texttt{alt} text is essential for accessibility and content meaning.
+
+  \item \textbf{Question.} What is an element without a closing tag called?\\
+  \textbf{Answer.} An empty element.\\
+  \textbf{Explanation.} Examples include \texttt{img} and \texttt{br}.
+
+  \item \textbf{Question.} Which of the following is an example of an empty element?\\
+  \textbf{Answer.} \texttt{<img />} or simply \texttt{<img ...>}.\\
+  \textbf{Explanation.} The browser treats image elements as void elements.
+
+  \item \textbf{Question.} What should attribute values be enclosed in?\\
+  \textbf{Answer.} Quotation marks.\\
+  \textbf{Explanation.} Example: \texttt{href="page.html"}.
+
+  \item \textbf{Question.} Where should the files for one small website project usually be stored?\\
+  \textbf{Answer.} In the same project folder, with a clear structure.\\
+  \textbf{Explanation.} Small websites depend on consistent internal links and file paths.
+
+  \item \textbf{Question.} What does an anchor element such as a Google link do?\\
+  \textbf{Answer.} It creates a clickable hyperlink to another page or resource.\\
+  \textbf{Explanation.} Anchor tags connect pages inside a site and also to external websites.
+
+  \item \textbf{Question.} Which page is usually the welcome page of a website?\\
+  \textbf{Answer.} The homepage.\\
+  \textbf{Explanation.} It introduces the topic and often links to the rest of the site.
+
+  \item \textbf{Question.} What does \emph{View Source} do?\\
+  \textbf{Answer.} It shows the HTML source code of the page.\\
+  \textbf{Explanation.} It is a simple way to inspect markup in the browser.
+\end{enumerate}
+
+\subsection{CSS3 and responsive design}
+
+\RenderPipelineFigure
+
+\begin{enumerate}
+  \item \textbf{Question.} How should CSS3 be described?\\
+  \textbf{Answer.} As a collection of modular specifications, not one monolithic replacement.\\
+  \textbf{Explanation.} CSS3 is better understood as a family of evolving modules.
+
+  \item \textbf{Question.} Which organization standardizes CSS?\\
+  \textbf{Answer.} W3C.\\
+  \textbf{Explanation.} W3C is responsible for the official specification process.
+
+  \item \textbf{Question.} Which stages belong to the browser rendering pipeline?\\
+  \textbf{Answer.} DOM construction, CSSOM construction, layout, and paint/compositing.\\
+  \textbf{Explanation.} All four stages are part of the pipeline, so they should be memorized as one connected rendering sequence.
+
+  \item \textbf{Question.} Which properties are most likely to trigger layout recalculation?\\
+  \textbf{Answer.} \texttt{margin} and \texttt{width}.\\
+  \textbf{Explanation.} They change element geometry and can force reflow.
+
+  \item \textbf{Question.} What is the main advantage of advanced CSS selectors?\\
+  \textbf{Answer.} They reduce the need for extra classes and unnecessary markup.\\
+  \textbf{Explanation.} That improves cleanliness and flexibility of stylesheets.
+
+  \item \textbf{Question.} Why is HSL often useful in design systems?\\
+  \textbf{Answer.} It matches how humans think about color adjustments.\\
+  \textbf{Explanation.} Hue, saturation, and lightness are easier to reason about than raw RGB values.
+
+  \item \textbf{Question.} Which statement about CSS gradients is correct?\\
+  \textbf{Answer.} They are rendered by the browser and scale infinitely.\\
+  \textbf{Explanation.} Gradients are vector-like visual definitions, not fixed raster images.
+
+  \item \textbf{Question.} What problem did Flexbox mainly solve?\\
+  \textbf{Answer.} Alignment and space distribution in one dimension.\\
+  \textbf{Explanation.} It is ideal for rows, columns, nav bars, and centered alignment.
+
+  \item \textbf{Question.} Which property defines the main direction in Flexbox?\\
+  \textbf{Answer.} \texttt{flex-direction}.\\
+  \textbf{Explanation.} It controls whether the layout flows in a row or column.
+
+  \item \textbf{Question.} Which three components define responsive web design in the Marcotte model?\\
+  \textbf{Answer.} Fluid grids, flexible media, and media queries.\\
+  \textbf{Explanation.} This is a multiple-answer concept item because all three parts are needed.
+
+  \item \textbf{Question.} What is the key difference between responsive and adaptive design?\\
+  \textbf{Answer.} Responsive design is fluid; adaptive design relies more on prepared fixed layouts or breakpoints.\\
+  \textbf{Explanation.} Responsive systems continuously adapt, while adaptive systems switch among chosen layouts.
+
+  \item \textbf{Question.} Which CSS units are relative by nature?\\
+  \textbf{Answer.} \texttt{\%}, \texttt{rem}, and \texttt{vw}.\\
+  \textbf{Explanation.} \texttt{px} is absolute; the other three scale relative to context or viewport.
+
+  \item \textbf{Question.} What is the main advantage of \texttt{clamp()}?\\
+  \textbf{Answer.} It allows fluid scaling inside fixed minimum and maximum limits.\\
+  \textbf{Explanation.} This helps build smoother responsive typography.
+
+  \item \textbf{Question.} Which statement about CSS Grid is correct?\\
+  \textbf{Answer.} It gives two-dimensional layout control.\\
+  \textbf{Explanation.} Grid manages rows and columns together.
+
+  \item \textbf{Question.} Which practices improve responsive accessibility?\\
+  \textbf{Answer.} Supporting reduced motion, allowing font scaling, and adapting contrast.\\
+  \textbf{Explanation.} Relying only on pixel units works against accessibility rather than improving it.
+\end{enumerate}
+
+\subsection{JavaScript fundamentals, DOM, and syntax drills}
+
+\subsubsection*{Theory questions with complete answers}
+
+\begin{enumerate}
+  \item \textbf{Question.} What is JavaScript?\\
+  \textbf{Answer.} JavaScript is a programming language used to add behavior and interactivity to web pages.\\
+  \textbf{Explanation.} In the course sequence, HTML gives structure, CSS gives presentation, and JavaScript gives dynamic behavior.
+
+  \item \textbf{Question.} Which data types does JavaScript support in the lecture recap?\\
+  \textbf{Answer.} \texttt{undefined}, \texttt{null}, \texttt{boolean}, \texttt{string}, \texttt{symbol}, \texttt{number}, and \texttt{object}.\\
+  \textbf{Explanation.} These types are enough to understand early DOM and logic exercises.
+
+  \item \textbf{Question.} What are the main advantages of JavaScript highlighted by the course?\\
+  \textbf{Answer.} Less server interaction, immediate user feedback, increased interactivity, and richer interfaces.\\
+  \textbf{Explanation.} These strengths appear in sliders, accordions, validation, and theme toggles.
+
+  \item \textbf{Question.} What is the difference between an HTML attribute and a DOM property?\\
+  \textbf{Answer.} An attribute is the value written in the HTML markup; a property is the value exposed on the live DOM object in JavaScript.\\
+  \textbf{Explanation.} This distinction becomes visible when JavaScript updates fields or classes after page load.
+
+  \item \textbf{Question.} How can JavaScript access HTML elements?\\
+  \textbf{Answer.} With DOM selection methods such as:
+\begin{lstlisting}[style=code, language=JavaScript]
+getElementById()
+getElementsByClassName()
+getElementsByTagName()
+querySelector()
+querySelectorAll()
+\end{lstlisting}
+  \textbf{Explanation.} A common beginner mistake is to misremember the exact class-selection method name; the correct DOM API is \texttt{getElementsByClassName}.
+
+  \item \textbf{Question.} In how many common ways can JavaScript be inserted into HTML?\\
+  \textbf{Answer.} Three ways: inline, internal, and external.\\
+  \textbf{Explanation.} External scripts are preferred in serious projects because they improve reuse and maintainability.
+
+  \item \textbf{Question.} What is the difference between \texttt{null} and \texttt{undefined}?\\
+  \textbf{Answer.} \texttt{undefined} means a value is missing or not assigned; \texttt{null} is an explicit intentional empty value.\\
+  \textbf{Explanation.} The difference matters when checking form fields, API responses, and optional data.
+\end{enumerate}
+
+\subsubsection*{Syntax and DOM test bank}
+
+\begin{enumerate}
+  \item \textbf{Question.} Inside which HTML element do we place JavaScript?\\
+  \textbf{Answer.} \texttt{<script>}.\\
+  \textbf{Explanation.} That is the standard container for inline and linked script code.
+
+  \item \textbf{Question.} How do you change the content of an element with id \texttt{demo}?\\
+  \textbf{Answer.} \texttt{document.getElementById("demo").innerHTML = "Hello World!";}\\
+  \textbf{Explanation.} This is one of the first DOM manipulation patterns in the lecture.
+
+  \item \textbf{Question.} Where can JavaScript be inserted in a page?\\
+  \textbf{Answer.} In the \texttt{head} or the \texttt{body}, but in practice the end of the \texttt{body} is often safest for DOM work.\\
+  \textbf{Explanation.} This also adds the safest practical recommendation for real DOM work.
+
+  \item \textbf{Question.} What is the correct syntax for an external script called \texttt{xxx.js}?\\
+  \textbf{Answer.} \texttt{<script src="xxx.js"></script>}.\\
+  \textbf{Explanation.} A common incomplete answer shows only the opening tag, but the full valid HTML element needs a closing tag too.
+
+  \item \textbf{Question.} Must the external JavaScript file itself contain the \texttt{<script>} tag?\\
+  \textbf{Answer.} No.\\
+  \textbf{Explanation.} The external file contains only JavaScript code.
+
+  \item \textbf{Question.} How do you display \texttt{Hello World} in an alert box?\\
+  \textbf{Answer.} \texttt{alert("Hello World");}\\
+  \textbf{Explanation.} The built-in \texttt{alert()} function shows a browser dialog.
+
+  \item \textbf{Question.} How do you create a function named \texttt{myFunction}?\\
+  \textbf{Answer.} \texttt{function myFunction() \{ \}}\\
+  \textbf{Explanation.} This is the standard declaration syntax.
+
+  \item \textbf{Question.} How do you call a function named \texttt{myFunction}?\\
+  \textbf{Answer.} \texttt{myFunction();}\\
+  \textbf{Explanation.} Parentheses perform the function call.
+
+  \item \textbf{Question.} How do you write an \texttt{if} statement for equality with 5?\\
+  \textbf{Answer.} \texttt{if (i == 5) \{ ... \}}\\
+  \textbf{Explanation.} The lecture quiz uses \texttt{==}; in modern code, \texttt{===} is often preferred for strict comparison.
+
+  \item \textbf{Question.} How do you check that \texttt{i} is not equal to 5?\\
+  \textbf{Answer.} \texttt{if (i != 5) \{ ... \}}\\
+  \textbf{Explanation.} Again, modern code often prefers \texttt{!==} when type safety matters.
+
+  \item \textbf{Question.} How does a \texttt{while} loop start?\\
+  \textbf{Answer.} \texttt{while (i <= 10) \{ ... \}}\\
+  \textbf{Explanation.} The loop condition is checked before each iteration.
+
+  \item \textbf{Question.} How does a \texttt{for} loop start in the lecture pattern?\\
+  \textbf{Answer.} \texttt{for (i = 0; i <= 5; i++) \{ ... \}}\\
+  \textbf{Explanation.} It contains initialization, condition, and increment.
+
+  \item \textbf{Question.} How do you write a one-line comment in JavaScript?\\
+  \textbf{Answer.} \texttt{// This is a comment}\\
+  \textbf{Explanation.} Single-line comments start with double slash.
+
+  \item \textbf{Question.} How do you write a multi-line comment?\\
+  \textbf{Answer.} \texttt{/* This comment has more than one line */}\\
+  \textbf{Explanation.} This is the block-comment syntax.
+
+  \item \textbf{Question.} What is the correct way to write an array?\\
+  \textbf{Answer.} \texttt{var colors = ["red", "green", "blue"]}\\
+  \textbf{Explanation.} Arrays are ordered lists stored inside square brackets.
+
+  \item \textbf{Question.} How do you round 7.25 to the nearest integer?\\
+  \textbf{Answer.} \texttt{Math.round(7.25)}\\
+  \textbf{Explanation.} The \texttt{Math} object provides standard numeric helpers.
+
+  \item \textbf{Question.} How do you get the higher value of \texttt{x} and \texttt{y}?\\
+  \textbf{Answer.} \texttt{Math.max(x, y)}\\
+  \textbf{Explanation.} This returns the larger of the provided values.
+\end{enumerate}
+
+\subsection{React fundamentals mastery}
+
+The React fundamentals lecture is concept-heavy and does not expose a separate final end-of-lecture quiz block in the extracted slides in the same way as the other lectures. To keep this appendix self-sufficient, the most important React fundamentals are rewritten here as mastery checkpoints.
+
+\ReactStateFlowFigure
+
+\begin{enumerate}
+  \item \textbf{Checkpoint.} What is React?\\
+  \textbf{Answer.} A JavaScript library for building user interfaces through components and declarative rendering.
+
+  \item \textbf{Checkpoint.} What is a functional component?\\
+  \textbf{Answer.} A JavaScript function that returns JSX.
+
+  \item \textbf{Checkpoint.} What are props?\\
+  \textbf{Answer.} Read-only inputs passed from parent to child components.
+
+  \item \textbf{Checkpoint.} What is state?\\
+  \textbf{Answer.} Internal component data that can change and trigger re-rendering.
+
+  \item \textbf{Checkpoint.} What does \texttt{useState()} provide?\\
+  \textbf{Answer.} A state value and a setter function.
+
+  \item \textbf{Checkpoint.} Why are controlled inputs important?\\
+  \textbf{Answer.} Because React state becomes the single source of truth for form values.
+
+  \item \textbf{Checkpoint.} How are lists rendered in React?\\
+  \textbf{Answer.} By mapping arrays to JSX and giving each item a unique \texttt{key}.
+
+  \item \textbf{Checkpoint.} Why does React require \texttt{key} in lists?\\
+  \textbf{Answer.} To track identity efficiently and prevent update bugs.
+
+  \item \textbf{Checkpoint.} What is conditional rendering?\\
+  \textbf{Answer.} Displaying different UI fragments depending on state or props.
+
+  \item \textbf{Checkpoint.} What makes a SPA a SPA?\\
+  \textbf{Answer.} One main HTML page is loaded once, and the interface changes dynamically without full page reloads.
+
+  \item \textbf{Checkpoint.} Why does React Router matter?\\
+  \textbf{Answer.} It lets a SPA have URL-based navigation and multiple visible pages without losing the SPA model.
+
+  \item \textbf{Checkpoint.} Why are JSON, Fetch, and REST already important at this stage of React learning?\\
+  \textbf{Answer.} Because React applications are data-driven and must communicate with backend APIs using structured asynchronous requests.
+\end{enumerate}
+
+\subsection{React architecture, APIs, routing, and security}
+
+\subsubsection*{30 core questions with answers}
+
+\begin{enumerate}
+  \item \textbf{Question.} What is React primarily responsible for?\\
+  \textbf{Answer.} User interface rendering.\\
+  \textbf{Explanation.} React is not a database or authentication system; it is a UI engine.
+
+  \item \textbf{Question.} What triggers a React re-render?\\
+  \textbf{Answer.} Changing state.\\
+  \textbf{Explanation.} This is the core \emph{UI = f(state)} idea in React architecture.
+
+  \item \textbf{Question.} Props in React are: \\
+  \textbf{Answer.} Read-only.\\
+  \textbf{Explanation.} Props flow from parent to child and should not be mutated by the receiving component.
+
+  \item \textbf{Question.} What is the correct way to update state?\\
+  \textbf{Answer.} Use the setter function.\\
+  \textbf{Explanation.} Direct assignment bypasses React's update model.
+
+  \item \textbf{Question.} What is the purpose of the \texttt{key} prop in lists?\\
+  \textbf{Answer.} Performance and identity tracking.\\
+  \textbf{Explanation.} React uses keys to compare list items between renders.
+
+  \item \textbf{Question.} What happens if you use \texttt{<a>} instead of \texttt{<Link>} in React Router?\\
+  \textbf{Answer.} A full page reload occurs and SPA state is lost.\\
+  \textbf{Explanation.} \texttt{Link} performs client-side navigation; \texttt{a} asks the browser to reload.
+
+  \item \textbf{Question.} What does \texttt{useEffect} mainly handle?\\
+  \textbf{Answer.} Side effects.\\
+  \textbf{Explanation.} Examples: API calls, subscriptions, and timers.
+
+  \item \textbf{Question.} What causes infinite loops in \texttt{useEffect}?\\
+  \textbf{Answer.} Updating a state variable that is also in the dependency array.\\
+  \textbf{Explanation.} The state change retriggers the effect repeatedly.
+
+  \item \textbf{Question.} What is a controlled input?\\
+  \textbf{Answer.} An input whose value is stored in React state.\\
+  \textbf{Explanation.} This is the standard React form pattern.
+
+  \item \textbf{Question.} Which HTTP method matches \emph{Create} in CRUD?\\
+  \textbf{Answer.} \texttt{POST}.\\
+  \textbf{Explanation.} CRUD maps to HTTP actions in RESTful design.
+
+  \item \textbf{Question.} REST APIs are based on what style?\\
+  \textbf{Answer.} Stateless client-server architecture.\\
+  \textbf{Explanation.} That is one of REST's central constraints.
+
+  \item \textbf{Question.} What is JSON?\\
+  \textbf{Answer.} A data exchange format.\\
+  \textbf{Explanation.} It is text-based and widely used in web APIs.
+
+  \item \textbf{Question.} Why is JSON preferred over XML in many modern apps?\\
+  \textbf{Answer.} It is lighter and easier to parse.\\
+  \textbf{Explanation.} That is especially useful for JavaScript-based frontends.
+
+  \item \textbf{Question.} What does \texttt{fetch()} return?\\
+  \textbf{Answer.} A Promise.\\
+  \textbf{Explanation.} The response must then be awaited or handled with \texttt{then()}.
+
+  \item \textbf{Question.} Why does Fetch not throw HTTP errors automatically?\\
+  \textbf{Answer.} Because the code must check \texttt{response.ok} manually.\\
+  \textbf{Explanation.} A resolved fetch can still represent a 404 or 500 response.
+
+  \item \textbf{Question.} What advantage can Axios have over Fetch in some projects?\\
+  \textbf{Answer.} Automatic JSON parsing and interceptors.\\
+  \textbf{Explanation.} Axios centralizes some common request behavior.
+
+  \item \textbf{Question.} Which three UI states are recommended during data fetching?\\
+  \textbf{Answer.} Loading, error, and success.\\
+  \textbf{Explanation.} This is one of the strongest recurring lessons in API-driven UI design.
+
+  \item \textbf{Question.} What is JWT?\\
+  \textbf{Answer.} A signed authentication token.\\
+  \textbf{Explanation.} It proves identity or authorization when sent correctly.
+
+  \item \textbf{Question.} Is JWT encrypted by default?\\
+  \textbf{Answer.} No; it is usually signed, not encrypted.\\
+  \textbf{Explanation.} That is why sensitive information should not be stored inside it.
+
+  \item \textbf{Question.} How is JWT usually sent to the backend?\\
+  \textbf{Answer.} In the \texttt{Authorization} header.\\
+  \textbf{Explanation.} This is the typical bearer-token pattern.
+
+  \item \textbf{Question.} What does \texttt{Bearer} mean in that header?\\
+  \textbf{Answer.} Whoever possesses the token can present it for access.\\
+  \textbf{Explanation.} That is why the token must be protected carefully.
+
+  \item \textbf{Question.} What is a Single Page Application?\\
+  \textbf{Answer.} A web app that loads one main HTML page and updates content dynamically.\\
+  \textbf{Explanation.} Navigation and rendering happen inside the client without full reload.
+
+  \item \textbf{Question.} What is prop drilling?\\
+  \textbf{Answer.} Passing props through many levels only to reach a deep child component.\\
+  \textbf{Explanation.} It can make component trees harder to maintain.
+
+  \item \textbf{Question.} What is the role of \texttt{BrowserRouter}?\\
+  \textbf{Answer.} It enables URL-based routing in a React SPA.\\
+  \textbf{Explanation.} It is the routing container that works with routes and links.
+
+  \item \textbf{Question.} Which statement about state is true?\\
+  \textbf{Answer.} State is internal to the component.\\
+  \textbf{Explanation.} It is not automatically global and it does not replace props.
+
+  \item \textbf{Question.} What is REST mainly focused on?\\
+  \textbf{Answer.} Resources and HTTP methods.\\
+  \textbf{Explanation.} That is the basis of endpoint and CRUD design.
+
+  \item \textbf{Question.} What does GraphQL allow that REST does not emphasize in the same way?\\
+  \textbf{Answer.} Requesting exactly the data needed.\\
+  \textbf{Explanation.} This helps reduce over-fetching and under-fetching.
+
+  \item \textbf{Question.} Why should sensitive data not be stored in JWT?\\
+  \textbf{Answer.} Because JWT payloads can be decoded.\\
+  \textbf{Explanation.} Signed does not mean secret.
+
+  \item \textbf{Question.} What is the correct UI behavior when an API request fails?\\
+  \textbf{Answer.} Show an error state.\\
+  \textbf{Explanation.} Silent failure or blank screens are poor UX.
+
+  \item \textbf{Question.} What is the main architectural benefit of a separate API layer?\\
+  \textbf{Answer.} Centralized communication logic.\\
+  \textbf{Explanation.} This improves maintainability, consistency, and testing.
+\end{enumerate}
+
+\subsubsection*{4 analytical questions with model answers}
+
+\begin{enumerate}
+  \item \textbf{Question.} A component fetches data in \texttt{useEffect} but creates an infinite loop. Explain why and how to fix it.\\
+  \textbf{Model answer.} The infinite loop happens when the effect updates a state value and that same state value appears in the dependency array. The state change causes a re-render, React detects a dependency change, and the effect runs again. If the effect should run only once on mount, use an empty dependency array. If it depends on a search term or id, then depend only on that true external input.\\
+  \textbf{Explanation.} This is one of the most important analytical patterns in React effect management.
+
+  \item \textbf{Question.} Compare REST and GraphQL for a large e-commerce application. Which would you choose and why?\\
+  \textbf{Model answer.} REST is resource-based, easier to cache with standard HTTP tools, and usually simpler to scale operationally. GraphQL gives flexible queries and can reduce over-fetching in complex UIs. For a large e-commerce system with heavy traffic and strong caching needs, REST is often the safer default; GraphQL becomes attractive when the client requires highly variable nested data.\\
+  \textbf{Explanation.} This answer emphasizes practical trade-offs rather than memorizing slogans.
+
+  \item \textbf{Question.} Why does React use declarative rendering instead of imperative DOM manipulation?\\
+  \textbf{Model answer.} Declarative rendering lets the developer describe the UI as a function of state. React then computes the necessary DOM updates. This reduces manual inconsistency, improves readability, and scales better because the UI stays synchronized with application state.\\
+  \textbf{Explanation.} This is a core architectural reason for using React.
+
+  \item \textbf{Question.} Why does separating API logic from UI components improve scalability?\\
+  \textbf{Model answer.} It prevents fetch logic from being scattered across many components, centralizes error handling and token logic, and lets UI code focus on rendering. It also makes testing easier and allows several developers to work on the API layer and UI layer with less coupling.\\
+  \textbf{Explanation.} This is a strong analytical answer because it connects architecture, maintainability, and team workflow.
+\end{enumerate}
+
+\subsection{Practice map}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Practice area} & \textbf{Where the appendix now covers it} \\
+\midrule
+Environment setup and project structure & frontend/backend learning paths, project construction order, defense preparation \\
+Semantic HTML pages and forms & frontend exercises 1 to 4, practical tasks 31 and 32, HTML study bank \\
+CSS layout and responsive design & frontend exercises 2 to 4, practical tasks 33 to 36, complete CSS study bank \\
+DOM, events, validation, and browser storage & frontend exercises 5 to 15, practical tasks 37 to 40, complete JavaScript bank \\
+React fundamentals & frontend learning path, worked React exercises, React mastery section \\
+Routing, APIs, and loading/error states & frontend learning path, CC1 practice, API-state explanations, advanced React bank \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\PanelBox{
+Double-check conclusion: this appendix now stands on its own as a revision book. It covers web architecture, HTML, CSS, JavaScript, React, API integration, backend thinking, and hands-on practice in one place, with worked answers and explanations throughout.
+}
+
+\section{CC1 Exam Practice and Answer Key}
+
+This section is built to match the announced \textbf{CC1} style: theory questions across web architecture, HTML, CSS, JavaScript, React, and API thinking, plus practical exercises in \textbf{HTML, CSS, and JavaScript}. It is intentionally placed at the end of the appendix as a final training section after the broader theory review and the full independent study bank. The answers are written in English, but the same reasoning can be reproduced in French during the exam.
+
+\ExamPracticeFigure
+
+\subsection{Topic alignment}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Topic block} & \textbf{Main ideas reused in the exercises} \\
+\midrule
+Web architecture and deployment & client/server roles, HTTP, HTTPS, REST, stack, deployment, environment setup \\
+HTML and accessibility & semantic HTML, heading hierarchy, links, images, forms, accessibility basics \\
+CSS and responsive layout & box model, Flexbox, Grid, media queries, responsive design, typography, spacing \\
+JavaScript and DOM logic & DOM, query selectors, events, \texttt{preventDefault}, localStorage, FAQ, theme toggle, validation \\
+React fundamentals & components, props, state, \texttt{useState}, controlled input, lists, filtering, SPA thinking \\
+React APIs and routing & \texttt{useEffect}, loading/error/success states, API layer, routing, protected flows, infinite loop traps \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\subsection{Part A: 10 multiple-choice questions}
+
+\begin{enumerate}
+  \item \textbf{Question.} What is the primary role of the client in a web application?\\
+  \textbf{Options.} A. Manage the database. B. Display the interface and handle user interaction. C. Execute server business logic. D. Store backend credentials.\\
+  \textbf{Correct answer.} B.\\
+  \textbf{Explanation.} The client is responsible for presentation and interaction, while the server handles business logic and database operations.
+
+  \item \textbf{Question.} Which of the following is \textbf{not} compatible with the stateless REST model taught in the course?\\
+  \textbf{Options.} A. Resource-based design. B. Stateless communication. C. Uniform interface. D. Server keeps hidden per-user session state between requests.\\
+  \textbf{Correct answer.} D.\\
+  \textbf{Explanation.} In a stateless REST design, each request must carry the information needed to process it.
+
+  \item \textbf{Question.} Why are semantic HTML tags preferred over many generic \texttt{div} blocks?\\
+  \textbf{Options.} A. They reduce CSS file size automatically. B. They improve meaning, accessibility, and maintainability. C. They replace JavaScript. D. They remove the need for headings.\\
+  \textbf{Correct answer.} B.\\
+  \textbf{Explanation.} Semantic HTML improves accessibility, SEO, and code readability at the same time.
+
+  \item \textbf{Question.} What problem did Flexbox mainly solve?\\
+  \textbf{Options.} A. Two-dimensional page layout. B. Database modeling. C. One-dimensional alignment and space distribution. D. Browser routing.\\
+  \textbf{Correct answer.} C.\\
+  \textbf{Explanation.} Flexbox is a one-dimensional layout system, ideal for navigation bars and alignment.
+
+  \item \textbf{Question.} Which statement about CSS Grid is correct?\\
+  \textbf{Options.} A. It only works for text. B. It is limited to one dimension. C. It gives two-dimensional layout control. D. It replaces HTML structure.\\
+  \textbf{Correct answer.} C.\\
+  \textbf{Explanation.} Grid is the right tool when the layout needs rows plus columns, dashboards, or content-and-sidebar pages.
+
+  \item \textbf{Question.} What does \texttt{document.querySelectorAll(".card")} return?\\
+  \textbf{Options.} A. One element. B. A NodeList of matching elements. C. A CSS rule. D. A string.\\
+  \textbf{Correct answer.} B.\\
+  \textbf{Explanation.} \texttt{querySelectorAll()} returns a list-like collection of matching elements that can be looped over.
+
+  \item \textbf{Question.} Why is \texttt{event.preventDefault()} often used in form handling?\\
+  \textbf{Options.} A. To clear localStorage. B. To stop React rendering. C. To prevent the browser's default submission reload. D. To create an API route.\\
+  \textbf{Correct answer.} C.\\
+  \textbf{Explanation.} This prevents the browser's default page reload so JavaScript or React can validate and control the submission flow.
+
+  \item \textbf{Question.} In React, props are best described as: \\
+  \textbf{Options.} A. Mutable global variables. B. Read-only values passed from parent to child. C. Database rows. D. CSS classes.\\
+  \textbf{Correct answer.} B.\\
+  \textbf{Explanation.} Props move from parent to child and should not be mutated directly by the receiving component.
+
+  \item \textbf{Question.} What usually triggers a React re-render?\\
+  \textbf{Options.} A. Changing a regular local variable. B. Changing component state. C. Writing a CSS rule. D. Opening DevTools.\\
+  \textbf{Correct answer.} B.\\
+  \textbf{Explanation.} React works with the idea \emph{UI = f(state)}. When state changes, React computes the new UI.
+
+  \item \textbf{Question.} What is the main purpose of \texttt{useEffect()}?\\
+  \textbf{Options.} A. Styling JSX. B. Declaring routes. C. Handling side effects such as data fetching. D. Creating HTML structure.\\
+  \textbf{Correct answer.} C.\\
+  \textbf{Explanation.} \texttt{useEffect} is the standard hook for side effects such as API calls, subscriptions, and timers.
+\end{enumerate}
+
+\subsection{Part B: 10 analytical questions and model answers}
+
+\begin{enumerate}
+  \item \textbf{Question.} Why does semantic HTML improve accessibility and SEO at the same time?\\
+  \textbf{Model answer.} Semantic tags such as \texttt{header}, \texttt{nav}, \texttt{main}, and \texttt{section} describe the role of content instead of only its visual placement. Screen readers can navigate the structure more intelligently, and search engines can better understand which parts are titles, navigation, or content blocks.\\
+  \textbf{Why this matters.} Semantic tags are not decoration; they are the foundation of good structure.
+
+  \item \textbf{Question.} When should you choose Flexbox, and when should you choose Grid?\\
+  \textbf{Model answer.} Choose Flexbox when the problem is one-dimensional, for example a navigation bar, a row of buttons, or centered content. Choose Grid when the layout needs rows and columns together, such as a dashboard, card layout, or content-plus-sidebar page.\\
+  \textbf{Why this matters.} Confusing Flexbox and Grid often leads to harder CSS and weaker layouts.
+
+  \item \textbf{Question.} Explain the difference between responsive and adaptive design.\\
+  \textbf{Model answer.} Responsive design is fluid and adjusts continuously using flexible layouts, relative units, and media queries. Adaptive design relies more on fixed breakpoints and prepared layouts for selected screen sizes.\\
+  \textbf{Why this matters.} Good CSS work requires design reasoning, not only syntax memorization.
+
+  \item \textbf{Question.} Why can changing \texttt{width} or \texttt{margin} be more expensive than changing \texttt{color}?\\
+  \textbf{Model answer.} Changes to width or margin can force layout recalculation, because the browser may need to recompute positions and sizes of elements. A color change usually affects painting only, so it does not rebuild layout.\\
+  \textbf{Why this matters.} This explains why some CSS changes are visually cheap while others trigger expensive layout recalculation.
+
+  \item \textbf{Question.} Why is JavaScript often placed at the end of the \texttt{body} or executed after DOM readiness?\\
+  \textbf{Model answer.} If JavaScript runs before the DOM exists, selectors may fail because the elements are not yet available. Loading the script after the HTML or waiting for DOM readiness ensures that DOM operations work reliably.\\
+  \textbf{Why this matters.} DOM timing bugs are common, so scripts must run only after the elements exist.
+
+  \item \textbf{Question.} Why do we use \texttt{preventDefault()} in client-side validation?\\
+  \textbf{Model answer.} By default, a form submission reloads the page. \texttt{preventDefault()} keeps the browser on the page so JavaScript can validate fields, show errors, and only submit when the data is acceptable.\\
+  \textbf{Why this matters.} Validation messages must stay visible long enough for the user to understand the problem.
+
+  \item \textbf{Question.} Why are keys required when rendering lists in React?\\
+  \textbf{Model answer.} Keys give each rendered item a stable identity. This helps React compare the old list with the new list efficiently and avoid UI bugs when items are added, removed, or reordered.\\
+  \textbf{Why this matters.} Keys improve both rendering correctness and performance, not just warning removal.
+
+  \item \textbf{Question.} Explain why React prefers declarative rendering over manual DOM manipulation.\\
+  \textbf{Model answer.} In declarative rendering, the developer describes the UI that should exist for a given state. React then computes the necessary DOM updates. This reduces inconsistency, improves readability, and scales better than manually editing DOM nodes step by step.\\
+  \textbf{Why this matters.} This is one of the main architectural reasons React scales better than manual DOM manipulation.
+
+  \item \textbf{Question.} Why can \texttt{useEffect} create an infinite loop?\\
+  \textbf{Model answer.} An infinite loop appears when the effect updates a state variable and that same variable is also in the dependency array. The update triggers a re-render, the dependency changes, the effect runs again, and the cycle repeats.\\
+  \textbf{Why this matters.} This is a classic analytical exam pattern, so the mechanism should be explained clearly and precisely.
+
+  \item \textbf{Question.} Why is the \texttt{loading/error/success} pattern considered professional UI behavior?\\
+  \textbf{Model answer.} Network requests are asynchronous and can succeed, fail, or still be in progress. A professional UI makes all three situations visible so the user always understands what is happening instead of seeing a blank or confusing screen.\\
+  \textbf{Why this matters.} These three states are a serious frontend practice because they make asynchronous behavior understandable to the user.
+\end{enumerate}
+
+\subsection{Part C: 10 code analysis and code completion exercises}
+
+\begin{enumerate}
+  \item \textbf{Code analysis.} Identify the structural error and correct it.
+\begin{lstlisting}[style=code]
+<main>
+  <h1>EventHub</h1>
+  <h3>Upcoming events</h3>
+  <h2>Spring Hackathon</h2>
+</main>
+\end{lstlisting}
+\textbf{Answer.} The heading hierarchy is incorrect because \texttt{h3} appears before \texttt{h2}. The corrected structure is:
+\begin{lstlisting}[style=code]
+<main>
+  <h1>EventHub</h1>
+  <h2>Upcoming events</h2>
+  <h3>Spring Hackathon</h3>
+</main>
+\end{lstlisting}
+\textbf{Explanation.} Logical heading order matters because headings express document structure.
+
+  \item \textbf{Code completion.} Complete the image element so it is accessible.
+\begin{lstlisting}[style=code]
+<img src="conference.jpg" ________>
+\end{lstlisting}
+\textbf{Answer.}
+\begin{lstlisting}[style=code]
+<img src="conference.jpg" alt="Students attending a conference talk">
+\end{lstlisting}
+\textbf{Explanation.} The \texttt{alt} attribute is mandatory because images need accessible meaning.
+
+  \item \textbf{Code analysis.} What is the total outer width of the box?
+\begin{lstlisting}[style=code]
+.card {
+  width: 200px;
+  padding: 20px;
+  border: 2px solid #000;
+  margin: 10px;
+}
+\end{lstlisting}
+\textbf{Answer.} With the default content-box model, the outer width is \texttt{200 + 40 + 4 + 20 = 264px}.\\
+\textbf{Graphical result.}
+\begin{lstlisting}[style=terminal]
+margin | border | padding | content | padding | border | margin
+ 10px  |  2px   |  20px   | 200px   |  20px   |  2px   | 10px
+\end{lstlisting}
+\textbf{Explanation.} This type of calculation helps students understand spacing bugs and the box model clearly.
+
+  \item \textbf{Code completion.} Complete the media query so the menu becomes vertical on small screens.
+\begin{lstlisting}[style=code]
+nav ul {
+  display: flex;
+  flex-direction: row;
+}
+
+@media (max-width: 768px) {
+  nav ul {
+    _______________________;
+  }
+}
+\end{lstlisting}
+\textbf{Answer.}
+\begin{lstlisting}[style=code]
+flex-direction: column;
+\end{lstlisting}
+\textbf{Result.}
+\begin{lstlisting}[style=terminal]
+Desktop: Home | About | Contact
+Mobile:
+Home
+About
+Contact
+\end{lstlisting}
+\textbf{Explanation.} This is one of the most common practical CSS patterns for responsive navigation.
+
+  \item \textbf{Code analysis.} What is logged in the console?
+\begin{lstlisting}[style=code, language=JavaScript]
+const items = document.querySelectorAll(".card");
+console.log(items.length);
+\end{lstlisting}
+\textbf{Answer.} The console logs the number of elements in the page with class \texttt{card}.\\
+\textbf{Explanation.} \texttt{querySelectorAll()} returns a NodeList, not a single element.
+
+  \item \textbf{Code completion.} Finish the click handler so it toggles the answer.
+\begin{lstlisting}[style=code, language=JavaScript]
+const button = document.querySelector(".faq-question");
+const answer = document.querySelector(".faq-answer");
+button.addEventListener("click", () => {
+  answer.classList._______________("open");
+});
+\end{lstlisting}
+\textbf{Answer.}
+\begin{lstlisting}[style=code, language=JavaScript]
+toggle
+\end{lstlisting}
+\textbf{Result.}
+\begin{lstlisting}[style=terminal]
+click 1 -> answer visible
+click 2 -> answer hidden
+\end{lstlisting}
+\textbf{Explanation.} This is the core FAQ open-close pattern.
+
+  \item \textbf{Code completion.} Fix the form submit handler.
+\begin{lstlisting}[style=code, language=JavaScript]
+form.addEventListener("submit", (event) => {
+  _______________________;
+  console.log("validate fields");
+});
+\end{lstlisting}
+\textbf{Answer.}
+\begin{lstlisting}[style=code, language=JavaScript]
+event.preventDefault()
+\end{lstlisting}
+\textbf{Explanation.} Without this line, the page reloads immediately and the validation UI becomes unreliable.
+
+  \item \textbf{Code completion.} Complete the localStorage logic for theme persistence.
+\begin{lstlisting}[style=code, language=JavaScript]
+localStorage.setItem("theme", "dark");
+const savedTheme = ___________________________;
+\end{lstlisting}
+\textbf{Answer.}
+\begin{lstlisting}[style=code, language=JavaScript]
+localStorage.getItem("theme")
+\end{lstlisting}
+\textbf{Result.}
+\begin{lstlisting}[style=terminal]
+savedTheme === "dark"
+\end{lstlisting}
+\textbf{Explanation.} This is the standard pattern for saving theme or language preferences in the browser.
+
+  \item \textbf{Code analysis.} Why is this React update incorrect?
+\begin{lstlisting}[style=code, language=JavaScript]
+tasks.push(newTask)
+setTasks(tasks)
+\end{lstlisting}
+\textbf{Answer.} It mutates the existing array instead of creating a new one. The correct pattern is:
+\begin{lstlisting}[style=code, language=JavaScript]
+setTasks([...tasks, newTask])
+\end{lstlisting}
+\textbf{Explanation.} Direct mutation can cause stale or confusing UI behavior because React expects immutable state updates.
+
+  \item \textbf{Code analysis.} Explain the bug and fix the dependency array.
+\begin{lstlisting}[style=code, language=JavaScript]
+useEffect(() => {
+  fetchTasks().then(setTasks)
+}, [tasks])
+\end{lstlisting}
+\textbf{Answer.} The effect depends on \texttt{tasks} while also updating \texttt{tasks}, which can cause an infinite loop. If the fetch should run only on mount, use:
+\begin{lstlisting}[style=code, language=JavaScript]
+useEffect(() => {
+  fetchTasks().then(setTasks)
+}, [])
+\end{lstlisting}
+\textbf{Explanation.} This is the standard fix when an effect should run only once on component mount.
+\end{enumerate}
+
+\subsection{Part D: 10 worked practical HTML, CSS, and JavaScript exercises}
+
+\LearningCallout{rosewash}{
+\textbf{Important.} The 10 practical tasks below are also fully corrected. The code block is the exact answer you can type in a practice file, the terminal block shows the visual or logical result, and the explanation tells you what to memorize for the exam.
+}
+
+\begin{enumerate}
+  \item \textbf{Practical task 31.} Build the semantic skeleton of a correct main page.
+\begin{lstlisting}[style=code]
+<body>
+  <header>
+    <h1>EventHub</h1>
+    <nav>
+      <a href="events.html">Events</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Upcoming events</h2>
+      <p>Discover the next academic activities.</p>
+    </section>
+  </main>
+  <footer>Author: Mehdi</footer>
+</body>
+\end{lstlisting}
+\textbf{Expected visual result.}
+\begin{lstlisting}[style=terminal]
++--------------------------------------+
+| EventHub   Events   Contact          |
+| Upcoming events                      |
+| Discover the next academic activities|
+| Author: Mehdi                        |
++--------------------------------------+
+\end{lstlisting}
+\textbf{Explanation.} This is the correct semantic base before any CSS is added.
+
+  \item \textbf{Practical task 32.} Create an accessible login form with labels.
+\begin{lstlisting}[style=code]
+<form>
+  <label for="email">Email</label>
+  <input id="email" type="email" />
+
+  <label for="password">Password</label>
+  <input id="password" type="password" />
+
+  <button type="submit">Login</button>
+</form>
+\end{lstlisting}
+\textbf{Expected visual result.}
+\begin{lstlisting}[style=terminal]
+Email
+[________________]
+Password
+[________________]
+[ Login ]
+\end{lstlisting}
+\textbf{Explanation.} Correct form structure matters even before functionality is added.
+
+  \item \textbf{Practical task 33.} Style a navigation bar with Flexbox.
+\begin{lstlisting}[style=code]
+nav ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+}
+\end{lstlisting}
+\textbf{Expected visual result.}
+\begin{lstlisting}[style=terminal]
+Home                About                Contact
+\end{lstlisting}
+\textbf{Explanation.} Flexbox is ideal for horizontal alignment and navigation layout.
+
+  \item \textbf{Practical task 34.} Create a two-column page layout with Grid.
+\begin{lstlisting}[style=code]
+.main-layout {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 20px;
+}
+\end{lstlisting}
+\textbf{Expected visual result.}
+\begin{lstlisting}[style=terminal]
++---------------------------+-----------+
+| Main content              | Sidebar   |
++---------------------------+-----------+
+\end{lstlisting}
+\textbf{Explanation.} This is a classic content-plus-sidebar pattern built with Grid.
+
+  \item \textbf{Practical task 35.} Show the visual difference between padding and margin.
+\begin{lstlisting}[style=code]
+.box {
+  margin: 20px;
+  padding: 16px;
+  border: 2px solid #182620;
+}
+\end{lstlisting}
+\textbf{Graphical result.}
+\begin{lstlisting}[style=terminal]
+outside gap = margin
++----------------------+
+|  inside gap = padding|
+|  content             |
++----------------------+
+\end{lstlisting}
+\textbf{Explanation.} This helps students reason visually about spacing instead of only memorizing definitions.
+
+  \item \textbf{Practical task 36.} Add a responsive rule for mobile screens.
+\begin{lstlisting}[style=code]
+@media (max-width: 768px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+\end{lstlisting}
+\textbf{Expected result.}
+\begin{lstlisting}[style=terminal]
+Desktop:
+[Main content][Sidebar]
+
+Mobile:
+[Main content]
+[Sidebar]
+\end{lstlisting}
+\textbf{Explanation.} This is one of the most realistic CC1 CSS tasks because it combines Grid and media queries.
+
+  \item \textbf{Practical task 37.} Change a title using DOM selection and a click event.
+\begin{lstlisting}[style=code, language=JavaScript]
+const title = document.querySelector("#hero-title");
+const button = document.querySelector("#change-title");
+
+button.addEventListener("click", () => {
+  title.textContent = "Registration Open";
+});
+\end{lstlisting}
+\textbf{Expected result.}
+\begin{lstlisting}[style=terminal]
+Before click: Welcome to EventHub
+After click:  Registration Open
+\end{lstlisting}
+\textbf{Explanation.} Direct DOM interaction like this is the basis of more complex widgets.
+
+  \item \textbf{Practical task 38.} Implement a FAQ accordion with show/hide logic.
+\begin{lstlisting}[style=code, language=JavaScript]
+const button = document.querySelector(".faq-question");
+const answer = document.querySelector(".faq-answer");
+
+button.addEventListener("click", () => {
+  answer.classList.toggle("open");
+});
+\end{lstlisting}
+\textbf{Expected visual result.}
+\begin{lstlisting}[style=terminal]
+Question: What is EventHub?
+click -> answer opens
+click again -> answer closes
+\end{lstlisting}
+\textbf{Explanation.} This is a standard FAQ accordion pattern.
+
+  \item \textbf{Practical task 39.} Validate a contact form without reloading the page.
+\begin{lstlisting}[style=code, language=JavaScript]
+const form = document.querySelector("form");
+const message = document.querySelector("#message");
+const errorBox = document.querySelector("#message-error");
+const successBox = document.querySelector("#form-success");
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+
+  if (message.value.length < 10) {
+    errorBox.textContent = "Message must contain at least 10 characters.";
+    return;
+  }
+
+  successBox.textContent = "Sent!";
+});
+\end{lstlisting}
+\textbf{Expected result.}
+\begin{lstlisting}[style=terminal]
+short message -> "Message must contain at least 10 characters."
+valid message -> "Sent!"
+\end{lstlisting}
+\textbf{Explanation.} Good validation must show visible error messages and a clear success state.
+
+  \item \textbf{Practical task 40.} Implement a light/dark theme toggle that persists after reload.
+\begin{lstlisting}[style=code, language=JavaScript]
+const themeButton = document.querySelector("#theme-toggle");
+
+themeButton.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  const nextTheme = document.body.classList.contains("dark")
+    ? "dark"
+    : "light";
+  localStorage.setItem("theme", nextTheme);
+});
+\end{lstlisting}
+\textbf{Expected design result.}
+\begin{lstlisting}[style=terminal]
+click -> body background becomes dark
+reload page -> saved theme is restored
+\end{lstlisting}
+\textbf{Explanation.} This combines three important browser ideas at once: CSS classes, events, and localStorage persistence.
+\end{enumerate}
+
+\subsection{How to revise effectively}
+
+\begin{enumerate}
+  \item Start with Part A and answer the 10 QCM without looking at the solutions.
+  \item Move to Part B and try to write each answer in 3 to 5 sentences.
+  \item For Part C, rewrite the corrected code by hand so the patterns become automatic.
+  \item For Part D, reproduce the practical solutions in a clean folder and test them in the browser.
+  \item Revise JavaScript before React hooks, because React hooks depend on solid JavaScript reasoning.
+  \item Memorize the three frontend layers as a chain: HTML gives structure, CSS gives layout and appearance, JavaScript gives behavior.
+  \item Memorize the React chain as well: props bring data in, state stores changing values, effects connect the UI to asynchronous work.
+  \item Memorize the API chain as one flow: client request, server response, JSON payload, and UI loading/error/success states.
+\end{enumerate}
+
+\PanelBox{
+The appendix is meant to be studied repeatedly. Frontend learning should begin with HTML, CSS, JavaScript, and React in that order. Backend learning should begin with API thinking, then Django models, serializers, routes, and only after that the Node.js and Express comparison. The complete independent study bank should be used first, and the CC1 practice section should be used last as the final exam-training block.
+}
 
 \end{document}

@@ -1,0 +1,215 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+\definecolor{panel}{HTML}{FFF8EE}
+\definecolor{linegold}{HTML}{D7B98A}
+\definecolor{softgreen}{HTML}{F4F8F4}
+\definecolor{skywash}{HTML}{EAF4FF}
+\definecolor{mintwash}{HTML}{EDF8F1}
+\definecolor{rosewash}{HTML}{FFF0EC}
+\definecolor{sunwash}{HTML}{FFF4CF}
+\definecolor{ink}{HTML}{182620}
+\definecolor{warmtext}{HTML}{8A6A3B}
+\definecolor{accentred}{HTML}{C2573F}
+
+\setbeamercolor{structure}{fg=ink}
+\setbeamercolor{title}{fg=ink}
+\setbeamercolor{subtitle}{fg=accentred}
+\setbeamercolor{author}{fg=ink}
+\setbeamercolor{date}{fg=warmtext}
+\setbeamercolor{frametitle}{fg=ink,bg=skywash}
+\setbeamercolor{block title}{fg=ink,bg=softgreen}
+\setbeamercolor{block body}{fg=black,bg=panel}
+\setbeamercolor{exampleblock title}{fg=ink,bg=mintwash}
+\setbeamercolor{exampleblock body}{fg=black,bg=softgreen}
+\setbeamercolor{alertblock title}{fg=ink,bg=rosewash}
+\setbeamercolor{alertblock body}{fg=black,bg=panel}
+\setbeamercolor{palette primary}{fg=white,bg=ink}
+\setbeamercolor{palette secondary}{fg=ink,bg=sunwash}
+\setbeamercolor{palette tertiary}{fg=ink,bg=skywash}
+\setbeamercolor{item}{fg=accentred}
+\setbeamercolor{titlebox}{fg=ink,bg=skywash}
+\setbeamercolor{rolebox}{fg=ink,bg=panel}
+\setbeamercolor{tagbox}{fg=ink,bg=mintwash}
+\setbeamerfont{title}{size=\LARGE,series=\bfseries}
+\setbeamerfont{subtitle}{size=\Large,series=\bfseries}
+\setbeamertemplate{blocks}[rounded][shadow=true]
+
+\title[EventHub]{EventHub Project Presentation}
+\subtitle{Web Programming 2026}
+\author[Mehdi AGHAEI / Maksym DOLHOV]{Mehdi AGHAEI \and Maksym DOLHOV}
+\institute[UPCite]{Universite Paris Cite}
+\titlegraphic{\includegraphics[width=0.28\textwidth]{../upcite-logo.png}}
+\date{March 11, 2026}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \begin{columns}[c,totalwidth=\textwidth]
+    \begin{column}{0.62\textwidth}
+      \begin{beamercolorbox}[wd=\linewidth,sep=1.2em,rounded=true,shadow=true]{titlebox}
+        {\usebeamerfont{title}\inserttitle\par}
+        \vspace{0.45em}
+        {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+      \end{beamercolorbox}
+
+      \vspace{0.8em}
+
+      \begin{beamercolorbox}[wd=\linewidth,sep=0.9em,rounded=true,shadow=true]{rolebox}
+        \textbf{Frontend:} Mehdi AGHAEI\par
+        \textbf{Backend:} Maksym DOLHOV\par
+        \vspace{0.5em}
+        \textbf{Institution:} Universite Paris Cite\par
+        \textbf{Date:} March 11, 2026
+      \end{beamercolorbox}
+    \end{column}
+    \begin{column}{0.34\textwidth}
+      \centering
+      \includegraphics[width=0.9\linewidth]{../upcite-logo.png}
+
+      \vspace{0.8em}
+
+      \begin{beamercolorbox}[wd=\linewidth,sep=0.8em,rounded=true,shadow=true,center]{tagbox}
+        \textbf{Responsive SPA}\\[0.25em]
+        React + Django + Express
+      \end{beamercolorbox}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Project Goal}
+  \begin{exampleblock}{Main objective}
+    Build \textbf{EventHub}, a responsive Single Page Application (SPA) for
+    managing events, participants, and registrations.
+  \end{exampleblock}
+
+  \begin{itemize}
+    \item Main backend: \textbf{Django REST API}
+    \item Comparison backend: \textbf{Node.js / Express}
+    \item Frontend: \textbf{React} with responsive HTML and CSS
+    \item Team roles: Mehdi AGHAEI on frontend, Maksym DOLHOV on backend
+    \item Final deliverable: one integrated repository and a deployable system
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{System Architecture}
+  \begin{block}{Main flow}
+    Browser $\rightarrow$ React SPA $\rightarrow$ Django REST API $\rightarrow$ Database
+  \end{block}
+
+  \vspace{0.4em}
+
+  \begin{alertblock}{Comparison flow}
+    Browser $\rightarrow$ React SPA $\rightarrow$ Node.js / Express backend
+  \end{alertblock}
+
+  \vspace{0.4em}
+
+  \begin{itemize}
+    \item React handles rendering, state, and API calls
+    \item Django is the main structured backend
+    \item Node.js / Express is kept for backend comparison
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Backend Design}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Django}
+        \begin{itemize}
+          \item Models: \texttt{Event}, \texttt{Participant}, \texttt{Registration}
+          \item Serializers convert data to JSON
+          \item ViewSets expose CRUD endpoints
+          \item Validation protects business rules
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Why Django first?}
+        \begin{itemize}
+          \item Strong structure
+          \item Fast CRUD setup
+          \item Good fit for relational data
+          \item Admin and validation support
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Frontend Design}
+  \begin{block}{Frontend responsibilities}
+    \begin{tabularx}{\textwidth}{@{}lX@{}}
+      \toprule
+      \textbf{Layer} & \textbf{Role} \\
+      \midrule
+      HTML / JSX & Semantic page structure and forms \\
+      CSS & Layout, spacing, colors, and responsiveness \\
+      JavaScript & Events, logic, filtering, and API calls \\
+      React & Components, state, rendering, and page composition \\
+      \bottomrule
+    \end{tabularx}
+  \end{block}
+
+  \vspace{0.4em}
+
+  \begin{alertblock}{Frontend focus}
+    \begin{itemize}
+    \item Planned screens: login, dashboard, events, registrations, participants
+    \item Required UI states: loading, success, and error
+    \end{itemize}
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Integration and Repository Structure}
+  \begin{columns}[T]
+    \begin{column}{0.5\textwidth}
+      \begin{block}{Repository folders}
+        \begin{itemize}
+          \item \texttt{frontend/}
+          \item \texttt{backend/}
+          \item \texttt{node/}
+          \item \texttt{report/}
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.46\textwidth}
+      \begin{exampleblock}{Integration tasks}
+        \begin{itemize}
+          \item Connect React to Django API
+          \item Verify CRUD and validation
+          \item Keep Node backend for comparison
+          \item Prepare deployment configuration
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{exampleblock}{Key message}
+    EventHub is a coherent full-stack project: React for the SPA, Django for the
+    main backend, and Node.js / Express for comparison.
+  \end{exampleblock}
+
+  \begin{itemize}
+    \item Main report: formal technical summary
+    \item Appendices: detailed learning and exam support
+    \item Presentation: short overview for defense or class presentation
+  \end{itemize}
+
+  \vfill
+  \centering
+  {\color{warmtext}\Large Questions?}
+\end{frame}
+
+\end{document}

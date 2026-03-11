@@ -1,3 +1,4 @@
+# Backend developer: Maksym DOLHOV
 """
 WSGI config for backend project.
 
