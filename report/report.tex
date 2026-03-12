@@ -11,6 +11,14 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{microtype}
+\usepackage{iftex}
+\ifPDFTeX
+\else
+  \usepackage{fontspec}
+  \setmainfont{Georgia}
+  \setsansfont{Helvetica}
+  \setmonofont{Menlo}
+\fi
 
 \hypersetup{
   colorlinks=true,
@@ -33,15 +41,28 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\fancyhead[L]{EventHub Project Report}
-\fancyhead[R]{March 11, 2026}
-\fancyfoot[C]{\thepage}
+\fancyhead[L]{\sffamily\small EventHub Project Report}
+\fancyhead[R]{\sffamily\small March 11, 2026}
+\fancyfoot[C]{\sffamily\small \thepage}
+\renewcommand{\headrulewidth}{0.3pt}
 \setlength{\headheight}{14pt}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.55em}
 \setlength{\emergencystretch}{1.5em}
 \renewcommand{\arraystretch}{1.12}
+\urlstyle{same}
+
+\makeatletter
+\renewcommand\section{\@startsection{section}{1}{\z@}%
+  {-3.2ex \@plus -1ex \@minus -.2ex}%
+  {1.0ex \@plus .2ex}%
+  {\normalfont\Large\sffamily\bfseries\color{ink}}}
+\renewcommand\subsection{\@startsection{subsection}{2}{\z@}%
+  {-2.5ex \@plus -1ex \@minus -.2ex}%
+  {0.75ex \@plus .2ex}%
+  {\normalfont\large\sffamily\bfseries\color{MidnightBlue}}}
+\makeatother
 
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
 
@@ -52,7 +73,14 @@
   rulecolor=\color{linegold},
   showstringspaces=false,
   breaklines=true,
-  tabsize=2
+  columns=fullflexible,
+  keepspaces=true,
+  tabsize=2,
+  framesep=8pt,
+  xleftmargin=1em,
+  framexleftmargin=1em,
+  aboveskip=8pt,
+  belowskip=4pt
 }
 
 \lstdefinestyle{terminal}{
@@ -61,7 +89,14 @@
   frame=single,
   rulecolor=\color{linegold},
   showstringspaces=false,
-  breaklines=true
+  breaklines=true,
+  columns=fullflexible,
+  keepspaces=true,
+  framesep=8pt,
+  xleftmargin=1em,
+  framexleftmargin=1em,
+  aboveskip=8pt,
+  belowskip=4pt
 }
 
 \lstdefinelanguage{JavaScript}{
@@ -103,233 +138,219 @@
   \fcolorbox{black}{white}{\strut{\ttfamily\footnotesize #1}}%
 }
 
+\newcommand{\FigureShell}[1]{%
+  \begin{center}
+  \fcolorbox{linegold}{white}{\parbox{0.94\linewidth}{\centering #1}}%
+  \end{center}
+}
+
+\newcommand{\FlowCard}[4]{%
+  \fcolorbox{black}{#1}{%
+    \parbox[c][#3][c]{#2}{\centering\sffamily\small #4}%
+  }%
+}
+
+\newcommand{\FlowArrow}{%
+  \hspace{0.22em}\raisebox{0.6ex}{\textcolor{warmtext}{\Large$\rightarrow$}}\hspace{0.22em}%
+}
+
+\newcommand{\CardItem}[1]{%
+  \par{\sffamily\footnotesize\textbullet\ #1}%
+}
+
 \newcommand{\ArchitectureFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(168,66)
-  \put(4,56){\makebox(0,0)[l]{\small \textbf{Main application flow}}}
-  \put(4,38){\fcolorbox{black}{skywash}{\parbox[c][11mm][c]{24mm}{\centering Browser}}}
-  \put(38,38){\fcolorbox{black}{mintwash}{\parbox[c][11mm][c]{30mm}{\centering React SPA}}}
-  \put(80,38){\fcolorbox{black}{panel}{\parbox[c][11mm][c]{32mm}{\centering Django REST API}}}
-  \put(124,38){\fcolorbox{black}{rosewash}{\parbox[c][11mm][c]{28mm}{\centering Database}}}
-  \put(28,43){\vector(1,0){8}}
-  \put(70,43){\vector(1,0){8}}
-  \put(114,43){\vector(1,0){8}}
-  \put(4,18){\makebox(0,0)[l]{\small \textbf{Comparison path}}}
-  \put(54,6){\fcolorbox{black}{softgreen}{\parbox[c][11mm][c]{52mm}{\centering Node.js / Express comparison backend}}}
-  \put(53,38){\vector(0,-1){18}}
-  \put(55,22){\makebox(0,0)[l]{\small same frontend can also test}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries Main application flow}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.16\linewidth}{12mm}{Browser}%
+\FlowArrow
+\FlowCard{mintwash}{0.18\linewidth}{12mm}{React SPA}%
+\FlowArrow
+\FlowCard{panel}{0.20\linewidth}{12mm}{Django REST API}%
+\FlowArrow
+\FlowCard{rosewash}{0.16\linewidth}{12mm}{Database}}
+\par\vspace{0.8em}
+{\sffamily\footnotesize\color{warmtext}Comparison path}\par\vspace{0.35em}
+\makebox[\linewidth][c]{%
+\FlowCard{softgreen}{0.56\linewidth}{14mm}{The same frontend can also target the smaller Node.js / Express backend for comparison and discussion.}}
+}
 }
 
 \newcommand{\FrontendFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(145,26)
-  \put(4,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering HTML}}}
-  \put(38,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering CSS}}}
-  \put(72,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering JavaScript}}}
-  \put(106,8){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering React}}}
-  \put(28,12){\vector(1,0){8}}
-  \put(62,12){\vector(1,0){8}}
-  \put(96,12){\vector(1,0){8}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.16\linewidth}{12mm}{HTML}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{CSS}%
+\FlowArrow
+\FlowCard{panel}{0.18\linewidth}{12mm}{JavaScript}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{React}}
+}
 }
 
 \newcommand{\BackendFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(150,28)
-  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Request}}}
-  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering URL}}}
-  \put(64,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering View}}}
-  \put(96,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Serializer}}}
-  \put(128,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering Model}}}
-  \put(26,13){\vector(1,0){6}}
-  \put(56,13){\vector(1,0){6}}
-  \put(88,13){\vector(1,0){6}}
-  \put(120,13){\vector(1,0){6}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.13\linewidth}{12mm}{Request}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{URL}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{View}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{Serializer}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{Model}}
+}
 }
 
 \newcommand{\BackendJourneyFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(166,52)
-  \put(4,26){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering Browser}}}
-  \put(34,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering Route}}}
-  \put(64,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering ViewSet}}}
-  \put(94,26){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{26mm}{\centering Serializer}}}
-  \put(126,26){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{24mm}{\centering Model/DB}}}
-  \put(28,31){\vector(1,0){4}}
-  \put(58,31){\vector(1,0){4}}
-  \put(88,31){\vector(1,0){4}}
-  \put(120,31){\vector(1,0){4}}
-  \put(126,8){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering JSON}}}
-  \put(138,26){\vector(0,-1){8}}
-  \put(124,13){\vector(-1,0){90}}
-  \put(30,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering UI update}}}
-  \put(18,13){\vector(0,1){13}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries Request and response loop}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.13\linewidth}{12mm}{Browser}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{Route}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{ViewSet}%
+\FlowArrow
+\FlowCard{panel}{0.15\linewidth}{12mm}{Serializer}%
+\FlowArrow
+\FlowCard{rosewash}{0.14\linewidth}{12mm}{Model / DB}}
+\par\vspace{0.8em}
+\makebox[\linewidth][c]{%
+\FlowCard{mintwash}{0.20\linewidth}{12mm}{JSON response}%
+\FlowArrow
+\FlowCard{softgreen}{0.26\linewidth}{12mm}{UI update in the SPA}}
+}
 }
 
 \newcommand{\RegistrationFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(162,52)
-  \put(6,16){\fcolorbox{black}{skywash}{\parbox[c][20mm][c]{38mm}{\centering
-    \textbf{Event}\\[1mm]
-    id\\
-    title\\
-    date\\
-    location
-  }}}
-  \put(61,16){\fcolorbox{black}{panel}{\parbox[c][20mm][c]{40mm}{\centering
-    \textbf{Registration}\\[1mm]
-    id\\
-    event\_id\\
-    participant\_id
-  }}}
-  \put(118,16){\fcolorbox{black}{rosewash}{\parbox[c][20mm][c]{38mm}{\centering
-    \textbf{Participant}\\[1mm]
-    id\\
-    first\_name\\
-    last\_name\\
-    email
-  }}}
-  \put(44,26){\vector(1,0){15}}
-  \put(103,26){\vector(1,0){13}}
-  \put(45,32){\makebox(0,0)[l]{\small one event can have many registrations}}
-  \put(104,12){\makebox(0,0)[l]{\small one participant can have many registrations}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries Core data model}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.24\linewidth}{28mm}{\textbf{Event}\\[1mm]id\\title\\date\\location}%
+\FlowArrow
+\FlowCard{panel}{0.26\linewidth}{28mm}{\textbf{Registration}\\[1mm]id\\event\_id\\participant\_id}%
+\FlowArrow
+\FlowCard{rosewash}{0.24\linewidth}{28mm}{\textbf{Participant}\\[1mm]id\\first\_name\\last\_name\\email}}
+\par\vspace{0.75em}
+{\sffamily\footnotesize The explicit \texttt{Registration} entity keeps the many-to-many link visible and gives the backend a natural place to enforce duplicate checks and future rules.}
+}
 }
 
 \newcommand{\ValidationDecisionFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(166,42)
-  \put(4,16){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{28mm}{\centering POST request}}}
-  \put(42,16){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{30mm}{\centering Validate rules}}}
-  \put(82,24){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering Save}}}
-  \put(82,4){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{30mm}{\centering Reject 400}}}
-  \put(34,21){\vector(1,0){6}}
-  \put(72,21){\vector(1,1){8}}
-  \put(72,21){\vector(1,-1){8}}
-  \put(110,29){\makebox(0,0)[l]{\small valid}}
-  \put(110,9){\makebox(0,0)[l]{\small duplicate / bad data}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries Backend validation decision}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.18\linewidth}{12mm}{POST request}%
+\FlowArrow
+\FlowCard{panel}{0.22\linewidth}{12mm}{Validate rules}}
+\par\vspace{0.8em}
+\begin{minipage}[t]{0.44\linewidth}
+\centering
+\FlowCard{mintwash}{0.88\linewidth}{16mm}{Accepted path\\Save and return success}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\centering
+\FlowCard{rosewash}{0.88\linewidth}{16mm}{Rejected path\\Return HTTP 400 for duplicate or invalid data}
+\end{minipage}
+}
 }
 
 \newcommand{\FrontendPracticeFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(150,28)
-  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Read}}}
-  \put(38,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Code}}}
-  \put(72,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Render}}}
-  \put(106,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Explain}}}
-  \put(30,13){\vector(1,0){6}}
-  \put(64,13){\vector(1,0){6}}
-  \put(98,13){\vector(1,0){6}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.16\linewidth}{12mm}{Read}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{Code}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{Render}%
+\FlowArrow
+\FlowCard{panel}{0.18\linewidth}{12mm}{Explain}}
+}
 }
 
 \newcommand{\BackendPracticeFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(155,28)
-  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Client}}}
-  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Route}}}
-  \put(64,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering Validate}}}
-  \put(98,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Save}}}
-  \put(126,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering JSON}}}
-  \put(28,13){\vector(1,0){4}}
-  \put(58,13){\vector(1,0){4}}
-  \put(94,13){\vector(1,0){2}}
-  \put(122,13){\vector(1,0){2}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.13\linewidth}{12mm}{Client}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{Route}%
+\FlowArrow
+\FlowCard{panel}{0.15\linewidth}{12mm}{Validate}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{Save}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{JSON}}
+}
 }
 
 \newcommand{\ExamPracticeFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(158,28)
-  \put(4,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering QCM}}}
-  \put(34,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Analysis}}}
-  \put(66,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Code}}}
-  \put(98,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Practice}}}
-  \put(130,9){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Review}}}
-  \put(28,13){\vector(1,0){4}}
-  \put(62,13){\vector(1,0){2}}
-  \put(94,13){\vector(1,0){2}}
-  \put(126,13){\vector(1,0){2}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.13\linewidth}{12mm}{QCM}%
+\FlowArrow
+\FlowCard{panel}{0.15\linewidth}{12mm}{Analysis}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{Code}%
+\FlowArrow
+\FlowCard{panel}{0.15\linewidth}{12mm}{Practice}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{Review}}
+}
 }
 
 \newcommand{\RenderPipelineFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,30)
-  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering HTML}}}
-  \put(30,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering DOM}}}
-  \put(58,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering CSSOM}}}
-  \put(86,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering Render}}}
-  \put(116,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{20mm}{\centering Layout}}}
-  \put(142,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{16mm}{\centering Paint}}}
-  \put(24,14){\vector(1,0){4}}
-  \put(52,14){\vector(1,0){4}}
-  \put(80,14){\vector(1,0){4}}
-  \put(112,14){\vector(1,0){2}}
-  \put(138,14){\vector(1,0){2}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.11\linewidth}{12mm}{HTML}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{DOM}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{CSSOM}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{Render tree}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{Layout}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{Paint}}
+}
 }
 
 \newcommand{\ReactStateFlowFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,30)
-  \put(4,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{24mm}{\centering User Event}}}
-  \put(34,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering State}}}
-  \put(62,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Render}}}
-  \put(90,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Effect}}}
-  \put(118,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering API}}}
-  \put(142,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{14mm}{\centering JSON}}}
-  \put(28,14){\vector(1,0){4}}
-  \put(56,14){\vector(1,0){4}}
-  \put(84,14){\vector(1,0){4}}
-  \put(112,14){\vector(1,0){4}}
-  \put(136,14){\vector(1,0){4}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.14\linewidth}{12mm}{User event}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{State}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{Render}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{Effect}%
+\FlowArrow
+\FlowCard{panel}{0.10\linewidth}{12mm}{API}%
+\FlowArrow
+\FlowCard{panel}{0.10\linewidth}{12mm}{JSON}}
+}
 }
 
 \newcommand{\CoverageFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,30)
-  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Web}}}
-  \put(28,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering HTML}}}
-  \put(54,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering CSS}}}
-  \put(80,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering JS}}}
-  \put(106,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering React}}}
-  \put(132,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering API}}}
-  \put(24,14){\vector(1,0){2}}
-  \put(50,14){\vector(1,0){2}}
-  \put(76,14){\vector(1,0){2}}
-  \put(102,14){\vector(1,0){2}}
-  \put(128,14){\vector(1,0){2}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.10\linewidth}{12mm}{Web}%
+\FlowArrow
+\FlowCard{panel}{0.11\linewidth}{12mm}{HTML}%
+\FlowArrow
+\FlowCard{panel}{0.10\linewidth}{12mm}{CSS}%
+\FlowArrow
+\FlowCard{panel}{0.10\linewidth}{12mm}{JS}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{React}%
+\FlowArrow
+\FlowCard{panel}{0.10\linewidth}{12mm}{API}}
+}
 }
 
 \newcommand{\DivClassWindowFigure}{%
@@ -398,24 +419,24 @@
 \begin{minipage}[t]{0.47\linewidth}
 \fcolorbox{black}{softgreen}{\parbox[c][7mm][c]{12mm}{\centering}}
 \hspace{0.8em}
-\parbox[t]{0.72\linewidth}{\texttt{.page-shell}: pale page background}
+\parbox[t]{0.72\linewidth}{\raggedright\texttt{.page-shell}\\\footnotesize pale page background}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.47\linewidth}
 \fcolorbox{black}{panel}{\parbox[c][7mm][c]{12mm}{\centering}}
 \hspace{0.8em}
-\parbox[t]{0.72\linewidth}{\texttt{.event-card}: cream card surface}
+\parbox[t]{0.72\linewidth}{\raggedright\texttt{.event-card}\\\footnotesize cream card surface}
 \end{minipage}\\[0.8em]
 \begin{minipage}[t]{0.47\linewidth}
 \fcolorbox{black}{ink}{\parbox[c][7mm][c]{12mm}{\centering \textcolor{white}{\tiny BTN}}}
 \hspace{0.8em}
-\parbox[t]{0.72\linewidth}{\texttt{.join-btn}: dark accent button}
+\parbox[t]{0.72\linewidth}{\raggedright\texttt{.join-btn}\\\footnotesize dark accent button}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.47\linewidth}
 \fcolorbox{black}{white}{\parbox[c][7mm][c]{12mm}{\centering \textcolor{warmtext}{\bfseries Aa}}}
 \hspace{0.8em}
-\parbox[t]{0.72\linewidth}{\texttt{.eyebrow}: warm text accent}
+\parbox[t]{0.72\linewidth}{\raggedright\texttt{.eyebrow}\\\footnotesize warm text accent}
 \end{minipage}
 }}
 \end{center}
@@ -617,167 +638,234 @@ Events list\\[0.8em]
 }
 
 \newcommand{\DjangoExpressFigure}{%
-\begin{center}
-\fcolorbox{linegold}{white}{%
-\parbox{0.94\linewidth}{%
-\centering \textbf{Framework Comparison at a Glance}\\[0.8em]
+\FigureShell{%
+{\sffamily\bfseries Framework comparison at a glance}\par\vspace{0.8em}
 \begin{minipage}[t]{0.47\linewidth}
 \centering
-\fcolorbox{black}{skywash}{\parbox[t][46mm][t]{0.88\linewidth}{\centering
-\textbf{Django}\\[0.8em]
-\CodePill{Python framework}\\[0.55em]
-\CodePill{models + admin + serializers}\\[0.55em]
-\CodePill{fast CRUD setup}\\[0.9em]
-{\footnotesize strongest for structured business applications}
+\fcolorbox{black}{skywash}{\parbox[t][42mm][t]{0.88\linewidth}{\centering
+\textbf{Django}\par\vspace{0.7em}
+\CardItem{Python framework with strong conventions}
+\CardItem{Models, serializers, migrations, and admin}
+\CardItem{Fast CRUD delivery for structured business data}
+\vspace{0.6em}{\footnotesize strongest for applications with explicit entities and validation rules}
 }}
 \end{minipage}
 \hfill
 \begin{minipage}[t]{0.47\linewidth}
 \centering
-\fcolorbox{black}{sunwash}{\parbox[t][46mm][t]{0.88\linewidth}{\centering
-\textbf{Node.js / Express}\\[0.8em]
-\CodePill{JS runtime + lightweight framework}\\[0.55em]
-\CodePill{manual routing and middleware}\\[0.55em]
-\CodePill{flexible small APIs}\\[0.9em]
-{\footnotesize strongest when custom structure matters more than built-ins}
+\fcolorbox{black}{sunwash}{\parbox[t][42mm][t]{0.88\linewidth}{\centering
+\textbf{Node.js / Express}\par\vspace{0.7em}
+\CardItem{JavaScript runtime with lightweight routing}
+\CardItem{Manual middleware and custom structure}
+\CardItem{Flexible for smaller APIs and experiments}
+\vspace{0.6em}{\footnotesize strongest when low ceremony and custom composition matter more than built-ins}
 }}
 \end{minipage}
-}}
-\end{center}
+}
 }
 
 \newcommand{\HooksMemoryFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,48)
-  \put(4,28){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering User types}}}
-  \put(34,28){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering onChange}}}
-  \put(64,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{24mm}{\centering setState}}}
-  \put(94,28){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering new state}}}
-  \put(124,28){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{24mm}{\centering re-render}}}
-  \put(28,33){\vector(1,0){4}}
-  \put(58,33){\vector(1,0){4}}
-  \put(88,33){\vector(1,0){4}}
-  \put(118,33){\vector(1,0){4}}
-  \put(34,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering useEffect}}}
-  \put(70,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{24mm}{\centering fetch}}}
-  \put(102,8){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering setEvents}}}
-  \put(122,28){\vector(-1,-1){20}}
-  \put(64,13){\vector(1,0){4}}
-  \put(96,13){\vector(1,0){4}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries State and effect memory flow}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.14\linewidth}{12mm}{User types}%
+\FlowArrow
+\FlowCard{panel}{0.13\linewidth}{12mm}{onChange}%
+\FlowArrow
+\FlowCard{mintwash}{0.14\linewidth}{12mm}{setState}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{New state}%
+\FlowArrow
+\FlowCard{rosewash}{0.14\linewidth}{12mm}{Re-render}}
+\par\vspace{0.75em}
+\makebox[\linewidth][c]{%
+\FlowCard{softgreen}{0.18\linewidth}{12mm}{useEffect}%
+\FlowArrow
+\FlowCard{softgreen}{0.14\linewidth}{12mm}{fetch}%
+\FlowArrow
+\FlowCard{softgreen}{0.18\linewidth}{12mm}{setEvents}}
+}
 }
 
 \newcommand{\CSSDebugFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,48)
-  \put(4,18){\fcolorbox{black}{skywash}{\parbox[c][12mm][c]{26mm}{\centering Browser result}}}
-  \put(36,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{24mm}{\centering Inspect}}}
-  \put(66,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{26mm}{\centering className}}}
-  \put(98,18){\fcolorbox{black}{mintwash}{\parbox[c][12mm][c]{24mm}{\centering CSS rule}}}
-  \put(128,18){\fcolorbox{black}{rosewash}{\parbox[c][12mm][c]{24mm}{\centering Fix}}}
-  \put(30,24){\vector(1,0){4}}
-  \put(60,24){\vector(1,0){4}}
-  \put(92,24){\vector(1,0){4}}
-  \put(122,24){\vector(1,0){4}}
-  \put(34,4){\makebox(0,0)[l]{\small read the page from the screen back to the stylesheet}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.15\linewidth}{12mm}{Browser result}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{Inspect}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{className}%
+\FlowArrow
+\FlowCard{mintwash}{0.13\linewidth}{12mm}{CSS rule}%
+\FlowArrow
+\FlowCard{rosewash}{0.11\linewidth}{12mm}{Fix}}
+\par\vspace{0.7em}
+{\sffamily\footnotesize Read the page backward: what is visible in the browser, which class is applied, and which stylesheet rule must change.}
+}
 }
 
 \newcommand{\BackendCreateFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(162,50)
-  \put(2,24){\fcolorbox{black}{skywash}{\parbox[c][10mm][c]{24mm}{\centering Form}}}
-  \put(30,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{28mm}{\centering POST JSON}}}
-  \put(64,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{22mm}{\centering Route}}}
-  \put(92,24){\fcolorbox{black}{panel}{\parbox[c][10mm][c]{24mm}{\centering ViewSet}}}
-  \put(122,24){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{28mm}{\centering Serializer}}}
-  \put(122,4){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{28mm}{\centering Save + 201}}}
-  \put(26,29){\vector(1,0){2}}
-  \put(58,29){\vector(1,0){4}}
-  \put(86,29){\vector(1,0){4}}
-  \put(116,29){\vector(1,0){4}}
-  \put(136,24){\vector(0,-1){8}}
-  \put(116,9){\vector(-1,0){88}}
-  \put(26,14){\fcolorbox{black}{softgreen}{\parbox[c][10mm][c]{28mm}{\centering JSON response}}}
-  \put(16,14){\vector(0,1){10}}
-\end{picture}
-\end{center}
+\FigureShell{%
+{\sffamily\bfseries Create request lifecycle}\par\vspace{0.7em}
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.12\linewidth}{12mm}{Form}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{POST JSON}%
+\FlowArrow
+\FlowCard{panel}{0.12\linewidth}{12mm}{Route}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{ViewSet}%
+\FlowArrow
+\FlowCard{mintwash}{0.16\linewidth}{12mm}{Serializer}}
+\par\vspace{0.75em}
+\makebox[\linewidth][c]{%
+\FlowCard{rosewash}{0.18\linewidth}{12mm}{Save + 201}%
+\FlowArrow
+\FlowCard{softgreen}{0.22\linewidth}{12mm}{JSON response}}
+}
 }
 
 \newcommand{\RoleFlowFigure}{%
-\begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,48)
-  \put(4,18){\fcolorbox{black}{skywash}{\parbox[c][12mm][c]{24mm}{\centering Login}}}
-  \put(34,18){\fcolorbox{black}{panel}{\parbox[c][12mm][c]{28mm}{\centering Auth check}}}
-  \put(70,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{28mm}{\centering editor/admin}}}
-  \put(70,6){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{28mm}{\centering viewer}}}
-  \put(106,28){\fcolorbox{black}{mintwash}{\parbox[c][10mm][c]{34mm}{\centering create, edit, delete}}}
-  \put(106,6){\fcolorbox{black}{rosewash}{\parbox[c][10mm][c]{34mm}{\centering read and filter only}}}
-  \put(28,24){\vector(1,0){4}}
-  \put(62,24){\vector(1,1){6}}
-  \put(62,24){\vector(1,-1){6}}
-  \put(98,33){\vector(1,0){6}}
-  \put(98,11){\vector(1,0){6}}
-\end{picture}
-\end{center}
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.14\linewidth}{12mm}{Login}%
+\FlowArrow
+\FlowCard{panel}{0.18\linewidth}{12mm}{Auth check}}
+\par\vspace{0.8em}
+\begin{minipage}[t]{0.44\linewidth}
+\centering
+\FlowCard{mintwash}{0.88\linewidth}{16mm}{Editor / admin\\Create, edit, and delete}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.44\linewidth}
+\centering
+\FlowCard{rosewash}{0.88\linewidth}{16mm}{Viewer\\Read and filter only}
+\end{minipage}
+}
 }
 
 \newcommand{\DefenseFlowFigure}{%
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.14\linewidth}{12mm}{Login}%
+\FlowArrow
+\FlowCard{panel}{0.18\linewidth}{12mm}{Create event}%
+\FlowArrow
+\FlowCard{panel}{0.20\linewidth}{12mm}{Create participant}}
+\par\vspace{0.75em}
+\makebox[\linewidth][c]{%
+\FlowCard{panel}{0.16\linewidth}{12mm}{Register}%
+\FlowArrow
+\FlowCard{panel}{0.14\linewidth}{12mm}{Filter}%
+\FlowArrow
+\FlowCard{panel}{0.18\linewidth}{12mm}{Role checks}}
+}
+}
+
+\newcommand{\ProjectSnapshotFigure}{%
 \begin{center}
-\setlength{\unitlength}{1mm}
-\begin{picture}(160,34)
-  \put(2,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{22mm}{\centering Login}}}
-  \put(28,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{28mm}{\centering Create event}}}
-  \put(60,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{30mm}{\centering Create participant}}}
-  \put(94,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{26mm}{\centering Register}}}
-  \put(124,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{18mm}{\centering Filter}}}
-  \put(146,10){\fcolorbox{black}{panel}{\parbox[c][9mm][c]{12mm}{\centering Role}}}
-  \put(24,14){\vector(1,0){2}}
-  \put(56,14){\vector(1,0){2}}
-  \put(90,14){\vector(1,0){2}}
-  \put(120,14){\vector(1,0){2}}
-  \put(142,14){\vector(1,0){2}}
-\end{picture}
+\noindent\makebox[\linewidth][c]{%
+\begin{minipage}[t]{0.23\linewidth}
+\centering
+\fcolorbox{black}{skywash}{\parbox[t][31mm][t]{0.84\linewidth}{\centering
+\textbf{Frontend}\\[0.7em]
+\CardItem{React SPA}
+\CardItem{Responsive CSS}
+\CardItem{User workflows}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.23\linewidth}
+\centering
+\fcolorbox{black}{panel}{\parbox[t][31mm][t]{0.84\linewidth}{\centering
+\textbf{Primary Backend}\\[0.7em]
+\CardItem{Django}
+\CardItem{REST API}
+\CardItem{Validation}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.23\linewidth}
+\centering
+\fcolorbox{black}{sunwash}{\parbox[t][31mm][t]{0.84\linewidth}{\centering
+\textbf{Comparison}\\[0.7em]
+\CardItem{Node.js}
+\CardItem{Express}
+\CardItem{Trade-offs}
+}}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.23\linewidth}
+\centering
+\fcolorbox{black}{mintwash}{\parbox[t][31mm][t]{0.84\linewidth}{\centering
+\textbf{Deliverables}\\[0.7em]
+\CardItem{Formal report}
+\CardItem{Appendix}
+\CardItem{Demo-ready repo}
+}}
+\end{minipage}
+}
 \end{center}
 }
 
-\title{\Huge EventHub Project Report}
-\author{
-  \begin{tabular}{c c}
-    Mehdi AGHAEI & Maksym DOLHOV \\
-    \small Frontend Developer & \small Backend Developer
-  \end{tabular}\\[0.6em]
-  \small Universite Paris Cite
+\newcommand{\FormalReportFlowFigure}{%
+\FigureShell{%
+\makebox[\linewidth][c]{%
+\FlowCard{skywash}{0.15\linewidth}{12mm}{Context}%
+\FlowArrow
+\FlowCard{panel}{0.16\linewidth}{12mm}{Architecture}%
+\FlowArrow
+\FlowCard{mintwash}{0.14\linewidth}{12mm}{Backend}%
+\FlowArrow
+\FlowCard{sunwash}{0.14\linewidth}{12mm}{Frontend}%
+\FlowArrow
+\FlowCard{rosewash}{0.16\linewidth}{12mm}{Integration}}
 }
-\date{March 11, 2026}
+}
 
 \begin{document}
 
+\begin{titlepage}
+\thispagestyle{empty}
 \begin{center}
-\includegraphics[width=0.32\textwidth]{upcite-logo.png}
+\includegraphics[width=0.27\textwidth]{upcite-logo.png}\\[1.2em]
+{\Huge\bfseries EventHub Project Report}\\[0.55em]
+{\Large Responsive SPA, Django API, and Express Comparison}\\[1.0em]
+\textcolor{warmtext}{\large Formal Report + Guided Appendix}\\[1.5em]
+\begin{tabularx}{0.84\linewidth}{@{}YY@{}}
+\fcolorbox{black}{panel}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
+\textbf{Mehdi AGHAEI}\\
+\small Frontend developer
+}}
+&
+\fcolorbox{black}{skywash}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
+\textbf{Maksym DOLHOV}\\
+\small Backend developer
+}}
+\end{tabularx}\\[1.4em]
+{\small Universite Paris Cite}\\[0.35em]
+{\small March 11, 2026}
 \end{center}
-\vspace{0.4em}
-\maketitle
+
+\vspace{1.1em}
+\ProjectSnapshotFigure
 
 \PanelBox{
-EventHub is a full-stack course project built around one central goal: develop a responsive Single Page Application (SPA) for event and participant management, implement the main backend with Django, and compare that backend approach with a smaller Node.js and Express backend. The report documents the architecture, the responsibilities of each technology, and a guided appendix that teaches the project step by step from the basics.
+EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The document is split into a concise formal report and a large appendix designed for study, defense preparation, and revision.
 }
+\end{titlepage}
 
 \tableofcontents
 \newpage
 
 \section*{Main Technical Report}
-\addcontentsline{toc}{section}{Main Technical Report (Formal 6--8 pages)}
+\addcontentsline{toc}{section}{Main Technical Report (Formal 5--7 pages)}
 
 \PanelBox{
-This first part is the \textbf{formal technical report}. It is the main submission section of the document and is intended to stand on its own as a concise 6--8 page description of the project goals, architecture, technology choices, repository organization, and implementation plan. Everything after the appendix heading is supporting material for learning, revision, and exam preparation.
+This first part is the \textbf{formal technical report}. It is the main submission section of the document and is intended to stand on its own as a concise 5--7 page description of the project goals, architecture, technology choices, repository organization, and implementation plan. Everything after the appendix heading is supporting material for learning, revision, and exam preparation.
 }
+
+\FormalReportFlowFigure
 
 \section{Introduction}
 
@@ -3086,7 +3174,8 @@ Study strategy: work through these sections in order. Each topic block below giv
   \textbf{Explanation.} This is a useful correction: metadata is document-level information, not something limited to one specific page type.
 
   \item \textbf{Question.} What is the correct pattern for an image element?\\
-  \textbf{Answer.} Use \texttt{src} and \texttt{alt}, for example \texttt{<img src="image.jpg" alt="Description">}.\\
+  \textbf{Answer.} Use \texttt{src} and \texttt{alt}, for example \texttt{<img src="image.jpg"}\\
+  \texttt{alt="Description">}.\\
   \textbf{Explanation.} The \texttt{alt} text is essential for accessibility and content meaning.
 
   \item \textbf{Question.} What is an element without a closing tag called?\\
