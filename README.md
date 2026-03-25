@@ -33,24 +33,36 @@ npm install
 npm run dev
 ```
 
-## Django Quick Start
+## Backend Quick Start
+
+Both backends expose the same REST API (`/api/events`, `/api/participants`) and can run at the same time on different ports.
+
+### Django (port 8000)
 
 ```bash
 python3 -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 cd backend
 python manage.py migrate
 python manage.py runserver
 ```
 
-## Node.js Quick Start
+API available at `http://localhost:8000/api/`
+
+### Node.js / Express (port 3001)
 
 ```bash
 cd node
 npm install
 npm run dev
 ```
+
+API available at `http://localhost:3001/api/`
+
+### Running both at once
+
+Open two terminals and run each quick start above in its own terminal. Both servers are independent and use separate SQLite databases (`backend/db.sqlite3` and `node/db.sqlite3`).
 
 ## Report Quick Start
 
