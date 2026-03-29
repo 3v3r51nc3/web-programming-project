@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">EventHub favicon</title>
+  <desc id="desc">A bold EH monogram for EventHub.</desc>
+  <rect width="64" height="64" rx="14" fill="#f3f0da" />
+  <rect x="4" y="4" width="26" height="56" rx="10" fill="#ff4fa7" />
+  <rect x="34" y="4" width="26" height="56" rx="10" fill="#4cb8ff" />
+  <path d="M4 4h56v12H4z" fill="#ffffff" fill-opacity="0.18" />
+  <text
+    x="17"
+    y="45"
+    fill="#001d63"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="34"
+    font-weight="900"
+    text-anchor="middle"
+  >
+    E
+  </text>
+  <text
+    x="47"
+    y="45"
+    fill="#001d63"
+    font-family="'Arial Black', Arial, sans-serif"
+    font-size="34"
+    font-weight="900"
+    text-anchor="middle"
+  >
+    H
+  </text>
+</svg>

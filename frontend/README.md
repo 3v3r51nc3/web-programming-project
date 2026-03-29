@@ -3,7 +3,7 @@
 
 This folder contains the EventHub React SPA for the EventHub project.
 
-The frontend is organized around reusable folders so the application is easier to extend and connect to the backend branch.
+The frontend is organized around reusable folders so the application is easier to extend, maintain, and connect to the Django API.
 
 ## What The Frontend Includes
 
@@ -88,9 +88,15 @@ npm run build
 
 ## Current Integration Status
 
-The frontend structure is ready for backend integration.
+The frontend is connected to the merged Django backend.
 
 - Django API base URL is configurable through `VITE_API_BASE_URL`
-- session persistence is handled in the browser
+- JWT login, refresh, and profile loading are wired through `src/services/authService.js`
+- session persistence is handled in the browser through `localStorage`
 - API calls are centralized in `src/services/`
-- once the backend branch is merged, the remaining work is endpoint-level connection and end-to-end verification
+- registration, events, participants, and dashboard data are loaded from the live backend routes
+
+
+<!-- some test users -->
+Admin: soroosh_admin / AdminPass123!
+Viewer: maksym / ViewerPass123!

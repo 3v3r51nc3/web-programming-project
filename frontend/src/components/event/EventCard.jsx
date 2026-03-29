@@ -17,27 +17,33 @@ export default function EventCard({
   const status = getEventStatus(event, registrations)
 
   return (
-    <article className="event-card">
-      <div className="event-card__header">
-        <StatusBadge label={status.label} tone={status.tone} />
-        <span className="metric-pill">
-          {confirmedCount}/{event.capacity} seats
-        </span>
+    <article className="event-card event-card--simple">
+      <div className="event-card__body">
+        <div className="event-card__summary">
+          <h4>{event.title}</h4>
+          <div className="event-card__details">
+            <p className="card-meta">{formatDateTime(event.date)}</p>
+            <p className="card-meta">{event.location}</p>
+          </div>
+          <p className="card-copy">{event.description || 'No description added yet.'}</p>
+        </div>
+
+        <div className="event-card__aside">
+          <StatusBadge label={status.label} tone={status.tone} />
+          <span className="metric-pill">
+            {confirmedCount}/{event.capacity} seats
+          </span>
+        </div>
       </div>
 
-      <h4>{event.title}</h4>
-      <p className="card-meta">{formatDateTime(event.date)}</p>
-      <p className="card-meta">{event.location}</p>
-      <p className="card-copy">{event.description || 'No description added yet.'}</p>
-
-      <div className="button-row">
-        <button className={buttonClassNames.secondary} onClick={() => onOpen(event.id)} type="button">
-          View details
+      <div className="button-row event-card__actions">
+        <button className={buttonClassNames.primary} onClick={() => onOpen(event.id)} type="button">
+          Open event
         </button>
         {canEdit ? (
           <>
             <button className={buttonClassNames.ghost} onClick={() => onEdit(event)} type="button">
-              Edit
+              Edit schedule
             </button>
             <button
               className={buttonClassNames.dangerGhost}

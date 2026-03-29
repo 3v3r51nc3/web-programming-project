@@ -1,16 +1,16 @@
 // Frontend developer: Mehdi AGHAEI
-import { requestJson } from './api'
+import { normalizeUser } from './authService'
 
-export async function fetchWorkspace(token, signal) {
-  const [mePayload, events, participants, registrations] = await Promise.all([
-    requestJson('/auth/me/', { token, signal }),
-    requestJson('/events/', { token, signal }),
-    requestJson('/participants/', { token, signal }),
-    requestJson('/registrations/', { token, signal }),
+export async function fetchWorkspace(requester, signal) {
+  const [user, events, participants, registrations] = await Promise.all([
+    requester('/auth/me/', { signal }),
+    requester('/events/', { signal }),
+    requester('/participants/', { signal }),
+    requester('/registrations/', { signal }),
   ])
 
   return {
-    user: mePayload.user,
+    user: normalizeUser(user),
     events,
     participants,
     registrations,

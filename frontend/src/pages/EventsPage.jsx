@@ -1,5 +1,5 @@
 // Frontend developer: Mehdi AGHAEI
-import { useDeferredValue, useState } from 'react'
+import { useDeferredValue, useEffect, useEffectEvent, useState } from 'react'
 import EmptyStateCard from '../components/cards/EmptyStateCard'
 import EventCard from '../components/event/EventCard'
 import EventCrudForm from '../components/event/EventCrudForm'
@@ -21,14 +21,33 @@ export default function EventsPage({
     status: 'all',
     date: '',
   })
-  const [formValues, setFormValues] = useState(() => createEmptyEventForm())
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
+  const [createFormValues, setCreateFormValues] = useState(() => createEmptyEventForm())
   const [editingEventId, setEditingEventId] = useState(null)
-  const [formState, setFormState] = useState({
+  const [editFormValues, setEditFormValues] = useState(() => createEmptyEventForm())
+  const [createFormState, setCreateFormState] = useState({
+    pending: false,
+    error: '',
+  })
+  const [editFormState, setEditFormState] = useState({
     pending: false,
     error: '',
   })
   const [deletingId, setDeletingId] = useState(null)
   const deferredQuery = useDeferredValue(filters.query)
+  const activeEditingEvent =
+    editingEventId === null ? null : events.find((event) => event.id === editingEventId) || null
+
+  const handleEscapeKey = useEffectEvent(() => {
+    if (editingEventId !== null) {
+      closeEditModal()
+      return
+    }
+
+    if (isCreateModalOpen) {
+      closeCreateModal()
+    }
+  })
 
   const visibleEvents = [...events]
     .filter((event) =>
@@ -50,9 +69,35 @@ export default function EventsPage({
     }))
   }
 
-  function updateForm(event) {
+  useEffect(() => {
+    if (!isCreateModalOpen && editingEventId === null) {
+      return undefined
+    }
+
+    function handleKeyDown(event) {
+      if (event.key === 'Escape') {
+        handleEscapeKey()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [editingEventId, isCreateModalOpen])
+
+  function updateCreateForm(event) {
     const { name, value } = event.target
-    setFormValues((currentFormValues) => ({
+    setCreateFormValues((currentFormValues) => ({
+      ...currentFormValues,
+      [name]: value,
+    }))
+  }
+
+  function updateEditForm(event) {
+    const { name, value } = event.target
+    setEditFormValues((currentFormValues) => ({
       ...currentFormValues,
       [name]: value,
     }))
@@ -60,41 +105,90 @@ export default function EventsPage({
 
   function startEditing(eventData) {
     setEditingEventId(eventData.id)
-    setFormValues(eventToForm(eventData))
-    setFormState({
+    setEditFormValues(eventToForm(eventData))
+    setEditFormState({
       pending: false,
       error: '',
     })
   }
 
-  function resetForm() {
+  function resetCreateForm() {
+    setCreateFormValues(createEmptyEventForm())
+    setCreateFormState({
+      pending: false,
+      error: '',
+    })
+  }
+
+  function openCreateModal() {
+    resetCreateForm()
+    setIsCreateModalOpen(true)
+  }
+
+  function dismissCreateModal() {
+    setIsCreateModalOpen(false)
+    resetCreateForm()
+  }
+
+  function closeCreateModal() {
+    if (createFormState.pending) {
+      return
+    }
+
+    dismissCreateModal()
+  }
+
+  function closeEditModal() {
+    if (editFormState.pending) {
+      return
+    }
+
     setEditingEventId(null)
-    setFormValues(createEmptyEventForm())
-    setFormState({
+    setEditFormValues(createEmptyEventForm())
+    setEditFormState({
       pending: false,
       error: '',
     })
   }
 
-  async function handleSubmit(event) {
+  async function handleCreateSubmit(event) {
     event.preventDefault()
-    setFormState({
+    setCreateFormState({
       pending: true,
       error: '',
     })
 
     try {
-      await onSaveEvent(formValues, editingEventId)
-      resetForm()
+      await onSaveEvent(createFormValues, null)
+      dismissCreateModal()
     } catch (error) {
-      setFormState({
+      setCreateFormState({
+        pending: false,
+        error: error.message,
+      })
+      return
+    }
+  }
+
+  async function handleEditSubmit(event) {
+    event.preventDefault()
+    setEditFormState({
+      pending: true,
+      error: '',
+    })
+
+    try {
+      await onSaveEvent(editFormValues, editingEventId)
+      closeEditModal()
+    } catch (error) {
+      setEditFormState({
         pending: false,
         error: error.message,
       })
       return
     }
 
-    setFormState({
+    setEditFormState({
       pending: false,
       error: '',
     })
@@ -110,7 +204,7 @@ export default function EventsPage({
     try {
       await onDeleteEvent(eventData)
       if (editingEventId === eventData.id) {
-        resetForm()
+        closeEditModal()
       }
     } finally {
       setDeletingId(null)
@@ -119,17 +213,34 @@ export default function EventsPage({
 
   return (
     <section className="content-grid content-grid--events">
-      <section className={surfaceClassNames.card}>
+      <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading section-heading--wrap">
           <div>
-            <p className="panel-label">Browse</p>
-            <h3 className="surface-title">Event list</h3>
+            <p className="panel-label">Discover</p>
+            <h3 className="surface-title">Events around the community</h3>
+            <p className="surface-copy section-note">
+              Browse by title, place, or date. Open an event to connect participants, and use
+              Edit schedule to update the time, location, description, or capacity.
+            </p>
           </div>
-          <EventFilters filters={filters} onChange={updateFilter} />
+          <div className="section-heading__actions">
+            <EventFilters filters={filters} onChange={updateFilter} />
+            {canEdit ? (
+              <button
+                aria-label="Create event"
+                className="ghost-button section-add-button"
+                onClick={openCreateModal}
+                title="Create event"
+                type="button"
+              >
+                +
+              </button>
+            ) : null}
+          </div>
         </div>
 
         {visibleEvents.length ? (
-          <div className="event-grid">
+          <div className="event-grid event-directory">
             {visibleEvents.map((event) => (
               <EventCard
                 canEdit={canEdit}
@@ -151,17 +262,87 @@ export default function EventsPage({
         )}
       </section>
 
-      <section className={surfaceClassNames.card}>
-        <EventCrudForm
-          canEdit={canEdit}
-          editingEventId={editingEventId}
-          formState={formState}
-          formValues={formValues}
-          onChange={updateForm}
-          onReset={resetForm}
-          onSubmit={handleSubmit}
-        />
-      </section>
+      {canEdit && isCreateModalOpen ? (
+        <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-create-title">
+          <div className="event-edit-modal__backdrop" onClick={closeCreateModal} />
+
+          <section className="event-edit-modal__panel">
+            <div className="event-edit-modal__window-bar">
+              <div className="event-edit-modal__window-title">
+                <span className="event-edit-modal__window-dot" aria-hidden="true" />
+                <span id="event-create-title">Create event</span>
+              </div>
+
+              <button
+                aria-label="Close event creator"
+                className="event-edit-modal__window-button"
+                disabled={createFormState.pending}
+                onClick={closeCreateModal}
+                type="button"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="event-edit-modal__body">
+              <EventCrudForm
+                canEdit={canEdit}
+                editingEventId={null}
+                formState={createFormState}
+                formValues={createFormValues}
+                helperText="Set the basics, then open the event to manage participants and registrations."
+                onChange={updateCreateForm}
+                onReset={closeCreateModal}
+                onSubmit={handleCreateSubmit}
+                panelLabel="New schedule"
+                resetLabel="Close"
+                titleOverride="Create an event"
+              />
+            </div>
+          </section>
+        </div>
+      ) : null}
+
+      {canEdit && activeEditingEvent ? (
+        <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-edit-title">
+          <div className="event-edit-modal__backdrop" onClick={closeEditModal} />
+
+          <section className="event-edit-modal__panel">
+            <div className="event-edit-modal__window-bar">
+              <div className="event-edit-modal__window-title">
+                <span className="event-edit-modal__window-dot" aria-hidden="true" />
+                <span id="event-edit-title">Edit event</span>
+              </div>
+
+              <button
+                aria-label="Close event editor"
+                className="event-edit-modal__window-button"
+                disabled={editFormState.pending}
+                onClick={closeEditModal}
+                type="button"
+              >
+                X
+              </button>
+            </div>
+
+            <div className="event-edit-modal__body">
+              <EventCrudForm
+                canEdit={canEdit}
+                editingEventId={editingEventId}
+                formState={editFormState}
+                formValues={editFormValues}
+                helperText="Update the schedule details for the selected event."
+                onChange={updateEditForm}
+                onReset={closeEditModal}
+                onSubmit={handleEditSubmit}
+                panelLabel="Editing schedule"
+                resetLabel="Close"
+                titleOverride={activeEditingEvent.title}
+              />
+            </div>
+          </section>
+        </div>
+      ) : null}
     </section>
   )
 }

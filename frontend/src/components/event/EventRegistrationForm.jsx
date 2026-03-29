@@ -7,6 +7,7 @@ export default function EventRegistrationForm({
   availableParticipants,
   canEdit,
   formState,
+  formClassName = '',
   onChange,
   onGoToParticipants,
   onSubmit,
@@ -15,8 +16,8 @@ export default function EventRegistrationForm({
   if (!canEdit) {
     return (
       <EmptyStateCard
-        description="Registration creation is disabled for read-only users."
-        title="Viewer account"
+        description="This account can view the participant list, but only admins can add or update registrations."
+        title="View only"
       />
     )
   }
@@ -25,7 +26,7 @@ export default function EventRegistrationForm({
     return (
       <EmptyStateCard
         actionLabel="Go to participants"
-        description="Every participant is already linked to this event, or no participant profiles exist yet."
+        description="Every participant is already linked to this event, or no participant profiles exist yet. A participant can only be added once per event."
         onAction={onGoToParticipants}
         title="No available participants"
       />
@@ -33,7 +34,12 @@ export default function EventRegistrationForm({
   }
 
   return (
-    <form className="form-grid" onSubmit={onSubmit}>
+    <form className={`form-grid ${formClassName}`.trim()} onSubmit={onSubmit}>
+      <p className="micro-copy field--full">
+        One participant can join many events, but the same participant cannot be added twice to
+        this event.
+      </p>
+
       <label className="field field--full">
         <span>Participant</span>
         <select name="participantId" onChange={onChange} value={values.participantId}>
@@ -56,7 +62,7 @@ export default function EventRegistrationForm({
 
       {formState.error ? <InlineNotice message={formState.error} tone="error" /> : null}
 
-      <button className={buttonClassNames.primaryWide} disabled={formState.pending} type="submit">
+      <button className={`${buttonClassNames.primaryWide} field--full`} disabled={formState.pending} type="submit">
         {formState.pending ? 'Saving registration...' : 'Register participant'}
       </button>
     </form>

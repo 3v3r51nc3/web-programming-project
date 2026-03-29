@@ -1,5 +1,5 @@
 // Frontend developer: Mehdi AGHAEI
-import { startTransition, useEffect, useState } from 'react'
+import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import withSessionGuard from './HOC/withSessionGuard'
 import LoadingState from './components/common/LoadingState'
 import AppShell from './components/header/AppShell'
@@ -12,7 +12,7 @@ import EventsPage from './pages/EventsPage'
 import LoginPage from './pages/LoginPage'
 import ParticipantsPage from './pages/ParticipantsPage'
 import { requestJson } from './services/api'
-import { loginUser, logoutUser } from './services/authService'
+import { fetchCurrentUser, loginUser, refreshAccessToken, registerUser } from './services/authService'
 import { deleteEventRequest, saveEventRequest } from './services/eventService'
 import { deleteParticipantRequest, saveParticipantRequest } from './services/participantService'
 import {
@@ -22,8 +22,15 @@ import {
 } from './services/registrationService'
 import { fetchWorkspace } from './services/workspaceService'
 import { toApiDateTime } from './utils/dateUtils'
-import { navigateTo, parseRouteFromHash } from './utils/routeUtils'
-import { readStoredSession, writeStoredSession } from './utils/storage'
+import { buildProfileMetaFromBirthDate } from './utils/profileUtils'
+import { addNavigationListener, navigateTo, parseRouteFromLocation } from './utils/routeUtils'
+import {
+  readStoredSession,
+  readStoredTheme,
+  writeStoredProfileMeta,
+  writeStoredSession,
+  writeStoredTheme,
+} from './utils/storage'
 import { createEmptyWorkspace } from './utils/workspaceUtils'
 
 const ProtectedWorkspaceShell = withSessionGuard(function WorkspaceShell({ renderContent, ...shellProps }) {
@@ -32,51 +39,125 @@ const ProtectedWorkspaceShell = withSessionGuard(function WorkspaceShell({ rende
 
 function App() {
   const [session, setSession] = useState(() => readStoredSession())
-  const [route, setRoute] = useState(() => parseRouteFromHash(window.location.hash))
-  const token = session?.token || ''
-  const hasSession = Boolean(token)
+  const sessionRef = useRef(session)
+  const [route, setRoute] = useState(() => parseRouteFromLocation(window.location))
+  const hasSession = Boolean(session?.accessToken)
   const [authState, setAuthState] = useState({ pending: false, error: '' })
+  const [registerState, setRegisterState] = useState({ pending: false, error: '' })
   const [banner, setBanner] = useState(null)
   const [workspace, setWorkspace] = useState(() => createEmptyWorkspace())
   const [refreshTick, setRefreshTick] = useState(0)
+  const [themeMode, setThemeMode] = useState(() => readStoredTheme())
+
+  const clearSession = useCallback((message = 'Your session expired. Please sign in again.') => {
+    sessionRef.current = null
+    setSession(null)
+    setWorkspace(createEmptyWorkspace())
+    setBanner({
+      tone: 'error',
+      text: message,
+    })
+    navigateTo(APP_ROUTES.login)
+  }, [])
+
+  const requestWithAuth = useCallback(async (path, options = {}, sessionSnapshot = sessionRef.current, allowRefresh = true) => {
+    try {
+      return await requestJson(path, {
+        ...options,
+        token: sessionSnapshot?.accessToken || '',
+      })
+    } catch (error) {
+      if (error.status === 401 && allowRefresh && sessionSnapshot?.refreshToken) {
+        try {
+          const refreshedTokens = await refreshAccessToken(sessionSnapshot.refreshToken, options.signal)
+          const nextSession = {
+            ...sessionSnapshot,
+            accessToken: refreshedTokens.access,
+          }
+
+          sessionRef.current = nextSession
+          setSession((currentSession) => {
+            if (!currentSession || currentSession.refreshToken !== sessionSnapshot.refreshToken) {
+              return currentSession
+            }
+
+            return {
+              ...currentSession,
+              accessToken: refreshedTokens.access,
+            }
+          })
+
+          return await requestWithAuth(path, options, nextSession, false)
+        } catch {
+          clearSession()
+        }
+      } else if (error.status === 401) {
+        clearSession()
+      }
+
+      throw error
+    }
+  }, [clearSession])
 
   useEffect(() => {
+    sessionRef.current = session
     writeStoredSession(session)
   }, [session])
 
   useEffect(() => {
+    document.documentElement.dataset.theme = themeMode
+    document.documentElement.style.colorScheme = themeMode
+    writeStoredTheme(themeMode)
+  }, [themeMode])
+
+  useEffect(() => {
+    if (!banner || banner.tone === 'error') {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setBanner(null)
+    }, 5000)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+    }
+  }, [banner])
+
+  useEffect(() => {
     const syncRoute = () => {
       startTransition(() => {
-        setRoute(parseRouteFromHash(window.location.hash))
+        setRoute(parseRouteFromLocation(window.location))
       })
     }
 
-    if (!window.location.hash) {
-      navigateTo(hasSession ? DEFAULT_ROUTE : APP_ROUTES.login)
-    } else {
-      syncRoute()
+    syncRoute()
+
+    if (hasSession && parseRouteFromLocation(window.location).name === 'login') {
+      navigateTo(DEFAULT_ROUTE)
     }
 
-    window.addEventListener('hashchange', syncRoute)
-
-    return () => {
-      window.removeEventListener('hashchange', syncRoute)
-    }
+    return addNavigationListener(syncRoute)
   }, [hasSession])
 
   useEffect(() => {
-    if (!hasSession && route.name !== 'login') {
-      navigateTo(APP_ROUTES.login)
+    if (!hasSession) {
+      if (route.name !== 'login') {
+        navigateTo(APP_ROUTES.login)
+      } else if (window.location.hash) {
+        navigateTo(APP_ROUTES.login)
+      }
+
       return
     }
 
-    if (hasSession && route.name === 'login') {
+    if (route.name === 'login') {
       navigateTo(DEFAULT_ROUTE)
     }
   }, [hasSession, route.name])
 
   useEffect(() => {
-    if (!token) {
+    if (!session?.accessToken) {
       setWorkspace(createEmptyWorkspace())
       return
     }
@@ -92,14 +173,14 @@ function App() {
       }))
 
       try {
-        const data = await fetchWorkspace(token, controller.signal)
+        const data = await fetchWorkspace(requestWithAuth, controller.signal)
 
         if (isCancelled) {
           return
         }
 
         setSession((currentSession) => {
-          if (!currentSession || currentSession.token !== token) {
+          if (!currentSession || currentSession.refreshToken !== session.refreshToken) {
             return currentSession
           }
 
@@ -147,7 +228,7 @@ function App() {
       isCancelled = true
       controller.abort()
     }
-  }, [refreshTick, token])
+  }, [refreshTick, requestWithAuth, session?.accessToken, session?.refreshToken])
 
   const user = session?.user || null
   const canEdit = EDITABLE_ROLES.includes(user?.role)
@@ -157,17 +238,36 @@ function App() {
     route.name === 'event-details'
       ? workspace.events.find((event) => event.id === route.eventId)
       : null
+  const nextThemeLabel = themeMode === 'dark' ? 'Switch to light' : 'Switch to dark'
+
+  function handleToggleTheme() {
+    setThemeMode((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))
+  }
+
+  function handleGoToPublicHome() {
+    navigateTo(APP_ROUTES.login)
+  }
+
+  function handleGoToDashboardHome() {
+    navigateTo(DEFAULT_ROUTE)
+  }
 
   async function handleLogin(credentials) {
     setAuthState({ pending: true, error: '' })
 
     try {
-      const response = await loginUser(credentials)
+      const tokens = await loginUser(credentials)
+      const userProfile = await fetchCurrentUser(tokens.access)
+      const nextSession = {
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+        user: userProfile,
+      }
 
-      setSession(response)
+      setSession(nextSession)
       setBanner({
         tone: 'success',
-        text: `Signed in as ${response.user.full_name}.`,
+        text: `Signed in as ${userProfile.full_name}.`,
       })
       setAuthState({ pending: false, error: '' })
       navigateTo(DEFAULT_ROUTE)
@@ -179,43 +279,66 @@ function App() {
     }
   }
 
-  async function handleLogout() {
-    try {
-      if (token) {
-        await logoutUser(token)
-      }
-    } catch {
-      // Ignore logout failures locally and still clear the stale session.
+  async function handleRegister(formValues) {
+    if (formValues.email.trim().toLowerCase() !== formValues.confirmEmail.trim().toLowerCase()) {
+      setRegisterState({
+        pending: false,
+        error: 'Email addresses do not match.',
+      })
+      return
     }
 
+    if (formValues.password !== formValues.passwordConfirmation) {
+      setRegisterState({
+        pending: false,
+        error: 'Passwords do not match.',
+      })
+      return
+    }
+
+    const profileMeta = buildProfileMetaFromBirthDate(formValues.birthDate)
+
+    if (!profileMeta) {
+      setRegisterState({
+        pending: false,
+        error: 'Enter a valid date of birth to continue.',
+      })
+      return
+    }
+
+    setRegisterState({ pending: true, error: '' })
+
+    try {
+      const userProfile = await registerUser(formValues)
+      writeStoredProfileMeta(
+        {
+          email: userProfile.email || formValues.email,
+          username: userProfile.username || formValues.username,
+        },
+        profileMeta,
+      )
+
+      setRegisterState({ pending: false, error: '' })
+      setBanner({
+        tone: 'success',
+        text: `Account created for ${userProfile.first_name || userProfile.username}.`,
+      })
+    } catch (error) {
+      setRegisterState({
+        pending: false,
+        error: error.message,
+      })
+    }
+  }
+
+  async function handleLogout() {
     setSession(null)
     setWorkspace(createEmptyWorkspace())
     setBanner({
       tone: 'neutral',
-      text: 'The session was cleared on this browser.',
+      text: 'You have been logged out.',
     })
     navigateTo(APP_ROUTES.login)
-  }
-
-  async function requestWithAuth(path, options = {}) {
-    try {
-      return await requestJson(path, {
-        ...options,
-        token,
-      })
-    } catch (error) {
-      if (error.status === 401) {
-        setWorkspace(createEmptyWorkspace())
-        setBanner({
-          tone: 'error',
-          text: 'Your session expired. Please sign in again.',
-        })
-        setSession(null)
-        navigateTo(APP_ROUTES.login)
-      }
-
-      throw error
-    }
   }
 
   function refreshWorkspace() {
@@ -365,6 +488,7 @@ function App() {
           onCreateRegistration={handleCreateRegistration}
           onDeleteRegistration={handleDeleteRegistration}
           onGoToParticipants={() => navigateTo(APP_ROUTES.participants)}
+          onSaveEvent={handleSaveEvent}
           onUpdateRegistrationStatus={handleUpdateRegistrationStatus}
           participants={workspace.participants}
           registrations={workspace.registrations}
@@ -397,18 +521,28 @@ function App() {
           authState={authState}
           banner={banner}
           onDismissBanner={dismissBanner}
+          onLogoClick={handleGoToPublicHome}
+          onRegister={handleRegister}
           onSubmit={handleLogin}
+          onToggleTheme={handleToggleTheme}
+          registerState={registerState}
+          themeMode={themeMode}
+          themeToggleLabel={nextThemeLabel}
         />
       }
       lastUpdated={workspace.lastUpdated}
       onDismissBanner={dismissBanner}
       onLogout={handleLogout}
+      onLogoClick={handleGoToDashboardHome}
       onNavigate={navigateTo}
       onRefresh={refreshWorkspace}
+      onToggleTheme={handleToggleTheme}
       pageMeta={pageMeta}
       renderContent={renderWorkspace}
       routeName={route.name}
       session={session}
+      themeMode={themeMode}
+      themeToggleLabel={nextThemeLabel}
       user={user}
       workspaceStatus={workspace.status}
     />

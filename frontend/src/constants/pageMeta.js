@@ -2,15 +2,15 @@
 export function getPageMeta(route, events) {
   if (route.name === 'events') {
     return {
-      title: 'Events workspace',
-      subtitle: 'Create, edit, filter, and review the calendar of EventHub activities.',
+      title: 'Events',
+      subtitle: 'Browse events, open their details, and update schedules when needed.',
     }
   }
 
   if (route.name === 'participants') {
     return {
-      title: 'Participants workspace',
-      subtitle: 'Maintain attendee profiles and track how many registrations each person owns.',
+      title: 'Participants',
+      subtitle: 'Search participant records and see how many registrations each person has.',
     }
   }
 
@@ -18,12 +18,12 @@ export function getPageMeta(route, events) {
     const matchingEvent = events.find((event) => event.id === route.eventId)
     return {
       title: matchingEvent ? matchingEvent.title : 'Event details',
-      subtitle: 'Review one event, inspect participants, and manage registrations.',
+      subtitle: 'See the event details, connect participants, and update the schedule.',
     }
   }
 
   return {
     title: 'Dashboard',
-    subtitle: 'Watch the whole platform at a glance before jumping into the operational pages.',
+    subtitle: 'Discover events, understand registrations, and jump into the right page quickly.',
   }
 }

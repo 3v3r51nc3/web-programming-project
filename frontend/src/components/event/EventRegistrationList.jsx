@@ -15,8 +15,8 @@ export default function EventRegistrationList({
   if (!eventRegistrations.length) {
     return (
       <EmptyStateCard
-        description="Registrations will appear here once attendees are added to this event."
-        title="No registrations yet"
+        description="Registrations will appear here once participants are connected to this event."
+        title="No participants in this event yet"
       />
     )
   }

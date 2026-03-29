@@ -1,11 +1,13 @@
 // Frontend developer: Mehdi AGHAEI
 import { useEffect, useState } from 'react'
 import EmptyStateCard from '../components/cards/EmptyStateCard'
+import EventCrudForm from '../components/event/EventCrudForm'
 import EventRegistrationForm from '../components/event/EventRegistrationForm'
 import EventRegistrationList from '../components/event/EventRegistrationList'
 import StatusBadge from '../components/common/StatusBadge'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { formatDateTime } from '../utils/dateUtils'
+import { eventToForm } from '../utils/formUtils'
 import {
   getConfirmedRegistrationsCount,
   getEventRegistrations,
@@ -19,10 +21,16 @@ export default function EventDetailsPage({
   onCreateRegistration,
   onDeleteRegistration,
   onGoToParticipants,
+  onSaveEvent,
   onUpdateRegistrationStatus,
   participants,
   registrations,
 }) {
+  const [eventFormValues, setEventFormValues] = useState(() => (event ? eventToForm(event) : null))
+  const [eventFormState, setEventFormState] = useState({
+    pending: false,
+    error: '',
+  })
   const [registrationForm, setRegistrationForm] = useState({
     participantId: '',
     status: 'confirmed',
@@ -34,6 +42,11 @@ export default function EventDetailsPage({
   const [activeRegistrationId, setActiveRegistrationId] = useState(null)
 
   useEffect(() => {
+    setEventFormValues(event ? eventToForm(event) : null)
+    setEventFormState({
+      pending: false,
+      error: '',
+    })
     setRegistrationForm({
       participantId: '',
       status: 'confirmed',
@@ -43,11 +56,11 @@ export default function EventDetailsPage({
       error: '',
     })
     setActiveRegistrationId(null)
-  }, [event?.id])
+  }, [event])
 
   if (!event) {
     return (
-      <section className={surfaceClassNames.card}>
+      <section className={`${surfaceClassNames.card} simple-section`}>
         <EmptyStateCard
           actionLabel="Back to events"
           description="The selected event could not be found in the loaded dataset."
@@ -72,6 +85,45 @@ export default function EventDetailsPage({
       ...currentForm,
       [name]: value,
     }))
+  }
+
+  function updateEventField(eventData) {
+    const { name, value } = eventData.target
+    setEventFormValues((currentFormValues) => ({
+      ...currentFormValues,
+      [name]: value,
+    }))
+  }
+
+  function resetEventForm() {
+    setEventFormValues(eventToForm(event))
+    setEventFormState({
+      pending: false,
+      error: '',
+    })
+  }
+
+  async function handleEventSave(submitEvent) {
+    submitEvent.preventDefault()
+    setEventFormState({
+      pending: true,
+      error: '',
+    })
+
+    try {
+      await onSaveEvent(eventFormValues, event.id)
+    } catch (error) {
+      setEventFormState({
+        pending: false,
+        error: error.message,
+      })
+      return
+    }
+
+    setEventFormState({
+      pending: false,
+      error: '',
+    })
   }
 
   async function handleSubmit(submitEvent) {
@@ -134,7 +186,7 @@ export default function EventDetailsPage({
 
   return (
     <section className="details-grid">
-      <section className={surfaceClassNames.hero}>
+      <section className={`${surfaceClassNames.hero} surface-card--wide simple-section`}>
         <div className="section-heading section-heading--wrap">
           <button className={buttonClassNames.ghost} onClick={onBack} type="button">
             Back to events
@@ -154,18 +206,28 @@ export default function EventDetailsPage({
         </div>
       </section>
 
-      <section className={surfaceClassNames.card}>
+      <section className={`${surfaceClassNames.card} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">Registration workflow</p>
-            <h3 className="surface-title">Add a participant</h3>
+            <p className="panel-label">Participants</p>
+            <h3 className="surface-title">Add people to this event</h3>
           </div>
         </div>
+        <p className="surface-copy">
+          Use this section to connect participants to the event. Each participant can join
+          multiple events, but only once per event.
+        </p>
+        <ul className="rule-list">
+          <li>One participant can register for many events.</li>
+          <li>One event can include many participants.</li>
+          <li>Duplicate registrations for the same participant and event are not allowed.</li>
+        </ul>
 
         <EventRegistrationForm
           availableParticipants={availableParticipants}
           canEdit={canEdit}
           formState={formState}
+          formClassName="event-details-form-grid"
           onChange={updateField}
           onGoToParticipants={onGoToParticipants}
           onSubmit={handleSubmit}
@@ -173,11 +235,33 @@ export default function EventDetailsPage({
         />
       </section>
 
-      <section className={surfaceClassNames.wide}>
+      <section className={`${surfaceClassNames.card} simple-section`}>
+        <EventCrudForm
+          canEdit={canEdit}
+          editingEventId={event.id}
+          formState={eventFormState}
+          formValues={eventFormValues || eventToForm(event)}
+          formClassName="event-details-form-grid"
+          helperText={
+            canEdit
+              ? 'Update the event title, time, location, description, or capacity from here.'
+              : ''
+          }
+          onChange={updateEventField}
+          onReset={resetEventForm}
+          onSubmit={handleEventSave}
+          panelLabel={canEdit ? 'Schedule' : 'View only'}
+          readOnlyDescription="Only admins can update the event title, time, location, description, or capacity."
+          readOnlyTitle="Schedule editing"
+          titleOverride="Edit schedule"
+        />
+      </section>
+
+      <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">Current roster</p>
-            <h3 className="surface-title">Registered participants</h3>
+            <p className="panel-label">Current list</p>
+            <h3 className="surface-title">People registered for this event</h3>
           </div>
         </div>
 

@@ -10,3 +10,239 @@
   white-space: nowrap;
   border: 0;
 }
+
+:root[data-theme='dark'] .app-shell::before,
+:root[data-theme='dark'] .login-shell::before {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 18%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.03), transparent 42%);
+}
+
+:root[data-theme='dark'] .site-header,
+:root[data-theme='dark'] .site-footer {
+  background: linear-gradient(180deg, var(--chrome-top), var(--chrome-mid) 54%, var(--chrome-bottom));
+}
+
+:root[data-theme='dark'] .auth-modal__panel,
+:root[data-theme='dark'] .brand-card,
+:root[data-theme='dark'] .surface-card--hero {
+  background:
+    linear-gradient(180deg, rgba(97, 108, 124, 0.96), rgba(54, 63, 77, 0.96)),
+    var(--card-surface);
+}
+
+:root[data-theme='dark'] .sidebar-panel,
+:root[data-theme='dark'] .login-story,
+:root[data-theme='dark'] .surface-card,
+:root[data-theme='dark'] .feature-card,
+:root[data-theme='dark'] .stat-card,
+:root[data-theme='dark'] .landing-event-card,
+:root[data-theme='dark'] .age-level-card,
+:root[data-theme='dark'] .loading-panel,
+:root[data-theme='dark'] .workspace-header {
+  background: linear-gradient(180deg, rgba(93, 103, 118, 0.92), rgba(56, 65, 78, 0.92));
+  border-color: var(--card-border);
+  box-shadow:
+    inset 0 1px 0 var(--inner-highlight),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    var(--shadow-soft);
+}
+
+:root[data-theme='dark'] .sidebar-panel--soft,
+:root[data-theme='dark'] .spotlight-card {
+  background: linear-gradient(180deg, rgba(103, 113, 128, 0.92), rgba(63, 72, 86, 0.92));
+}
+
+:root[data-theme='dark'] .login-story h1,
+:root[data-theme='dark'] .login-story .workspace-copy,
+:root[data-theme='dark'] .login-story .eyebrow {
+  color: var(--text-strong);
+}
+
+:root[data-theme='dark'] .feature-card,
+:root[data-theme='dark'] .event-card,
+:root[data-theme='dark'] .list-row {
+  border-color: rgba(169, 180, 194, 0.22);
+}
+
+:root[data-theme='dark'] .event-card {
+  background: linear-gradient(180deg, rgba(93, 103, 118, 0.92), rgba(56, 65, 78, 0.92));
+}
+
+:root[data-theme='dark'] .nav-button {
+  background: linear-gradient(180deg, rgba(100, 111, 126, 0.96), rgba(61, 70, 84, 0.96));
+  border-color: rgba(169, 180, 194, 0.28);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme='dark'] .nav-button:hover,
+:root[data-theme='dark'] .nav-button:focus-visible {
+  border-color: rgba(168, 192, 255, 0.42);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.28);
+}
+
+:root[data-theme='dark'] .nav-button--active {
+  background: linear-gradient(180deg, rgba(97, 124, 181, 0.96), rgba(61, 88, 146, 0.96));
+  border-color: rgba(168, 192, 255, 0.48);
+}
+
+:root[data-theme='dark'] .secondary-button {
+  border-color: rgba(169, 180, 194, 0.26);
+  background: linear-gradient(180deg, rgba(100, 111, 126, 0.96), rgba(61, 70, 84, 0.96));
+  color: var(--text-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme='dark'] .ghost-button,
+:root[data-theme='dark'] .banner__dismiss {
+  border-color: rgba(169, 180, 194, 0.24);
+  background: linear-gradient(180deg, rgba(92, 103, 117, 0.94), rgba(58, 67, 80, 0.94));
+  color: var(--text-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 8px 14px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme='dark'] .social-auth__button {
+  border-color: rgba(169, 180, 194, 0.24);
+  background: linear-gradient(180deg, rgba(92, 103, 117, 0.94), rgba(58, 67, 80, 0.94));
+  color: var(--text-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.28),
+    0 8px 14px rgba(0, 0, 0, 0.18);
+}
+
+:root[data-theme='dark'] .field input,
+:root[data-theme='dark'] .field select,
+:root[data-theme='dark'] .field textarea {
+  border-color: rgba(169, 180, 194, 0.26);
+  background: rgba(31, 37, 47, 0.98);
+  color: var(--text-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.26);
+}
+
+:root[data-theme='dark'] .field input::placeholder,
+:root[data-theme='dark'] .field textarea::placeholder {
+  color: rgba(166, 179, 200, 0.72);
+}
+
+:root[data-theme='dark'] .banner--success {
+  background: rgba(18, 61, 47, 0.9);
+  border-color: rgba(82, 183, 136, 0.22);
+  color: #def7e8;
+}
+
+:root[data-theme='dark'] .banner--error,
+:root[data-theme='dark'] .inline-notice--error {
+  background: rgba(76, 24, 36, 0.9);
+  border-color: rgba(255, 158, 158, 0.22);
+  color: #ffe1df;
+}
+
+:root[data-theme='dark'] .banner--neutral {
+  background: rgba(69, 80, 97, 0.9);
+  border-color: rgba(148, 163, 184, 0.18);
+  color: #e2ecff;
+}
+
+:root[data-theme='dark'] .auth-modal__backdrop {
+  background: rgba(4, 8, 13, 0.7);
+}
+
+:root[data-theme='dark'] .auth-modal__divider span {
+  background: rgba(67, 77, 91, 0.96);
+}
+
+:root[data-theme='dark'] .status-badge--accent {
+  background: rgba(154, 184, 255, 0.16);
+  color: #d7e3ff;
+}
+
+:root[data-theme='dark'] .status-badge--warning {
+  background: rgba(255, 186, 117, 0.18);
+  color: #ffe5c3;
+}
+
+:root[data-theme='dark'] .status-badge--success {
+  background: rgba(82, 183, 136, 0.18);
+  color: #d8f8e4;
+}
+
+:root[data-theme='dark'] .status-badge--neutral,
+:root[data-theme='dark'] .metric-pill,
+:root[data-theme='dark'] .detail-chip {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-strong);
+}
+
+:root[data-theme='dark'] .calendar-summary__card,
+:root[data-theme='dark'] .calendar-column,
+:root[data-theme='dark'] .calendar-cell {
+  background: linear-gradient(180deg, rgba(93, 103, 118, 0.92), rgba(56, 65, 78, 0.92));
+  border-color: rgba(169, 180, 194, 0.24);
+}
+
+:root[data-theme='dark'] .calendar-toggle--active {
+  background: linear-gradient(180deg, rgba(97, 124, 181, 0.96), rgba(61, 88, 146, 0.96));
+  border-color: rgba(168, 192, 255, 0.48);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+:root[data-theme='dark'] .calendar-column--today,
+:root[data-theme='dark'] .calendar-cell--today {
+  border-color: rgba(154, 184, 255, 0.34);
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.26);
+}
+
+:root[data-theme='dark'] .calendar-column__header {
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+:root[data-theme='dark'] .calendar-entry {
+  background: rgba(33, 39, 49, 0.98);
+}
+
+:root[data-theme='dark'] .calendar-entry:hover,
+:root[data-theme='dark'] .calendar-entry:focus-visible {
+  border-color: rgba(154, 184, 255, 0.28);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.26);
+}
+
+:root[data-theme='dark'] .calendar-entry--accent {
+  background: rgba(28, 45, 73, 0.94);
+  border-color: rgba(154, 184, 255, 0.2);
+}
+
+:root[data-theme='dark'] .calendar-entry--warning {
+  background: rgba(60, 37, 25, 0.94);
+  border-color: rgba(255, 186, 117, 0.2);
+}
+
+:root[data-theme='dark'] .calendar-entry--success {
+  background: rgba(24, 53, 43, 0.94);
+  border-color: rgba(82, 183, 136, 0.2);
+}
+
+:root[data-theme='dark'] .calendar-entry--neutral {
+  background: rgba(14, 22, 35, 0.92);
+  border-color: rgba(148, 163, 184, 0.16);
+}
+
+:root[data-theme='dark'] .calendar-cell__today {
+  background: rgba(154, 184, 255, 0.16);
+  color: #d7e3ff;
+}
+
+:root[data-theme='dark'] .calendar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.28);
+}

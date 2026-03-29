@@ -70,7 +70,7 @@ export async function requestJson(path, { method = 'GET', token = '', data, sign
   }
 
   if (token) {
-    headers.Authorization = `Token ${token}`
+    headers.Authorization = token.startsWith('Bearer ') ? token : `Bearer ${token}`
   }
 
   const response = await fetch(`${API_BASE_URL}${path}`, {

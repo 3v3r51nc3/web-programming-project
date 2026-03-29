@@ -1,10 +1,9 @@
 // Frontend developer: Mehdi AGHAEI
 import EmptyStateCard from '../components/cards/EmptyStateCard'
-import StatCard from '../components/cards/StatCard'
 import StatusBadge from '../components/common/StatusBadge'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { formatDateTime } from '../utils/dateUtils'
-import { getEventStatus, getParticipantRegistrations } from '../utils/eventUtils'
+import { getEventStatus } from '../utils/eventUtils'
 
 export default function DashboardPage({
   canEdit,
@@ -16,73 +15,103 @@ export default function DashboardPage({
   registrations,
   user,
 }) {
-  const accessLabel = user?.role === 'admin' ? 'Admin access' : canEdit ? 'Editor access' : 'Viewer access'
+  const accessLabel = user?.role === 'admin' ? 'Admin' : canEdit ? 'Editor' : 'Viewer'
 
   const sortedEvents = [...events].sort((leftEvent, rightEvent) => {
     return new Date(leftEvent.date).getTime() - new Date(rightEvent.date).getTime()
   })
-  const nextEvents = sortedEvents.slice(0, 3)
-  const recentParticipants = [...participants]
-    .sort((leftParticipant, rightParticipant) => {
-      return new Date(rightParticipant.created_at).getTime() - new Date(leftParticipant.created_at).getTime()
-    })
-    .slice(0, 4)
+  const nextEvents = sortedEvents.slice(0, 4)
   const fullEvents = events.filter((event) => getEventStatus(event, registrations).label === 'Full')
   const confirmedRegistrations = registrations.filter(
     (registration) => registration.status === 'confirmed',
   ).length
+  const locationSummary = Object.values(
+    events.reduce((locations, event) => {
+      const locationKey = event.location?.trim() || 'Unknown location'
+
+      if (!locations[locationKey]) {
+        locations[locationKey] = {
+          count: 0,
+          location: locationKey,
+          nextDate: event.date,
+        }
+      }
+
+      locations[locationKey].count += 1
+
+      if (new Date(event.date).getTime() < new Date(locations[locationKey].nextDate).getTime()) {
+        locations[locationKey].nextDate = event.date
+      }
+
+      return locations
+    }, {}),
+  )
+    .sort((leftLocation, rightLocation) => {
+      if (rightLocation.count !== leftLocation.count) {
+        return rightLocation.count - leftLocation.count
+      }
+
+      return new Date(leftLocation.nextDate).getTime() - new Date(rightLocation.nextDate).getTime()
+    })
+    .slice(0, 4)
 
   return (
-    <section className="dashboard-grid">
-      <div className="stat-grid">
-        <StatCard
-          description="All event records currently exposed by the API."
-          label="Scheduled events"
-          value={String(events.length)}
-        />
-        <StatCard
-          description="Profiles available for future or current registrations."
-          label="Participants"
-          value={String(participants.length)}
-        />
-        <StatCard
-          description="Attendees with an active place on an event."
-          label="Confirmed registrations"
-          value={String(confirmedRegistrations)}
-        />
-        <StatCard
-          description="Events whose confirmed attendee count reached capacity."
-          label="Full events"
-          value={String(fullEvents.length)}
-        />
-      </div>
-
-      <section className={`${surfaceClassNames.card} spotlight-card`}>
-        <div className="section-heading">
+    <section className="dashboard-grid dashboard-grid--simple">
+      <section className={`${surfaceClassNames.wide} simple-section dashboard-summary`}>
+        <div className="section-heading section-heading--wrap">
           <div>
             <p className="panel-label">Welcome</p>
             <h3 className="surface-title">Hello {user?.full_name}</h3>
+            <p className="surface-copy">
+              EventHub helps people discover events, follow what is coming next, and connect
+              participants to the right event without duplicate registrations.
+            </p>
           </div>
           <StatusBadge label={accessLabel} tone={canEdit ? 'accent' : 'neutral'} />
         </div>
+
+        <div className="dashboard-stats-strip" aria-label="Summary">
+          <div className="dashboard-stat">
+            <span className="dashboard-stat__label">Scheduled events</span>
+            <strong>{events.length}</strong>
+          </div>
+          <div className="dashboard-stat">
+            <span className="dashboard-stat__label">Participants</span>
+            <strong>{participants.length}</strong>
+          </div>
+          <div className="dashboard-stat">
+            <span className="dashboard-stat__label">Confirmed registrations</span>
+            <strong>{confirmedRegistrations}</strong>
+          </div>
+          <div className="dashboard-stat">
+            <span className="dashboard-stat__label">Full events</span>
+            <strong>{fullEvents.length}</strong>
+          </div>
+        </div>
+
         <p className="surface-copy">
-          Use the dashboard as a quick operational summary, then jump to the detailed event or
-          participant pages for CRUD work and registration management.
+          Open any event to view its participants, add new registrations, and keep the schedule
+          and capacity up to date.
         </p>
+        <ul className="rule-list rule-list--compact">
+          <li>One participant can register for multiple events.</li>
+          <li>One event can include multiple participants.</li>
+          <li>The same participant cannot be registered twice for the same event.</li>
+        </ul>
         <div className="button-row">
           <button className={buttonClassNames.primary} onClick={onNavigateToEvents} type="button">
-            Open events
+            Open event list
           </button>
-          <button className={buttonClassNames.secondary} onClick={onNavigateToParticipants} type="button">
-            Open participants
+          <button className={buttonClassNames.ghost} onClick={onNavigateToParticipants} type="button">
+            Open participant list
           </button>
         </div>
       </section>
 
-      <section className={surfaceClassNames.card}>
+      <section className={`${surfaceClassNames.card} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">Next on the calendar</p>
+            <p className="panel-label">Coming up</p>
             <h3 className="surface-title">Upcoming events</h3>
           </div>
         </div>
@@ -111,40 +140,36 @@ export default function DashboardPage({
           </div>
         ) : (
           <EmptyStateCard
-            description="Create your first event from the Events page to populate the dashboard."
+            description="Create your first event from the Events page and it will appear here."
             title="No events yet"
           />
         )}
       </section>
 
-      <section className={surfaceClassNames.card}>
+      <section className={`${surfaceClassNames.card} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">Fresh participant profiles</p>
-            <h3 className="surface-title">Recent sign-ups</h3>
+            <p className="panel-label">Places</p>
+            <h3 className="surface-title">Where events are happening</h3>
           </div>
         </div>
 
-        {recentParticipants.length ? (
+        {locationSummary.length ? (
           <div className="list-stack">
-            {recentParticipants.map((participant) => (
-              <div className="list-row" key={participant.id}>
+            {locationSummary.map((location) => (
+              <div className="list-row" key={location.location}>
                 <div>
-                  <p className="list-title">
-                    {participant.first_name} {participant.last_name}
-                  </p>
-                  <p className="list-meta">{participant.email}</p>
+                  <p className="list-title">{location.location}</p>
+                  <p className="list-meta">Next event: {formatDateTime(location.nextDate)}</p>
                 </div>
-                <span className="metric-pill">
-                  {getParticipantRegistrations(registrations, participant.id).length} reg.
-                </span>
+                <span className="metric-pill">{location.count} events</span>
               </div>
             ))}
           </div>
         ) : (
           <EmptyStateCard
-            description="Once participants are added, the latest profiles will appear here."
-            title="No participant profiles yet"
+            description="Once events are created, their locations will appear here."
+            title="No event locations yet"
           />
         )}
       </section>

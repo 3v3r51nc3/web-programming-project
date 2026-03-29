@@ -8,34 +8,44 @@ export default function EventCrudForm({
   editingEventId,
   formState,
   formValues,
+  formClassName = '',
+  helperText = '',
   onChange,
   onReset,
   onSubmit,
+  panelLabel,
+  readOnlyDescription = 'This account can view events but cannot create or edit them.',
+  readOnlyTitle = 'View only',
+  resetLabel = 'Reset',
+  titleOverride,
 }) {
+  const resolvedPanelLabel = panelLabel || (canEdit ? 'Event form' : 'View only')
+  const resolvedTitle = titleOverride || (editingEventId ? 'Edit event' : 'Create event')
+
   return (
     <>
       <div className="section-heading">
         <div>
-          <p className="panel-label">{canEdit ? 'CRUD form' : 'Read-only mode'}</p>
-          <h3 className="surface-title">{editingEventId ? 'Edit event' : 'Create event'}</h3>
+          <p className="panel-label">{resolvedPanelLabel}</p>
+          <h3 className="surface-title">{resolvedTitle}</h3>
         </div>
         {canEdit ? (
           <button className={buttonClassNames.ghost} onClick={onReset} type="button">
-            Reset
+            {resetLabel}
           </button>
         ) : null}
       </div>
 
       {canEdit ? (
-        <form className="form-grid" onSubmit={onSubmit}>
+        <form className={`form-grid ${formClassName}`.trim()} onSubmit={onSubmit}>
           <label className="field">
             <span>Title</span>
-            <input name="title" onChange={onChange} placeholder="Paris Product Hackathon" value={formValues.title} />
+            <input name="title" onChange={onChange} placeholder="Spring Design Workshop" value={formValues.title} />
           </label>
 
           <label className="field">
             <span>Location</span>
-            <input name="location" onChange={onChange} placeholder="UP Cité campus" value={formValues.location} />
+            <input name="location" onChange={onChange} placeholder="Main Hall" value={formValues.location} />
           </label>
 
           <label className="field field--full">
@@ -58,9 +68,10 @@ export default function EventCrudForm({
             <input min="1" name="capacity" onChange={onChange} type="number" value={formValues.capacity} />
           </label>
 
+          {helperText ? <p className="micro-copy field--full">{helperText}</p> : null}
           {formState.error ? <InlineNotice message={formState.error} tone="error" /> : null}
 
-          <button className={buttonClassNames.primaryWide} disabled={formState.pending} type="submit">
+          <button className={`${buttonClassNames.primaryWide} field--full`} disabled={formState.pending} type="submit">
             {formState.pending
               ? editingEventId
                 ? 'Saving event...'
@@ -71,10 +82,7 @@ export default function EventCrudForm({
           </button>
         </form>
       ) : (
-        <EmptyStateCard
-          description="This account can inspect event data but cannot change the event catalogue."
-          title="Viewer account"
-        />
+        <EmptyStateCard description={readOnlyDescription} title={readOnlyTitle} />
       )}
     </>
   )

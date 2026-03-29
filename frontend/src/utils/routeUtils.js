@@ -1,17 +1,43 @@
 // Frontend developer: Mehdi AGHAEI
 import { APP_ROUTES, DEFAULT_ROUTE } from '../constants/routes'
 
-export function normalizePath(path = '') {
+const APP_NAVIGATION_EVENT = 'eventhub:navigation'
+
+export function normalizePath(path = '', fallbackPath = DEFAULT_ROUTE) {
   const strippedPath = path.replace(/^#/, '').trim()
   if (!strippedPath) {
-    return DEFAULT_ROUTE
+    return fallbackPath
   }
 
   return strippedPath.startsWith('/') ? strippedPath : `/${strippedPath}`
 }
 
+export function readCurrentPath(locationLike = window.location) {
+  if (locationLike.hash) {
+    return normalizePath(locationLike.hash)
+  }
+
+  const pathname = locationLike.pathname?.trim() || ''
+  if (!pathname || pathname === '/' || pathname.endsWith('/index.html')) {
+    return APP_ROUTES.login
+  }
+
+  return normalizePath(pathname)
+}
+
 export function navigateTo(path) {
-  const normalizedPath = normalizePath(path)
+  const normalizedPath = normalizePath(path, APP_ROUTES.login)
+
+  if (normalizedPath === APP_ROUTES.login) {
+    if (window.location.hash) {
+      const nextUrl = `${window.location.pathname}${window.location.search}`
+      window.history.pushState(null, '', nextUrl)
+      window.dispatchEvent(new Event(APP_NAVIGATION_EVENT))
+    }
+
+    return
+  }
+
   const nextHash = `#${normalizedPath}`
 
   if (window.location.hash !== nextHash) {
@@ -19,8 +45,8 @@ export function navigateTo(path) {
   }
 }
 
-export function parseRouteFromHash(hash) {
-  const normalizedPath = normalizePath(hash)
+export function parseRouteFromLocation(locationLike = window.location) {
+  const normalizedPath = readCurrentPath(locationLike)
   const parts = normalizedPath.split('/').filter(Boolean)
 
   if (parts.length === 0 || parts[0] === APP_ROUTES.dashboard.slice(1)) {
@@ -47,4 +73,16 @@ export function parseRouteFromHash(hash) {
   }
 
   return { name: 'dashboard' }
+}
+
+export function addNavigationListener(listener) {
+  window.addEventListener('hashchange', listener)
+  window.addEventListener('popstate', listener)
+  window.addEventListener(APP_NAVIGATION_EVENT, listener)
+
+  return () => {
+    window.removeEventListener('hashchange', listener)
+    window.removeEventListener('popstate', listener)
+    window.removeEventListener(APP_NAVIGATION_EVENT, listener)
+  }
 }

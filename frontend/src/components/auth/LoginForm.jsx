@@ -8,6 +8,7 @@ export default function LoginForm({ authState, onSubmit }) {
     username: '',
     password: '',
   })
+  const [showPassword, setShowPassword] = useState(false)
 
   function updateField(event) {
     const { name, value } = event.target
@@ -30,7 +31,7 @@ export default function LoginForm({ authState, onSubmit }) {
           autoComplete="username"
           name="username"
           onChange={updateField}
-          placeholder="eventhub_admin"
+          placeholder="sorooshaghaei"
           type="text"
           value={credentials.username}
         />
@@ -38,19 +39,29 @@ export default function LoginForm({ authState, onSubmit }) {
 
       <label className="field">
         <span>Password</span>
-        <input
-          autoComplete="current-password"
-          name="password"
-          onChange={updateField}
-          placeholder="Enter your Django password"
-          type="password"
-          value={credentials.password}
-        />
+        <div className="field__control">
+          <input
+            autoComplete="current-password"
+            name="password"
+            onChange={updateField}
+            placeholder="Enter your password"
+            type={showPassword ? 'text' : 'password'}
+            value={credentials.password}
+          />
+          <button
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+            className={`${buttonClassNames.ghost} field__toggle`}
+            onClick={() => setShowPassword((currentValue) => !currentValue)}
+            type="button"
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
       </label>
 
       {authState.error ? <InlineNotice message={authState.error} tone="error" /> : null}
 
-      <button className={buttonClassNames.primaryWide} disabled={authState.pending} type="submit">
+      <button className={`${buttonClassNames.primaryWide} field--full`} disabled={authState.pending} type="submit">
         {authState.pending ? 'Signing in...' : 'Enter dashboard'}
       </button>
     </form>

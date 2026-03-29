@@ -2,21 +2,26 @@
 @import './styles/theme.css';
 @import './styles/app.css';
 :root {
-  --page-bg: #f4eee4;
-  --page-bg-deep: #efe5d6;
-  --card-surface: rgba(255, 255, 255, 0.84);
-  --card-border: rgba(16, 59, 73, 0.1);
-  --text-strong: #16323c;
-  --text-muted: #5d737a;
-  --accent-strong: #0e7280;
-  --accent-soft: #2fa7a5;
-  --shadow-soft: 0 22px 50px rgba(18, 42, 48, 0.08);
-  --heading-font: 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', serif;
-  --body-font: 'Avenir Next', 'Trebuchet MS', 'Segoe UI', sans-serif;
+  --page-bg: #1b58b8;
+  --page-bg-deep: #0a2f73;
+  --page-wash-start: rgba(255, 255, 255, 0.18);
+  --page-wash-end: rgba(255, 255, 0, 0.08);
+  --page-stop: rgba(0, 36, 108, 0.18);
+  --card-surface: #d4d0c8;
+  --card-border: #1c2f4a;
+  --text-strong: #081a38;
+  --text-muted: #233b68;
+  --accent-strong: #d4007f;
+  --accent-soft: #fff6a6;
+  --chrome-top: #fff799;
+  --chrome-mid: #7ec5ff;
+  --chrome-bottom: #1d59b8;
+  --inner-highlight: rgba(255, 255, 255, 0.92);
+  --shadow-soft: 8px 8px 0 rgba(11, 26, 56, 0.4);
+  --heading-font: 'Times New Roman', Times, serif;
+  --body-font: Verdana, Geneva, sans-serif;
   color: var(--text-strong);
-  background:
-    linear-gradient(180deg, rgba(255, 252, 245, 0.88), rgba(244, 238, 228, 0.98)),
-    linear-gradient(135deg, var(--page-bg) 0%, var(--page-bg-deep) 100%);
+  color-scheme: light;
   font-family: var(--body-font);
   font-synthesis: none;
   font-weight: 400;
@@ -24,6 +29,28 @@
   text-rendering: optimizeLegibility;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+}
+
+:root[data-theme='dark'] {
+  --page-bg: #040404;
+  --page-bg-deep: #0c1c42;
+  --page-wash-start: rgba(0, 255, 255, 0.08);
+  --page-wash-end: rgba(255, 0, 153, 0.08);
+  --page-stop: rgba(255, 255, 0, 0.05);
+  --card-surface: #101010;
+  --card-border: #00d9ff;
+  --text-strong: #f7ff9b;
+  --text-muted: #8ffcff;
+  --accent-strong: #ff4dc4;
+  --accent-soft: #0f2d63;
+  --chrome-top: #1d1d1d;
+  --chrome-mid: #0a2d68;
+  --chrome-bottom: #000000;
+  --inner-highlight: rgba(255, 255, 255, 0.1);
+  --shadow-soft: 8px 8px 0 rgba(0, 0, 0, 0.65);
+  --heading-font: 'Times New Roman', Times, serif;
+  --body-font: Verdana, Geneva, sans-serif;
+  color-scheme: dark;
 }
 
 *,
@@ -37,9 +64,21 @@ html {
 }
 
 body {
+  background:
+    radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.55) 1px, transparent 0),
+    linear-gradient(135deg, rgba(255, 255, 0, 0.16), transparent 45%),
+    linear-gradient(225deg, rgba(255, 0, 153, 0.12), transparent 40%),
+    linear-gradient(180deg, var(--page-bg) 0%, var(--page-bg-deep) 100%);
+  background-size: 18px 18px, 100% 100%, 100% 100%, 100% 100%;
+  color: var(--text-strong);
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+  background-attachment: fixed;
+  transition:
+    background 220ms ease,
+    color 220ms ease;
+  cursor: default;
 }
 
 button,
@@ -54,7 +93,7 @@ button {
 }
 
 a {
-  color: inherit;
+  color: #0033cc;
 }
 
 #root {

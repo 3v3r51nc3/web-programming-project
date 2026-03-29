@@ -3,8 +3,8 @@ export default function LoadingState() {
   return (
     <section className="loading-panel">
       <div className="loading-ripple" />
-      <h3>Loading EventHub data...</h3>
-      <p>Fetching the authenticated dashboard, events, participants, and registrations.</p>
+      <h3>Loading your data</h3>
+      <p>Fetching events, participants, registrations, and the latest dashboard summary.</p>
     </section>
   )
 }
