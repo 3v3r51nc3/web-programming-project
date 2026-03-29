@@ -64,6 +64,75 @@ API available at `http://localhost:3001/api/`
 
 Open two terminals and run each quick start above in its own terminal. Both servers are independent and use separate SQLite databases (`backend/db.sqlite3` and `node/db.sqlite3`).
 
+## Public Deployment
+
+This repository is prepared for the following demo deployment shape:
+
+- `frontend/` -> Vercel
+- `backend/` -> Railway
+- database -> SQLite on a Railway mounted volume at `/data/db.sqlite3`
+
+### 1. Create the Railway backend
+
+1. Create a new Railway project from this GitHub repository.
+2. Add a volume and mount it at `/data`.
+3. Set the service build command:
+
+```bash
+pip install -r requirements.txt && python backend/manage.py migrate && python backend/manage.py collectstatic --noinput
+```
+
+4. Set the service start command:
+
+```bash
+gunicorn backend.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
+```
+
+5. Add these Railway environment variables:
+
+```bash
+DJANGO_SECRET_KEY=<strong-random-value>
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=<your-railway-domain>
+DJANGO_CORS_ALLOWED_ORIGINS=https://<your-vercel-domain>
+DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-vercel-domain>
+SQLITE_PATH=/data/db.sqlite3
+```
+
+6. Deploy the service and copy the public Railway URL.
+7. Open a Railway shell and create the admin account:
+
+```bash
+python backend/manage.py createsuperuser
+```
+
+### 2. Create the Vercel frontend
+
+1. Import the same GitHub repository into Vercel.
+2. Set the project root to `frontend/`.
+3. Use:
+
+```bash
+Build command: npm run build
+Output directory: dist
+```
+
+4. Add this Vercel environment variable:
+
+```bash
+VITE_API_BASE_URL=https://<your-railway-domain>/api
+```
+
+5. Deploy and open the generated `*.vercel.app` URL.
+
+### 4. Smoke-test the public site
+
+1. Open the Vercel URL and confirm the login page loads.
+2. Register a normal user and log in.
+3. Confirm events, participants, and registrations load without CORS errors.
+4. Log in with the Railway admin account and verify create, edit, and delete flows.
+5. Restart or redeploy Railway and confirm the data still exists.
+
 ## Report Quick Start
 
 ```bash
