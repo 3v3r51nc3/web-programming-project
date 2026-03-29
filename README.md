@@ -79,13 +79,13 @@ This repository is prepared for the following demo deployment shape:
 3. Set the service build command:
 
 ```bash
-pip install -r requirements.txt && python backend/manage.py migrate && python backend/manage.py collectstatic --noinput
+python backend/manage.py collectstatic --noinput
 ```
 
 4. Set the service start command:
 
 ```bash
-gunicorn backend.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
+python backend/manage.py migrate && gunicorn backend.wsgi:application --chdir backend --bind 0.0.0.0:$PORT
 ```
 
 5. Add these Railway environment variables:
