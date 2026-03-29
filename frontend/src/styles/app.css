@@ -20,11 +20,14 @@
 }
 
 .site-header,
-.site-footer,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
 .app-shell,
 .login-shell {
   position: relative;
-  z-index: 1;
 }
 
 .site-header,
@@ -50,6 +53,12 @@
 .site-header__label,
 .site-footer__note {
   margin: 0;
+}
+
+.site-footer__copyright {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 .site-header__label {

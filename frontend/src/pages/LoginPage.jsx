@@ -177,6 +177,7 @@ export default function LoginPage({
           </button>
         </>
       }
+      hideFooter={Boolean(modalMode || isEventWarningOpen)}
       meta="Discover events"
       onLogoClick={handleLogoClick}
       onToggleTheme={onToggleTheme}

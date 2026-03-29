@@ -1,5 +1,6 @@
 // Frontend developer: Mehdi AGHAEI
 import { useDeferredValue, useEffect, useEffectEvent, useState } from 'react'
+import { createPortal } from 'react-dom'
 import EmptyStateCard from '../components/cards/EmptyStateCard'
 import EventCard from '../components/event/EventCard'
 import EventCrudForm from '../components/event/EventCrudForm'
@@ -37,6 +38,7 @@ export default function EventsPage({
   const deferredQuery = useDeferredValue(filters.query)
   const activeEditingEvent =
     editingEventId === null ? null : events.find((event) => event.id === editingEventId) || null
+  const canRenderModalPortal = typeof document !== 'undefined'
 
   const handleEscapeKey = useEffectEvent(() => {
     if (editingEventId !== null) {
@@ -262,87 +264,93 @@ export default function EventsPage({
         )}
       </section>
 
-      {canEdit && isCreateModalOpen ? (
-        <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-create-title">
-          <div className="event-edit-modal__backdrop" onClick={closeCreateModal} />
+      {canEdit && isCreateModalOpen && canRenderModalPortal
+        ? createPortal(
+            <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-create-title">
+              <div className="event-edit-modal__backdrop" onClick={closeCreateModal} />
 
-          <section className="event-edit-modal__panel">
-            <div className="event-edit-modal__window-bar">
-              <div className="event-edit-modal__window-title">
-                <span className="event-edit-modal__window-dot" aria-hidden="true" />
-                <span id="event-create-title">Create event</span>
-              </div>
+              <section className="event-edit-modal__panel">
+                <div className="event-edit-modal__window-bar">
+                  <div className="event-edit-modal__window-title">
+                    <span className="event-edit-modal__window-dot" aria-hidden="true" />
+                    <span id="event-create-title">Create event</span>
+                  </div>
 
-              <button
-                aria-label="Close event creator"
-                className="event-edit-modal__window-button"
-                disabled={createFormState.pending}
-                onClick={closeCreateModal}
-                type="button"
-              >
-                X
-              </button>
-            </div>
+                  <button
+                    aria-label="Close event creator"
+                    className="event-edit-modal__window-button"
+                    disabled={createFormState.pending}
+                    onClick={closeCreateModal}
+                    type="button"
+                  >
+                    X
+                  </button>
+                </div>
 
-            <div className="event-edit-modal__body">
-              <EventCrudForm
-                canEdit={canEdit}
-                editingEventId={null}
-                formState={createFormState}
-                formValues={createFormValues}
-                helperText="Set the basics, then open the event to manage participants and registrations."
-                onChange={updateCreateForm}
-                onReset={closeCreateModal}
-                onSubmit={handleCreateSubmit}
-                panelLabel="New schedule"
-                resetLabel="Close"
-                titleOverride="Create an event"
-              />
-            </div>
-          </section>
-        </div>
-      ) : null}
+                <div className="event-edit-modal__body">
+                  <EventCrudForm
+                    canEdit={canEdit}
+                    editingEventId={null}
+                    formState={createFormState}
+                    formValues={createFormValues}
+                    helperText="Set the basics, then open the event to manage participants and registrations."
+                    onChange={updateCreateForm}
+                    onReset={closeCreateModal}
+                    onSubmit={handleCreateSubmit}
+                    panelLabel="New schedule"
+                    resetLabel="Close"
+                    titleOverride="Create an event"
+                  />
+                </div>
+              </section>
+            </div>,
+            document.body,
+          )
+        : null}
 
-      {canEdit && activeEditingEvent ? (
-        <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-edit-title">
-          <div className="event-edit-modal__backdrop" onClick={closeEditModal} />
+      {canEdit && activeEditingEvent && canRenderModalPortal
+        ? createPortal(
+            <div className="event-edit-modal" role="dialog" aria-modal="true" aria-labelledby="event-edit-title">
+              <div className="event-edit-modal__backdrop" onClick={closeEditModal} />
 
-          <section className="event-edit-modal__panel">
-            <div className="event-edit-modal__window-bar">
-              <div className="event-edit-modal__window-title">
-                <span className="event-edit-modal__window-dot" aria-hidden="true" />
-                <span id="event-edit-title">Edit event</span>
-              </div>
+              <section className="event-edit-modal__panel">
+                <div className="event-edit-modal__window-bar">
+                  <div className="event-edit-modal__window-title">
+                    <span className="event-edit-modal__window-dot" aria-hidden="true" />
+                    <span id="event-edit-title">Edit event</span>
+                  </div>
 
-              <button
-                aria-label="Close event editor"
-                className="event-edit-modal__window-button"
-                disabled={editFormState.pending}
-                onClick={closeEditModal}
-                type="button"
-              >
-                X
-              </button>
-            </div>
+                  <button
+                    aria-label="Close event editor"
+                    className="event-edit-modal__window-button"
+                    disabled={editFormState.pending}
+                    onClick={closeEditModal}
+                    type="button"
+                  >
+                    X
+                  </button>
+                </div>
 
-            <div className="event-edit-modal__body">
-              <EventCrudForm
-                canEdit={canEdit}
-                editingEventId={editingEventId}
-                formState={editFormState}
-                formValues={editFormValues}
-                helperText="Update the schedule details for the selected event."
-                onChange={updateEditForm}
-                onReset={closeEditModal}
-                onSubmit={handleEditSubmit}
-                panelLabel="Editing schedule"
-                resetLabel="Close"
-                titleOverride={activeEditingEvent.title}
-              />
-            </div>
-          </section>
-        </div>
-      ) : null}
+                <div className="event-edit-modal__body">
+                  <EventCrudForm
+                    canEdit={canEdit}
+                    editingEventId={editingEventId}
+                    formState={editFormState}
+                    formValues={editFormValues}
+                    helperText="Update the schedule details for the selected event."
+                    onChange={updateEditForm}
+                    onReset={closeEditModal}
+                    onSubmit={handleEditSubmit}
+                    panelLabel="Editing schedule"
+                    resetLabel="Close"
+                    titleOverride={activeEditingEvent.title}
+                  />
+                </div>
+              </section>
+            </div>,
+            document.body,
+          )
+        : null}
     </section>
   )
 }

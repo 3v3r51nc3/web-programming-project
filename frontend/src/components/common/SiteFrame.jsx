@@ -14,6 +14,7 @@ export default function SiteFrame({
   footerNote,
   headerLabel,
   headerActions = null,
+  hideFooter = false,
   meta,
   onLogoClick = null,
   onToggleTheme,
@@ -112,55 +113,58 @@ export default function SiteFrame({
 
       <div className="site-frame__content">{children}</div>
 
-      <footer className="site-footer">
-        <p className="site-footer__note">{footerNote}</p>
+      {!hideFooter ? (
+        <footer className="site-footer">
+          <p className="site-footer__note">{footerNote}</p>
+          <p className="site-footer__copyright">All rights reserved 2026.</p>
 
-        {resolvedFooterItems.length ? (
-          <div className="site-footer__links" aria-label="Footer">
-            {resolvedFooterItems.map((item) =>
-              item.href ? (
-                <a className="site-footer__link-button" href={item.href} key={item.label}>
-                  {item.label}
-                </a>
-              ) : item.onClick ? (
-                <button className="site-footer__link-button" key={item.label} onClick={item.onClick} type="button">
-                  {item.label}
-                </button>
-              ) : (
-                <span key={item.label}>{item.label}</span>
-              ),
-            )}
-          </div>
-        ) : null}
+          {resolvedFooterItems.length ? (
+            <div className="site-footer__links" aria-label="Footer">
+              {resolvedFooterItems.map((item) =>
+                item.href ? (
+                  <a className="site-footer__link-button" href={item.href} key={item.label}>
+                    {item.label}
+                  </a>
+                ) : item.onClick ? (
+                  <button className="site-footer__link-button" key={item.label} onClick={item.onClick} type="button">
+                    {item.label}
+                  </button>
+                ) : (
+                  <span key={item.label}>{item.label}</span>
+                ),
+              )}
+            </div>
+          ) : null}
 
-        <div className="site-footer__extras">
-          <div className="retro-badge-strip" aria-label="Retro badges">
-            <a
-              className="retro-badge retro-badge--link"
-              href={HTML4_REFERENCE_URL}
-              rel="noreferrer"
-              target="_blank"
-            >
-              HTML 4.0
-            </a>
-            <a
-              className="retro-badge retro-badge--link"
-              href={WEB_RING_REFERENCE_URL}
-              rel="noreferrer"
-              target="_blank"
-            >
-              WEB RING
-            </a>
-            <a className="retro-badge retro-badge--link" href={`mailto:${CONTACT_EMAIL}?subject=EventHub%20Website`}>
-              EMAIL ME
-            </a>
+          <div className="site-footer__extras">
+            <div className="retro-badge-strip" aria-label="Retro badges">
+              <a
+                className="retro-badge retro-badge--link"
+                href={HTML4_REFERENCE_URL}
+                rel="noreferrer"
+                target="_blank"
+              >
+                HTML 4.0
+              </a>
+              <a
+                className="retro-badge retro-badge--link"
+                href={WEB_RING_REFERENCE_URL}
+                rel="noreferrer"
+                target="_blank"
+              >
+                WEB RING
+              </a>
+              <a className="retro-badge retro-badge--link" href={`mailto:${CONTACT_EMAIL}?subject=EventHub%20Website`}>
+                EMAIL ME
+              </a>
+            </div>
+            <div className="retro-counter" aria-label="Visitor counter">
+              <span className="retro-counter__label">Visitors</span>
+              <span className="retro-counter__digits">{String(visitorCount).padStart(6, '0')}</span>
+            </div>
           </div>
-          <div className="retro-counter" aria-label="Visitor counter">
-            <span className="retro-counter__label">Visitors</span>
-            <span className="retro-counter__digits">{String(visitorCount).padStart(6, '0')}</span>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      ) : null}
     </div>
   )
 }

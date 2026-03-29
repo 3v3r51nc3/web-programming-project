@@ -1,5 +1,6 @@
 // Frontend developer: Mehdi AGHAEI
 import { useDeferredValue, useEffect, useEffectEvent, useState } from 'react'
+import { createPortal } from 'react-dom'
 import EmptyStateCard from '../components/cards/EmptyStateCard'
 import InlineNotice from '../components/common/InlineNotice'
 import { buttonClassNames, surfaceClassNames } from '../styles'
@@ -32,6 +33,7 @@ export default function ParticipantsPage({
     editingParticipantId === null
       ? null
       : participants.find((participant) => participant.id === editingParticipantId) || null
+  const canRenderModalPortal = typeof document !== 'undefined'
 
   const handleEscapeKey = useEffectEvent(() => {
     if (editingParticipantId !== null) {
@@ -271,170 +273,181 @@ export default function ParticipantsPage({
         )}
       </section>
 
-      {canEdit && isCreateModalOpen ? (
-        <div className="participant-edit-modal" role="dialog" aria-modal="true" aria-labelledby="participant-create-title">
-          <div className="participant-edit-modal__backdrop" onClick={closeCreateModal} />
+      {canEdit && isCreateModalOpen && canRenderModalPortal
+        ? createPortal(
+            <div className="participant-edit-modal" role="dialog" aria-modal="true" aria-labelledby="participant-create-title">
+              <div className="participant-edit-modal__backdrop" onClick={closeCreateModal} />
 
-          <section className="participant-edit-modal__panel">
-            <div className="participant-edit-modal__window-bar">
-              <div className="participant-edit-modal__window-title">
-                <span className="participant-edit-modal__window-dot" aria-hidden="true" />
-                <span>Create participant</span>
-              </div>
+              <section className="participant-edit-modal__panel">
+                <div className="participant-edit-modal__window-bar">
+                  <div className="participant-edit-modal__window-title">
+                    <span className="participant-edit-modal__window-dot" aria-hidden="true" />
+                    <span>Create participant</span>
+                  </div>
 
-              <button
-                aria-label="Close participant creator"
-                className="participant-edit-modal__window-button"
-                disabled={createFormState.pending}
-                onClick={closeCreateModal}
-                type="button"
-              >
-                X
-              </button>
-            </div>
-
-            <div className="participant-edit-modal__body">
-              <div className="section-heading">
-                <div>
-                  <p className="panel-label">New profile</p>
-                  <h3 className="surface-title" id="participant-create-title">
-                    Create participant
-                  </h3>
-                </div>
-              </div>
-
-              <form className="form-grid" onSubmit={handleCreateSubmit}>
-                <label className="field">
-                  <span>First name</span>
-                  <input
-                    name="first_name"
-                    onChange={updateCreateForm}
-                    placeholder="Soroosh"
-                    value={createFormValues.first_name}
-                  />
-                </label>
-
-                <label className="field">
-                  <span>Last name</span>
-                  <input
-                    name="last_name"
-                    onChange={updateCreateForm}
-                    placeholder="Aghaei"
-                    value={createFormValues.last_name}
-                  />
-                </label>
-
-                <label className="field field--full">
-                  <span>Email</span>
-                  <input
-                    name="email"
-                    onChange={updateCreateForm}
-                    placeholder="soroosh@example.com"
-                    type="email"
-                    value={createFormValues.email}
-                  />
-                </label>
-
-                {createFormState.error ? <InlineNotice message={createFormState.error} tone="error" /> : null}
-
-                <div className="button-row participant-edit-modal__actions">
                   <button
-                    className={buttonClassNames.ghost}
+                    aria-label="Close participant creator"
+                    className="participant-edit-modal__window-button"
                     disabled={createFormState.pending}
                     onClick={closeCreateModal}
                     type="button"
                   >
-                    Cancel
-                  </button>
-                  <button className={buttonClassNames.primary} disabled={createFormState.pending} type="submit">
-                    {createFormState.pending ? 'Creating...' : 'Create participant'}
+                    X
                   </button>
                 </div>
-              </form>
-            </div>
-          </section>
-        </div>
-      ) : null}
 
-      {canEdit && activeEditingParticipant ? (
-        <div className="participant-edit-modal" role="dialog" aria-modal="true" aria-labelledby="participant-edit-title">
-          <div className="participant-edit-modal__backdrop" onClick={closeEditModal} />
+                <div className="participant-edit-modal__body">
+                  <div className="section-heading">
+                    <div>
+                      <p className="panel-label">New profile</p>
+                      <h3 className="surface-title" id="participant-create-title">
+                        Create participant
+                      </h3>
+                    </div>
+                  </div>
 
-          <section className="participant-edit-modal__panel">
-            <div className="participant-edit-modal__window-bar">
-              <div className="participant-edit-modal__window-title">
-                <span className="participant-edit-modal__window-dot" aria-hidden="true" />
-                <span>Edit participant</span>
-              </div>
+                  <form className="form-grid" onSubmit={handleCreateSubmit}>
+                    <label className="field">
+                      <span>First name</span>
+                      <input
+                        name="first_name"
+                        onChange={updateCreateForm}
+                        placeholder="Soroosh"
+                        value={createFormValues.first_name}
+                      />
+                    </label>
 
-              <button
-                aria-label="Close participant editor"
-                className="participant-edit-modal__window-button"
-                disabled={editFormState.pending}
-                onClick={closeEditModal}
-                type="button"
-              >
-                X
-              </button>
-            </div>
+                    <label className="field">
+                      <span>Last name</span>
+                      <input
+                        name="last_name"
+                        onChange={updateCreateForm}
+                        placeholder="Aghaei"
+                        value={createFormValues.last_name}
+                      />
+                    </label>
 
-            <div className="participant-edit-modal__body">
-              <div className="section-heading">
-                <div>
-                  <p className="panel-label">Editing profile</p>
-                  <h3 className="surface-title" id="participant-edit-title">
-                    {activeEditingParticipant.first_name} {activeEditingParticipant.last_name}
-                  </h3>
+                    <label className="field field--full">
+                      <span>Email</span>
+                      <input
+                        name="email"
+                        onChange={updateCreateForm}
+                        placeholder="soroosh@example.com"
+                        type="email"
+                        value={createFormValues.email}
+                      />
+                    </label>
+
+                    {createFormState.error ? <InlineNotice message={createFormState.error} tone="error" /> : null}
+
+                    <div className="button-row participant-edit-modal__actions">
+                      <button
+                        className={buttonClassNames.ghost}
+                        disabled={createFormState.pending}
+                        onClick={closeCreateModal}
+                        type="button"
+                      >
+                        Cancel
+                      </button>
+                      <button className={buttonClassNames.primary} disabled={createFormState.pending} type="submit">
+                        {createFormState.pending ? 'Creating...' : 'Create participant'}
+                      </button>
+                    </div>
+                  </form>
                 </div>
-              </div>
+              </section>
+            </div>,
+            document.body,
+          )
+        : null}
 
-              <form className="form-grid" onSubmit={handleEditSubmit}>
-                <label className="field">
-                  <span>First name</span>
-                  <input
-                    name="first_name"
-                    onChange={updateEditForm}
-                    placeholder="Soroosh"
-                    value={editFormValues.first_name}
-                  />
-                </label>
+      {canEdit && activeEditingParticipant && canRenderModalPortal
+        ? createPortal(
+            <div className="participant-edit-modal" role="dialog" aria-modal="true" aria-labelledby="participant-edit-title">
+              <div className="participant-edit-modal__backdrop" onClick={closeEditModal} />
 
-                <label className="field">
-                  <span>Last name</span>
-                  <input
-                    name="last_name"
-                    onChange={updateEditForm}
-                    placeholder="Aghaei"
-                    value={editFormValues.last_name}
-                  />
-                </label>
+              <section className="participant-edit-modal__panel">
+                <div className="participant-edit-modal__window-bar">
+                  <div className="participant-edit-modal__window-title">
+                    <span className="participant-edit-modal__window-dot" aria-hidden="true" />
+                    <span>Edit participant</span>
+                  </div>
 
-                <label className="field field--full">
-                  <span>Email</span>
-                  <input
-                    name="email"
-                    onChange={updateEditForm}
-                    placeholder="soroosh@example.com"
-                    type="email"
-                    value={editFormValues.email}
-                  />
-                </label>
-
-                {editFormState.error ? <InlineNotice message={editFormState.error} tone="error" /> : null}
-
-                <div className="button-row participant-edit-modal__actions">
-                  <button className={buttonClassNames.ghost} disabled={editFormState.pending} onClick={closeEditModal} type="button">
-                    Cancel
-                  </button>
-                  <button className={buttonClassNames.primary} disabled={editFormState.pending} type="submit">
-                    {editFormState.pending ? 'Saving...' : 'Save participant'}
+                  <button
+                    aria-label="Close participant editor"
+                    className="participant-edit-modal__window-button"
+                    disabled={editFormState.pending}
+                    onClick={closeEditModal}
+                    type="button"
+                  >
+                    X
                   </button>
                 </div>
-              </form>
-            </div>
-          </section>
-        </div>
-      ) : null}
+
+                <div className="participant-edit-modal__body">
+                  <div className="section-heading">
+                    <div>
+                      <p className="panel-label">Editing profile</p>
+                      <h3 className="surface-title" id="participant-edit-title">
+                        {activeEditingParticipant.first_name} {activeEditingParticipant.last_name}
+                      </h3>
+                    </div>
+                  </div>
+
+                  <form className="form-grid" onSubmit={handleEditSubmit}>
+                    <label className="field">
+                      <span>First name</span>
+                      <input
+                        name="first_name"
+                        onChange={updateEditForm}
+                        placeholder="Soroosh"
+                        value={editFormValues.first_name}
+                      />
+                    </label>
+
+                    <label className="field">
+                      <span>Last name</span>
+                      <input
+                        name="last_name"
+                        onChange={updateEditForm}
+                        placeholder="Aghaei"
+                        value={editFormValues.last_name}
+                      />
+                    </label>
+
+                    <label className="field field--full">
+                      <span>Email</span>
+                      <input
+                        name="email"
+                        onChange={updateEditForm}
+                        placeholder="soroosh@example.com"
+                        type="email"
+                        value={editFormValues.email}
+                      />
+                    </label>
+
+                    {editFormState.error ? <InlineNotice message={editFormState.error} tone="error" /> : null}
+
+                    <div className="button-row participant-edit-modal__actions">
+                      <button
+                        className={buttonClassNames.ghost}
+                        disabled={editFormState.pending}
+                        onClick={closeEditModal}
+                        type="button"
+                      >
+                        Cancel
+                      </button>
+                      <button className={buttonClassNames.primary} disabled={editFormState.pending} type="submit">
+                        {editFormState.pending ? 'Saving...' : 'Save participant'}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </section>
+            </div>,
+            document.body,
+          )
+        : null}
     </section>
   )
 }
