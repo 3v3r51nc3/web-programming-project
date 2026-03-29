@@ -2506,9 +2506,9 @@
 }
 
 .landing-event-card__copy {
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
+  display: block;
+  line-height: 1.45;
+  max-height: calc(1.45em * 3);
   overflow: hidden;
 }
 
