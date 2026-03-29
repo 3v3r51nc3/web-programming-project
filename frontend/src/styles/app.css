@@ -372,7 +372,6 @@
   gap: 0.75rem;
 }
 
-.brand-card,
 .sidebar-panel,
 .surface-card,
 .feature-card,
@@ -386,29 +385,6 @@
     inset 0 -1px 0 rgba(59, 67, 77, 0.12),
     var(--shadow-soft);
   backdrop-filter: none;
-}
-
-.brand-card {
-  position: relative;
-  padding: 1.6rem;
-  padding-left: 2.4rem;
-  background: linear-gradient(180deg, rgba(247, 249, 252, 0.98), rgba(197, 205, 216, 0.96));
-  color: var(--text-strong);
-}
-
-.brand-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 0.95rem;
-  border-radius: 0.8rem 0 0 0.8rem;
-  background: linear-gradient(180deg, #6fa2ff, #2d59ab);
-}
-
-.brand-card__logo {
-  margin-bottom: 0.55rem;
 }
 
 .sidebar-copy {
@@ -1873,7 +1849,6 @@
 @media (max-width: 560px) {
   .site-header,
   .site-footer,
-  .brand-card,
   .sidebar-panel,
   .surface-card,
   .feature-card,
@@ -1994,7 +1969,6 @@
 .site-header,
 .site-footer,
 .workspace-header,
-.brand-card,
 .sidebar-panel,
 .surface-card,
 .feature-card,
@@ -2141,7 +2115,6 @@
   gap: 0.75rem;
 }
 
-.brand-card,
 .sidebar-panel,
 .surface-card,
 .feature-card,
@@ -2155,33 +2128,6 @@
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0) 22%),
     linear-gradient(180deg, #fffdf1, #ddd8ba);
-}
-
-.brand-card {
-  padding: 1.35rem;
-  color: #001d63;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 28%),
-    linear-gradient(135deg, #fff799, #ff9ec8 55%, #7ec5ff);
-}
-
-.brand-card::before {
-  content: 'NEW';
-  top: 0.65rem;
-  bottom: auto;
-  left: auto;
-  right: 0.65rem;
-  width: auto;
-  padding: 0.18rem 0.45rem;
-  border-radius: 0;
-  background: #ff0033;
-  color: #fff799;
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  box-shadow: 2px 2px 0 rgba(8, 26, 56, 0.2);
 }
 
 .login-story h1 {
@@ -2719,7 +2665,6 @@ a,
 :root[data-theme='dark'] .site-header,
 :root[data-theme='dark'] .site-footer,
 :root[data-theme='dark'] .workspace-header,
-:root[data-theme='dark'] .brand-card,
 :root[data-theme='dark'] .sidebar-panel,
 :root[data-theme='dark'] .surface-card,
 :root[data-theme='dark'] .feature-card,
@@ -2820,7 +2765,6 @@ a,
 :root[data-theme='dark'] .feature-card,
 :root[data-theme='dark'] .stat-card,
 :root[data-theme='dark'] .login-story,
-:root[data-theme='dark'] .brand-card,
 :root[data-theme='dark'] .surface-card,
 :root[data-theme='dark'] .event-card,
 :root[data-theme='dark'] .landing-event-card,

@@ -24,7 +24,6 @@
 }
 
 :root[data-theme='dark'] .auth-modal__panel,
-:root[data-theme='dark'] .brand-card,
 :root[data-theme='dark'] .surface-card--hero {
   background:
     linear-gradient(180deg, rgba(97, 108, 124, 0.96), rgba(54, 63, 77, 0.96)),

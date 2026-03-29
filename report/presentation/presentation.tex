@@ -45,7 +45,7 @@
 \setbeamertemplate{blocks}[rounded][shadow=true]
 
 \title[EventHub]{EventHub Project Presentation}
-\subtitle{Web Programming 2026}
+\subtitle{Final Release and Technical Walkthrough}
 \author[Mehdi AGHAEI / Maksym DOLHOV]{Mehdi AGHAEI \and Maksym DOLHOV}
 \institute[UPCite]{Universite Paris Cite}
 \titlegraphic{\includegraphics[width=0.28\textwidth]{../upcite-logo.png}}
@@ -79,7 +79,7 @@
       \vspace{0.8em}
 
       \begin{beamercolorbox}[wd=\linewidth,sep=0.8em,rounded=true,shadow=true,center]{tagbox}
-        \textbf{Responsive SPA}\\[0.25em]
+        \textbf{Retro-responsive SPA}\\[0.25em]
         React + Django + Express
       \end{beamercolorbox}
     \end{column}
@@ -90,14 +90,14 @@
   \begin{exampleblock}{Project goal}
     \textbf{EventHub} is a responsive event-management platform built to manage
     \textbf{events}, \textbf{participants}, and \textbf{registrations} inside one
-    coherent SPA.
+    coherent SPA with a public landing page and a protected workspace.
   \end{exampleblock}
 
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \begin{block}{What the project must show}
         \begin{itemize}
-          \item Protected user access
+          \item Public home page plus protected user access
           \item CRUD workflows on real entities
           \item Clean frontend/backend separation
           \item Responsive UX on desktop and mobile
@@ -121,11 +121,11 @@
     \begin{column}{0.56\textwidth}
       \begin{block}{Demo journey}
         \begin{enumerate}
-          \item Sign in to access the protected workspace
+          \item Open the public landing page at \texttt{/}
+          \item Click a public event preview and trigger the sign-in warning
+          \item Sign in through the retro auth modal
           \item Use the dashboard for a live project summary
-          \item Create, edit, filter, and inspect events
-          \item Open one event and manage registrations
-          \item Manage participant profiles in a dedicated page
+          \item Create, edit, filter, and inspect events and participants with small pop-up windows
         \end{enumerate}
       \end{block}
     \end{column}
@@ -133,9 +133,9 @@
       \begin{exampleblock}{Visible product features}
         \begin{itemize}
           \item Event filtering by text, date, and status
-          \item Capacity tracking and status badges
-          \item Inline validation and error feedback
-          \item Loading, refresh, and empty states
+          \item Theme toggle and consistent header controls
+          \item Modal-based sign-in, register, create, and edit flows
+          \item Loading, refresh, warning, and success states
         \end{itemize}
       \end{exampleblock}
     \end{column}
@@ -168,21 +168,46 @@
 \begin{frame}{Frontend Implementation}
   \begin{block}{Reusable frontend structure}
     \begin{itemize}
-      \item \texttt{components/auth}: login and register forms
-      \item \texttt{components/event}: event CRUD, filters, and registration widgets
-      \item \texttt{components/header}: shell layout and navigation
-      \item \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, \texttt{styles}, and \texttt{HOC}
+      \item \texttt{components/common}: shared site frame and branding
+      \item \texttt{components/auth}: login, register, social buttons, and auth modal
+      \item \texttt{components/event}: CRUD, filters, cards, and registration widgets
+      \item \texttt{components/header}, \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, and \texttt{styles}
     \end{itemize}
   \end{block}
 
   \begin{exampleblock}{Frontend engineering choices}
     \begin{itemize}
-      \item One protected app shell for the authenticated workspace
+      \item One shared site frame for public and authenticated pages
       \item API calls isolated in a service layer
-      \item Local session persistence in the browser
+      \item Local storage for theme, session, and visitor counter behavior
       \item Responsive CSS and reusable UI states across pages
     \end{itemize}
   \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Final Frontend Release Highlights}
+  \begin{columns}[T]
+    \begin{column}{0.53\textwidth}
+      \begin{block}{Release-facing improvements}
+        \begin{itemize}
+          \item Public home page replaces the old hash-login entry
+          \item 1998-inspired visual redesign gives the app a memorable identity
+          \item Event and participant create or edit flows use compact pop-up windows
+          \item Top-right controls stay consistent between public and private screens
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.43\textwidth}
+      \begin{exampleblock}{Small browser features}
+        \begin{itemize}
+          \item Theme toggle with sun and moon icons
+          \item Real mailto link, web-ring style links, and local visitor counter
+          \item Clickable public event previews with access-warning modal
+          \item Simplified favicon and release-safe placeholders
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{Backend Design and Integration}
@@ -213,7 +238,7 @@
 \begin{frame}{Project Status and Conclusion}
   \begin{exampleblock}{Key message}
     EventHub is a coherent full-stack project with a clear domain, a reusable frontend,
-    a structured Django backend, and a credible path to full deployment.
+    a structured Django backend, and a demo-ready final release story.
   \end{exampleblock}
 
   \begin{columns}[T]
@@ -221,8 +246,8 @@
       \begin{block}{Current result}
         \begin{itemize}
           \item Reusable React frontend architecture
-          \item Report with attached appendix
-          \item Service layer prepared for backend connection
+          \item Updated report with explained appendix
+          \item Updated slides aligned with the final product
           \item Frontend passes lint and production build
         \end{itemize}
       \end{block}
@@ -232,7 +257,7 @@
         \begin{itemize}
           \item The project is centered on real workflows, not isolated pages
           \item The architecture separates frontend, API, and data concerns clearly
-          \item Next step: merge the backend branch, verify end-to-end CRUD, and deploy
+          \item The appendix now doubles as a defense and revision guide
         \end{itemize}
       \end{exampleblock}
     \end{column}

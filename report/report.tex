@@ -830,7 +830,7 @@ Events list\\[0.8em]
 \begin{center}
 \includegraphics[width=0.27\textwidth]{upcite-logo.png}\\[1.2em]
 {\Huge\bfseries EventHub Project Report}\\[0.55em]
-{\Large Responsive SPA, Django API, and Express Comparison}\\[1.0em]
+{\Large Final Responsive SPA, Django API, and Express Comparison}\\[1.0em]
 \textcolor{warmtext}{\large Formal Technical Report with Attached Appendix}\\[1.5em]
 \begin{tabularx}{0.84\linewidth}{@{}YY@{}}
 \fcolorbox{black}{panel}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
@@ -851,16 +851,16 @@ Events list\\[0.8em]
 \ProjectSnapshotFigure
 
 \PanelBox{
-EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The first 6--8 pages of this document provide the formal technical report required by the assignment, and the appendix follows immediately afterward in the same PDF for supporting explanations, worked examples, and defense preparation.
+EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The final integrated frontend now includes a public home page at \texttt{/}, a deliberately retro 1998-inspired visual identity, consistent dashboard navigation, modal-based CRUD flows, and verification-ready documentation. The first 6--8 pages of this document provide the formal technical report required by the assignment, and the appendix follows immediately afterward in the same PDF for supporting explanations, worked examples, and defense preparation.
 }
 \end{titlepage}
 \newpage
 
 \section{Introduction}
 
-EventHub is a full-stack web application project whose goal is to deliver a responsive Single Page Application (SPA) for managing events, participants, and registrations. The project must combine a modern frontend with a structured backend, and it must also document a technical comparison between two backend styles: a primary implementation in \textbf{Django} and a smaller comparative implementation in \textbf{Node.js and Express}. The report therefore addresses both software construction and software justification.
+EventHub is a full-stack web application project whose goal is to deliver a responsive Single Page Application (SPA) for managing events, participants, and registrations. The project combines a React frontend, a primary backend in \textbf{Django}, and a smaller comparative backend in \textbf{Node.js and Express}. In its final state, the application opens on a public landing page, encourages authentication through modal sign-in and registration flows, and gives authenticated users a role-aware workspace for dashboard, event, participant, and registration tasks. The report therefore addresses both software construction and software justification.
 
-From a course perspective, the project is designed to connect the main web-programming layers in one coherent system. The frontend is responsible for interaction, responsive layout, navigation, and rendering. The backend is responsible for data modeling, validation, routing, and JSON responses. The two parts communicate through HTTP requests and REST-style API endpoints. The final application must show that these layers are not isolated topics from different lectures, but one integrated engineering workflow.
+From a course perspective, the project is designed to connect the main web-programming layers in one coherent system. The frontend is responsible for interaction, responsive layout, navigation, rendering, browser storage, and release-quality user flows. The backend is responsible for data modeling, validation, routing, and JSON responses. The two parts communicate through HTTP requests and REST-style API endpoints. The final application must show that these layers are not isolated topics from different lectures, but one integrated engineering workflow that can be demonstrated live.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -875,19 +875,19 @@ Maksym DOLHOV & Backend developer responsible for the Django API, backend valida
 
 \section{Project Scope and Requirements}
 
-The technical scope of EventHub is driven by the assignment requirements and by the team's chosen repository organization. The application must provide clear screens for event information, participant data, and the registration relationship that links them. It must remain usable on desktop and mobile screens, which makes responsive design a core requirement rather than a cosmetic improvement. The project must also explain why Django is appropriate as the main backend while still keeping a Node.js and Express version for comparison.
+The technical scope of EventHub is driven by the assignment requirements and by the team's chosen repository organization. The application must provide clear screens for event information, participant data, and the registration relationship that links them. It must remain usable on desktop and mobile screens, which makes responsive design a core requirement rather than a cosmetic improvement. The finished frontend also had to become more presentation-ready: the landing page was redesigned with a retro 1998 style, non-release copy was removed, navigation was simplified, and the create or edit flows were converted into smaller pop-up windows that fit the overall design language.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
 \textbf{Requirement} & \textbf{Technical response in EventHub} \\
 \midrule
-Responsive SPA & React frontend with component-based rendering and CSS layouts that adapt to smaller screens \\
+Responsive SPA & React frontend with component-based rendering, responsive CSS layouts, and a collapsible authenticated sidebar on small screens \\
 Main backend in Django & Relational models, serializers, viewsets, validation rules, and REST endpoints \\
 Backend comparison & Separate Node.js and Express service kept smaller and used as a comparative study backend \\
 Event registration logic & Dedicated \texttt{Registration} model instead of a hidden many-to-many shortcut \\
 Team collaboration & One repository with separate folders for frontend, Django backend, Node backend, and report material \\
-Deployment readiness & Environment configuration, production builds, verification commands, and final public hosting plan \\
+Release readiness & Public landing page, consistent dashboard controls, verified builds, and documentation updated to match the final demo \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -996,7 +996,7 @@ This comparison supports the report argument directly: Django is the better prim
 
 \FrontendFigure
 
-The frontend is a React SPA whose job is to provide a responsive interface for the main user workflows of the application. The frontend must not only display data, but also organize navigation, handle user input, show loading states, display validation feedback, and update the screen after API responses. That makes the frontend a real application layer rather than a simple HTML showcase.
+The frontend is a React SPA whose job is to provide a responsive interface for the main user workflows of the application. In the final release version, it does more than display data: it presents a public home page, opens authentication in a retro-styled modal, gates protected content behind sign-in, keeps a consistent header across public and private screens, and uses compact pop-up forms for create or edit tasks. It also includes a theme switcher, a local visitor counter, direct utility links, and a favicon so that the application feels like a coherent product rather than a disconnected student prototype.
 
 \subsection{HTML, CSS, and React responsibilities}
 
@@ -1007,9 +1007,9 @@ The frontend is built on three complementary layers. HTML provides semantic stru
 \toprule
 \textbf{Frontend layer} & \textbf{Design role in EventHub} \\
 \midrule
-HTML / JSX & Builds semantic structures such as headers, forms, cards, and sections \\
-CSS & Controls spacing, colors, grid or flex layouts, and mobile adaptations \\
-JavaScript & Handles events, filtering logic, API requests, and state transitions \\
+HTML / JSX & Builds semantic structures such as headers, forms, utility bars, cards, pop-up windows, and sections \\
+CSS & Controls spacing, retro visual styling, responsive layouts, theme variants, and modal presentation \\
+JavaScript & Handles events, filtering logic, API requests, browser storage, routing, and state transitions \\
 React & Composes the interface into pages and reusable components with predictable rendering \\
 \bottomrule
 \end{tabularx}
@@ -1022,28 +1022,46 @@ The frontend design is organized around the main user tasks rather than around i
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
-\textbf{Screen or module} & \textbf{Purpose} \\
+\textbf{Screen or module} & \textbf{Purpose in the final frontend} \\
 \midrule
-Login / access control page & Entry point for authenticated or role-based access flows \\
-Dashboard & Overview of the application and quick access to major actions \\
-Events list & Discover, browse, and filter the available events \\
-Event detail / registration view & Show one event clearly and allow the registration workflow \\
-Participants page & Manage participant information and support CRUD operations \\
+Public landing page & Open at \texttt{/}, preview events, surface utility links, and guide users toward sign-in or registration \\
+Authentication modal & Provide sign-in, registration, and retro social sign-in buttons without leaving the current page \\
+Dashboard & Overview of the application and quick access to major actions from a consistent authenticated shell \\
+Events workspace & Browse, filter, create, edit, and inspect events with small pop-up windows for CRUD actions \\
+Event detail / registration view & Show one event clearly and allow registration management with responsive forms \\
+Participants workspace & Manage participant information and support CRUD operations through compact dialogs \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-Responsive design is treated as a functional requirement. The page must remain readable on desktop and mobile widths, which means the CSS strategy must favor flexible grids, meaningful spacing, scalable typography, and component layouts that can collapse from multiple columns to one column without breaking the content hierarchy.
+Responsive design is treated as a functional requirement. The page must remain readable on desktop and mobile widths, which means the CSS strategy must favor flexible grids, meaningful spacing, scalable typography, and component layouts that can collapse from multiple columns to one column without breaking the content hierarchy. In practice this means, for example, that the sidebar collapses behind a toggle on smaller screens, public event cards stay readable without overflow, modal forms reflow into single-column layouts, and the social sign-in buttons stack cleanly when space becomes limited.
+
+\subsection{Final frontend release highlights}
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Implemented release feature} & \textbf{Why it matters} \\
+\midrule
+Home route at \texttt{/} & The application now opens on a real landing page instead of an internal hash-login route \\
+Retro 1998 visual system & Gives the project a memorable identity and demonstrates intentional CSS customization rather than default boilerplate styling \\
+Consistent top-right controls & The theme toggle and auth or workspace actions now stay in the same place across public and authenticated views \\
+Pop-up CRUD forms & Create and edit actions for events and participants are easier to understand and fit better on narrow layouts \\
+Public event warning modal & Unauthenticated visitors can click public event previews and are clearly prompted to sign in or register for full details \\
+Local browser extras & Visitor counter, stored theme, favicon, and utility links demonstrate small but real browser-side behaviors \\
+\bottomrule
+\end{tabularx}
+\end{center}
 
 \subsection{Frontend-to-backend communication}
 
-The frontend communicates with the backend through JSON-based HTTP requests. In practice, this means the React components must support at least three states whenever data is loaded from the API: loading, success, and error. This is a core part of the UI architecture because a professional SPA cannot assume that network requests always succeed immediately.
+The frontend communicates with the backend through JSON-based HTTP requests. In practice, this means the React components must support at least three states whenever data is loaded from the API: loading, success, and error. This is a core part of the UI architecture because a professional SPA cannot assume that network requests always succeed immediately. The final interface also keeps a small status banner for login or registration feedback and automatically clears non-error notices after a short delay so the UI remains readable.
 
 The same principle applies to forms. When a user submits data, the frontend should send a structured request, wait for the backend response, and then either update the screen or render a clear validation message. The frontend therefore acts as a disciplined API client, not as a source of truth about the data model.
 
 \section{Integration, Repository Structure, and Deployment Plan}
 
-Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface.
+Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface. In the final project state, this integration is visible from the public home page all the way to protected CRUD flows, event detail management, and role-aware dashboard behavior.
 
 \BackendJourneyFigure
 
@@ -1060,7 +1078,7 @@ Integration is the point where architecture becomes observable. The frontend sen
 \end{tabularx}
 \end{center}
 
-This repository structure supports teamwork cleanly. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the point where the pieces are brought together and verified as one submission-ready repository. This workflow is compatible with branch-based collaboration as long as the final submitted branch contains all required folders and a working integrated structure.
+This repository structure supports teamwork cleanly. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the point where the pieces are brought together and verified as one submission-ready repository. This workflow is compatible with branch-based collaboration as long as the final submitted branch contains all required folders and a working integrated structure. It also supports the current documentation update, because the report, the presentation, and the application source all live close enough together to be revised consistently before final submission.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -1069,20 +1087,20 @@ This repository structure supports teamwork cleanly. One contributor can focus o
 \midrule
 CORS and local development & Backend configured to allow frontend development requests during integration \\
 Data exchange & JSON payloads with stable field names and predictable validation responses \\
-Frontend verification & Build and lint commands confirm that the SPA compiles and remains structurally valid \\
-Backend verification & Migrations, endpoint checks, and test execution confirm backend consistency \\
+Frontend verification & \texttt{npm run lint} and \texttt{npm run build} confirm that the SPA compiles and remains structurally valid after UI refinements \\
+Usability verification & Responsive checks, overflow fixes, modal adjustments, and placeholder cleanup keep the release version presentation-ready \\
 Deployment & Separate production-ready frontend and backend hosting with environment-specific configuration \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript.
+Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript. Even the project presentation material is part of this readiness, because a live defense is easier when the route structure, seeded demo accounts, and visible product story are all stable and documented.
 
 \section{Conclusion}
 
-The main technical argument of EventHub is straightforward. A responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend form a coherent academic project because each layer has a clear and defensible role. Django is the correct main backend choice for the application domain, React is the correct frontend model for a SPA, and the repository structure supports parallel team work and later integration.
+The main technical argument of EventHub is straightforward. A responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend form a coherent academic project because each layer has a clear and defensible role. Django is the correct main backend choice for the application domain, React is the correct frontend model for a SPA, and the repository structure supports parallel team work and later integration. The final frontend polish strengthens that argument further because it shows the team can take the application from a technically working prototype to a more coherent and demonstrable release candidate.
 
-For that reason, the formal report ends here and the longer supporting material continues immediately below as an appendix inside the same PDF. That appendix contains the detailed learning notes, solved examples, exam practice, and topic-based revision content that remain useful for defense preparation and later study.
+For that reason, the formal report ends here and the longer supporting material continues immediately below as an appendix inside the same PDF. That appendix has now been updated to explain how it should be used, how it maps to the finished EventHub implementation, and how its worked examples, study notes, and defense-preparation material connect back to the project.
 
 \clearpage
 \setcounter{page}{1}
@@ -1094,8 +1112,53 @@ For that reason, the formal report ends here and the longer supporting material 
 \appendix
 
 \PanelBox{
-This appendix is written as a \textbf{self-contained beginner guide} attached after the formal report. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it.
+This appendix is written as a \textbf{self-contained beginner guide} attached after the formal report. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it. The appendix is also the bridge between the final EventHub implementation and course revision: it explains the frontend and backend ideas used in the project, then expands them into reusable study material for the oral defense and the CC1 exam.
 }
+
+\section{How to Read This Appendix}
+
+This appendix is intentionally larger than the formal report because it serves three different jobs at once. First, it is a study guide for beginners who need the core web concepts explained slowly and clearly. Second, it is a revision bank for the oral defense, where the team may need to justify technical choices under time pressure. Third, it is a practical memory aid for the final EventHub implementation, especially now that the product includes a richer landing page, a stronger visual identity, and more refined frontend behavior.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Appendix part} & \textbf{What it is for} \\
+\midrule
+Frontend learning path & Rebuild the foundations of HTML, CSS, JavaScript, React, and state thinking from simple examples \\
+Backend learning path & Revisit API structure, Django models, serializers, routing, and validation rules \\
+Live demonstration notes & Prepare a short, credible story for the final project defense \\
+Independent study bank & Review theory by topic without opening the original lecture material \\
+CC1 practice section & Train on mixed theory and practical questions in the style of the announced exam \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+The most useful way to read the appendix is not from curiosity, but from a concrete need. If the question is visual, start with the frontend sections. If the question is about data trust, validation, or the relation between events and participants, move to the backend sections. If the question is ``what should we show in the defense?'', jump directly to the live demonstration storyboard and the follow-up question tables.
+
+\subsection{How the appendix maps to the finished EventHub project}
+
+Because the frontend evolved significantly during the final release pass, it is important to connect the appendix back to the actual application screens that now exist in the repository.
+
+\begin{center}
+\begin{tabularx}{\textwidth}{@{}lY@{}}
+\toprule
+\textbf{Final EventHub area} & \textbf{Appendix concept that explains it} \\
+\midrule
+Public landing page at \texttt{/} & HTML structure, CSS layout, responsive thinking, and click-handling logic \\
+Authentication modal and social sign-in row & forms, state switching, button semantics, event handling, and small reusable React components \\
+Theme toggle, visitor counter, and utility links & browser storage, conditional rendering, and user-interface feedback \\
+Dashboard with collapsible sidebar & responsive layout strategy, state-driven navigation, and role-aware rendering \\
+Events and participants pop-up forms & controlled inputs, modal composition, validation messages, and CRUD request flow \\
+Event detail page and registrations & relation modeling, API communication, backend validation, and status management \\
+\bottomrule
+\end{tabularx}
+\end{center}
+
+\ChecklistBox{
+Read the appendix in this order when revising the final project quickly: first the formal report pages for the big picture, then the appendix introduction above, then the frontend learning path, then the backend sections, then the live demo storyboard, and finally the CC1 practice set.
+}
+
+\MemoryBox{The appendix is not extra decoration. It is the explanation layer of the project. The formal report states what EventHub is and why it was built this way; the appendix teaches how the same ideas work step by step.}
 
 \section{Frontend Learning Path}
 
@@ -1287,7 +1350,7 @@ function App() {
   return (
     <main className="app-shell">
       <section className="hello-card">
-        <p className="eyebrow">Web Programming 2026</p>
+        <p className="eyebrow">EventHub starter</p>
         <h1>Hello, World.</h1>
         <p className="message">
           This frontend is the starting point for EventHub.
@@ -1301,7 +1364,7 @@ export default App
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal, caption={Visible output}]
-Web Programming 2026
+EventHub starter
 Hello, World.
 This frontend is the starting point for EventHub.
 \end{lstlisting}
@@ -2041,8 +2104,8 @@ function updateField(event) {
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal]
-firstName = "Mehdi"
-email = "mehdi@example.com"
+firstName = "Taylor"
+email = "taylor@example.com"
 \end{lstlisting}
 
 \textbf{Explanation.} Real forms usually have multiple fields. This pattern scales better than writing one state variable per input.
@@ -2343,9 +2406,9 @@ POST /api/participants/
 Content-Type: application/json
 
 {
-  "first_name": "Mehdi",
-  "last_name": "Aghaei",
-  "email": "mehdi@example.com"
+  "first_name": "Taylor",
+  "last_name": "Rivera",
+  "email": "taylor@example.com"
 }
 \end{lstlisting}
 
@@ -2359,9 +2422,9 @@ class ParticipantViewSet(viewsets.ModelViewSet):
 201 Created
 {
   "id": 3,
-  "first_name": "Mehdi",
-  "last_name": "Aghaei",
-  "email": "mehdi@example.com"
+  "first_name": "Taylor",
+  "last_name": "Rivera",
+  "email": "taylor@example.com"
 }
 \end{lstlisting}
 
@@ -3889,7 +3952,7 @@ useEffect(() => {
       <p>Discover the next academic activities.</p>
     </section>
   </main>
-  <footer>Author: Mehdi</footer>
+  <footer>Author: EventHub team</footer>
 </body>
 \end{lstlisting}
 \textbf{Expected visual result.}
@@ -3898,7 +3961,7 @@ useEffect(() => {
 | EventHub   Events   Contact          |
 | Upcoming events                      |
 | Discover the next academic activities|
-| Author: Mehdi                        |
+| Author: EventHub team                |
 +--------------------------------------+
 \end{lstlisting}
 \textbf{Explanation.} This is the correct semantic base before any CSS is added.

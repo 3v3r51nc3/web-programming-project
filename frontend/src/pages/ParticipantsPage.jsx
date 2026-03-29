@@ -391,17 +391,33 @@ export default function ParticipantsPage({
               <form className="form-grid" onSubmit={handleEditSubmit}>
                 <label className="field">
                   <span>First name</span>
-                  <input name="first_name" onChange={updateEditForm} value={editFormValues.first_name} />
+                  <input
+                    name="first_name"
+                    onChange={updateEditForm}
+                    placeholder="Soroosh"
+                    value={editFormValues.first_name}
+                  />
                 </label>
 
                 <label className="field">
                   <span>Last name</span>
-                  <input name="last_name" onChange={updateEditForm} value={editFormValues.last_name} />
+                  <input
+                    name="last_name"
+                    onChange={updateEditForm}
+                    placeholder="Aghaei"
+                    value={editFormValues.last_name}
+                  />
                 </label>
 
                 <label className="field field--full">
                   <span>Email</span>
-                  <input name="email" onChange={updateEditForm} type="email" value={editFormValues.email} />
+                  <input
+                    name="email"
+                    onChange={updateEditForm}
+                    placeholder="soroosh@example.com"
+                    type="email"
+                    value={editFormValues.email}
+                  />
                 </label>
 
                 {editFormState.error ? <InlineNotice message={editFormState.error} tone="error" /> : null}

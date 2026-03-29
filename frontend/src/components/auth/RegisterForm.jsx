@@ -98,7 +98,7 @@ export default function RegisterForm({
         <input
           name="confirmEmail"
           onChange={updateField}
-          placeholder="Repeat your email address"
+          placeholder="Repeat soroosh@example.com"
           required
           type="email"
           value={formValues.confirmEmail}

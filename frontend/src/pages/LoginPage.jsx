@@ -221,15 +221,13 @@ export default function LoginPage({
           <div className="surface-card login-panel__section simple-section">
             <div className="login-panel__block">
               <p className="panel-label">About the app</p>
-              <h2 className="surface-title">A hub for local events and registrations</h2>
+              <h2 className="surface-title">A hub for local events</h2>
               <p className="surface-copy">
                 People come to EventHub to see upcoming events around them, follow schedules, and
-                connect to the right event without creating duplicate registrations.
+                connect to the right event.
               </p>
               <ul className="rule-list rule-list--compact">
-                <li>One participant can register for multiple events.</li>
-                <li>Each event can include many participants.</li>
-                <li>The same participant cannot be registered twice for one event.</li>
+                <li>You can register for multiple events.</li>
               </ul>
             </div>
 

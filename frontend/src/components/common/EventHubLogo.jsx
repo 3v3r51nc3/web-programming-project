@@ -1,3 +1,4 @@
+// Frontend developer: Mehdi AGHAEI
 export default function EventHubLogo({ className = '', mode = 'compact' }) {
   const logoClassName = `eventhub-logo eventhub-logo--${mode} ${className}`.trim()
 

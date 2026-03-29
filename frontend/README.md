@@ -1,4 +1,3 @@
-<!-- Frontend developer: Mehdi AGHAEI -->
 # EventHub Frontend
 
 This folder contains the EventHub React SPA for the EventHub project.
@@ -95,8 +94,3 @@ The frontend is connected to the merged Django backend.
 - session persistence is handled in the browser through `localStorage`
 - API calls are centralized in `src/services/`
 - registration, events, participants, and dashboard data are loaded from the live backend routes
-
-
-<!-- some test users -->
-Admin: soroosh_admin / AdminPass123!
-Viewer: maksym / ViewerPass123!
