@@ -99,6 +99,15 @@ DJANGO_CSRF_TRUSTED_ORIGINS=https://<your-vercel-domain>
 SQLITE_PATH=/data/db.sqlite3
 ```
 
+If you plan to open Vercel deployment-specific URLs, they can change on each deploy. In that case prefer either:
+
+```bash
+DJANGO_CORS_ALLOWED_ORIGIN_REGEXES=^https://.*\.vercel\.app$
+DJANGO_CSRF_TRUSTED_ORIGINS=https://*.vercel.app
+```
+
+or use only the stable Vercel production alias in your browser.
+
 6. Deploy the service and copy the public Railway URL.
 7. Open a Railway shell and create the admin account:
 
