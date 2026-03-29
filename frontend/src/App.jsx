@@ -318,11 +318,19 @@ function App() {
         profileMeta,
       )
 
+      const tokens = await loginUser({ username: formValues.username.trim(), password: formValues.password })
+      const loggedInUser = await fetchCurrentUser(tokens.access)
+      setSession({
+        accessToken: tokens.access,
+        refreshToken: tokens.refresh,
+        user: loggedInUser,
+      })
       setRegisterState({ pending: false, error: '' })
       setBanner({
         tone: 'success',
-        text: `Account created for ${userProfile.first_name || userProfile.username}.`,
+        text: `Account created for ${loggedInUser.full_name || loggedInUser.first_name || loggedInUser.username}.`,
       })
+      navigateTo(DEFAULT_ROUTE)
     } catch (error) {
       setRegisterState({
         pending: false,
