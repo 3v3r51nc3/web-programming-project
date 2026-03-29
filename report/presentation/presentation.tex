@@ -49,7 +49,7 @@
 \author[Mehdi AGHAEI / Maksym DOLHOV]{Mehdi AGHAEI \and Maksym DOLHOV}
 \institute[UPCite]{Universite Paris Cite}
 \titlegraphic{\includegraphics[width=0.28\textwidth]{../upcite-logo.png}}
-\date{March 11, 2026}
+
 
 \begin{document}
 
@@ -69,7 +69,7 @@
         \textbf{Backend:} Maksym DOLHOV\par
         \vspace{0.5em}
         \textbf{Institution:} Universite Paris Cite\par
-        \textbf{Date:} March 11, 2026
+        \textbf{Date:} \today
       \end{beamercolorbox}
     \end{column}
     \begin{column}{0.34\textwidth}
@@ -86,126 +86,157 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{Project Goal}
-  \begin{exampleblock}{Main objective}
-    Build \textbf{EventHub}, a responsive Single Page Application (SPA) for
-    managing events, participants, and registrations.
+\begin{frame}{Project Overview}
+  \begin{exampleblock}{Project goal}
+    \textbf{EventHub} is a responsive event-management platform built to manage
+    \textbf{events}, \textbf{participants}, and \textbf{registrations} inside one
+    coherent SPA.
   \end{exampleblock}
 
-  \begin{itemize}
-    \item Main backend: \textbf{Django REST API}
-    \item Comparison backend: \textbf{Node.js / Express}
-    \item Frontend: \textbf{React} with responsive HTML and CSS
-    \item Team roles: Mehdi AGHAEI on frontend, Maksym DOLHOV on backend
-    \item Final deliverable: one integrated repository and a deployable system
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{System Architecture}
-  \begin{block}{Main flow}
-    Browser $\rightarrow$ React SPA $\rightarrow$ Django REST API $\rightarrow$ Database
-  \end{block}
-
-  \vspace{0.4em}
-
-  \begin{alertblock}{Comparison flow}
-    Browser $\rightarrow$ React SPA $\rightarrow$ Node.js / Express backend
-  \end{alertblock}
-
-  \vspace{0.4em}
-
-  \begin{itemize}
-    \item React handles rendering, state, and API calls
-    \item Django is the main structured backend
-    \item Node.js / Express is kept for backend comparison
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{Backend Design}
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
-      \begin{block}{Django}
+      \begin{block}{What the project must show}
         \begin{itemize}
-          \item Models: \texttt{Event}, \texttt{Participant}, \texttt{Registration}
-          \item Serializers convert data to JSON
-          \item ViewSets expose CRUD endpoints
-          \item Validation protects business rules
+          \item Protected user access
+          \item CRUD workflows on real entities
+          \item Clean frontend/backend separation
+          \item Responsive UX on desktop and mobile
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.44\textwidth}
-      \begin{exampleblock}{Why Django first?}
+      \begin{exampleblock}{Core entities}
         \begin{itemize}
-          \item Strong structure
-          \item Fast CRUD setup
-          \item Good fit for relational data
-          \item Admin and validation support
+          \item \texttt{Event}
+          \item \texttt{Participant}
+          \item \texttt{Registration}
         \end{itemize}
       \end{exampleblock}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Frontend Design}
-  \begin{block}{Frontend responsibilities}
-    \begin{tabularx}{\textwidth}{@{}lX@{}}
-      \toprule
-      \textbf{Layer} & \textbf{Role} \\
-      \midrule
-      HTML / JSX & Semantic page structure and forms \\
-      CSS & Layout, spacing, colors, and responsiveness \\
-      JavaScript & Events, logic, filtering, and API calls \\
-      React & Components, state, rendering, and page composition \\
-      \bottomrule
-    \end{tabularx}
-  \end{block}
-
-  \vspace{0.4em}
-
-  \begin{alertblock}{Frontend focus}
-    \begin{itemize}
-    \item Planned screens: login, dashboard, events, registrations, participants
-    \item Required UI states: loading, success, and error
-    \end{itemize}
-  \end{alertblock}
+\begin{frame}{Main User Flow}
+  \begin{columns}[T]
+    \begin{column}{0.56\textwidth}
+      \begin{block}{Demo journey}
+        \begin{enumerate}
+          \item Sign in to access the protected workspace
+          \item Use the dashboard for a live project summary
+          \item Create, edit, filter, and inspect events
+          \item Open one event and manage registrations
+          \item Manage participant profiles in a dedicated page
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.40\textwidth}
+      \begin{exampleblock}{Visible product features}
+        \begin{itemize}
+          \item Event filtering by text, date, and status
+          \item Capacity tracking and status badges
+          \item Inline validation and error feedback
+          \item Loading, refresh, and empty states
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
 \end{frame}
 
-\begin{frame}{Integration and Repository Structure}
+\begin{frame}{Architecture and Data Model}
+  \begin{block}{Main system flow}
+    Browser $\rightarrow$ React SPA $\rightarrow$ Django REST API $\rightarrow$ Database
+  \end{block}
+
+  \begin{alertblock}{Comparison backend}
+    Node.js / Express is kept as a smaller comparison backend, while Django remains
+    the main production-style backend for the project.
+  \end{alertblock}
+
+  \vspace{0.25em}
+
+  \begin{tabularx}{\textwidth}{@{}lX@{}}
+    \toprule
+    \textbf{Entity} & \textbf{Role in the system} \\
+    \midrule
+    Event & stores title, date, location, description, and capacity \\
+    Participant & stores attendee identity information \\
+    Registration & explicit link between one participant and one event; enables validation and status tracking \\
+    \bottomrule
+  \end{tabularx}
+\end{frame}
+
+\begin{frame}{Frontend Implementation}
+  \begin{block}{Reusable frontend structure}
+    \begin{itemize}
+      \item \texttt{components/auth}: login and register forms
+      \item \texttt{components/event}: event CRUD, filters, and registration widgets
+      \item \texttt{components/header}: shell layout and navigation
+      \item \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, \texttt{styles}, and \texttt{HOC}
+    \end{itemize}
+  \end{block}
+
+  \begin{exampleblock}{Frontend engineering choices}
+    \begin{itemize}
+      \item One protected app shell for the authenticated workspace
+      \item API calls isolated in a service layer
+      \item Local session persistence in the browser
+      \item Responsive CSS and reusable UI states across pages
+    \end{itemize}
+  \end{exampleblock}
+\end{frame}
+
+\begin{frame}{Backend Design and Integration}
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{Django}
+        \begin{itemize}
+          \item Models, serializers, and viewsets
+          \item Token-based authentication endpoints
+          \item CRUD endpoints for events, participants, and registrations
+          \item Validation of duplicate and invalid submissions
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{Frontend integration contract}
+        \begin{itemize}
+          \item \texttt{/auth/login/}, \texttt{/auth/me/}
+          \item \texttt{/events/}, \texttt{/participants/}
+          \item \texttt{/registrations/}
+          \item Clear loading, success, and error handling in the SPA
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Project Status and Conclusion}
+  \begin{exampleblock}{Key message}
+    EventHub is a coherent full-stack project with a clear domain, a reusable frontend,
+    a structured Django backend, and a credible path to full deployment.
+  \end{exampleblock}
+
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
-      \begin{block}{Repository folders}
+      \begin{block}{Current result}
         \begin{itemize}
-          \item \texttt{frontend/}
-          \item \texttt{backend/}
-          \item \texttt{node/}
-          \item \texttt{report/}
+          \item Reusable React frontend architecture
+          \item Report with attached appendix
+          \item Service layer prepared for backend connection
+          \item Frontend passes lint and production build
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.46\textwidth}
-      \begin{exampleblock}{Integration tasks}
+      \begin{exampleblock}{Closing message}
         \begin{itemize}
-          \item Connect React to Django API
-          \item Verify CRUD and validation
-          \item Keep Node backend for comparison
-          \item Prepare deployment configuration
+          \item The project is centered on real workflows, not isolated pages
+          \item The architecture separates frontend, API, and data concerns clearly
+          \item Next step: merge the backend branch, verify end-to-end CRUD, and deploy
         \end{itemize}
       \end{exampleblock}
     \end{column}
   \end{columns}
-\end{frame}
-
-\begin{frame}{Conclusion}
-  \begin{exampleblock}{Key message}
-    EventHub is a coherent full-stack project: React for the SPA, Django for the
-    main backend, and Node.js / Express for comparison.
-  \end{exampleblock}
-
-  \begin{itemize}
-    \item Main report: formal technical summary
-    \item Appendices: detailed learning and exam support
-    \item Presentation: short overview for defense or class presentation
-  \end{itemize}
 
   \vfill
   \centering

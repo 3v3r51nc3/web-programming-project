@@ -1,4 +1,3 @@
-// Frontend developer: Mehdi AGHAEI
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 

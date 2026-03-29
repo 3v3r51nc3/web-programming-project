@@ -42,7 +42,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\sffamily\small EventHub Project Report}
-\fancyhead[R]{\sffamily\small March 11, 2026}
+\fancyhead[R]{\sffamily\small March 29, 2026}
 \fancyfoot[C]{\sffamily\small \thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 \setlength{\headheight}{14pt}
@@ -800,7 +800,7 @@ Events list\\[0.8em]
 \fcolorbox{black}{mintwash}{\parbox[t][31mm][t]{0.84\linewidth}{\centering
 \textbf{Deliverables}\\[0.7em]
 \CardItem{Formal report}
-\CardItem{Appendix}
+\CardItem{Attached appendix}
 \CardItem{Demo-ready repo}
 }}
 \end{minipage}
@@ -831,7 +831,7 @@ Events list\\[0.8em]
 \includegraphics[width=0.27\textwidth]{upcite-logo.png}\\[1.2em]
 {\Huge\bfseries EventHub Project Report}\\[0.55em]
 {\Large Responsive SPA, Django API, and Express Comparison}\\[1.0em]
-\textcolor{warmtext}{\large Formal Report + Guided Appendix}\\[1.5em]
+\textcolor{warmtext}{\large Formal Technical Report with Attached Appendix}\\[1.5em]
 \begin{tabularx}{0.84\linewidth}{@{}YY@{}}
 \fcolorbox{black}{panel}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
 \textbf{Mehdi AGHAEI}\\
@@ -844,28 +844,17 @@ Events list\\[0.8em]
 }}
 \end{tabularx}\\[1.4em]
 {\small Universite Paris Cite}\\[0.35em]
-{\small March 11, 2026}
+{\small March 29, 2026}
 \end{center}
 
 \vspace{1.1em}
 \ProjectSnapshotFigure
 
 \PanelBox{
-EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The document is split into a concise formal report and a large appendix designed for study, defense preparation, and revision.
+EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The first 6--8 pages of this document provide the formal technical report required by the assignment, and the appendix follows immediately afterward in the same PDF for supporting explanations, worked examples, and defense preparation.
 }
 \end{titlepage}
-
-\tableofcontents
 \newpage
-
-\section*{Main Technical Report}
-\addcontentsline{toc}{section}{Main Technical Report (Formal 5--7 pages)}
-
-\PanelBox{
-This first part is the \textbf{formal technical report}. It is the main submission section of the document and is intended to stand on its own as a concise 5--7 page description of the project goals, architecture, technology choices, repository organization, and implementation plan. Everything after the appendix heading is supporting material for learning, revision, and exam preparation.
-}
-
-\FormalReportFlowFigure
 
 \section{Introduction}
 
@@ -1093,16 +1082,19 @@ Deployment is the final engineering step rather than an afterthought. The fronte
 
 The main technical argument of EventHub is straightforward. A responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend form a coherent academic project because each layer has a clear and defensible role. Django is the correct main backend choice for the application domain, React is the correct frontend model for a SPA, and the repository structure supports parallel team work and later integration.
 
-For that reason, the formal report ends here and the rest of the document is deliberately treated as supporting material. The appendices that follow contain detailed learning notes, solved examples, exam practice, and topic-based revision content so that the project remains useful both as a technical submission and as a study document.
+For that reason, the formal report ends here and the longer supporting material continues immediately below as an appendix inside the same PDF. That appendix contains the detailed learning notes, solved examples, exam practice, and topic-based revision content that remain useful for defense preparation and later study.
 
 \clearpage
-\section*{Supporting Material}
-\addcontentsline{toc}{section}{Supporting Material}
+\setcounter{page}{1}
+\renewcommand{\thepage}{A-\arabic{page}}
+\fancyhead[L]{\sffamily\small EventHub Supporting Appendix}
+\section*{Supporting Appendix}
+\addcontentsline{toc}{section}{Supporting Appendix}
 
 \appendix
 
 \PanelBox{
-This appendix is written as a \textbf{self-contained beginner guide}. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it.
+This appendix is written as a \textbf{self-contained beginner guide} attached after the formal report. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it.
 }
 
 \section{Frontend Learning Path}
@@ -4096,5 +4088,4 @@ reload page -> saved theme is restored
 \PanelBox{
 The appendix is meant to be studied repeatedly. Frontend learning should begin with HTML, CSS, JavaScript, and React in that order. Backend learning should begin with API thinking, then Django models, serializers, routes, and only after that the Node.js and Express comparison. The complete independent study bank should be used first, and the CC1 practice section should be used last as the final exam-training block.
 }
-
 \end{document}

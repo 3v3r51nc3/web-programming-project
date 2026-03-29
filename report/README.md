@@ -1,11 +1,13 @@
 # EventHub Report
 
-This folder contains the clean LaTeX writing template for the final project report.
+This folder contains the LaTeX sources for the final EventHub report and presentation.
 
 ## Files
 
-- `report.tex`: editable report source
-- `report.pdf`: compiled preview
+- `report.tex`: report source with the appendix attached after the main 6--8 page body
+- `report.pdf`: compiled report PDF including the appendix
+- `presentation/presentation.tex`: Beamer presentation source
+- `presentation/presentation.pdf`: compiled presentation
 
 ## Writing Structure
 
@@ -19,7 +21,7 @@ This folder contains the clean LaTeX writing template for the final project repo
   - React
 - Integration and Deployment
 - Conclusion
-- Appendix
+- Attached Appendix
 
 ## Build
 
