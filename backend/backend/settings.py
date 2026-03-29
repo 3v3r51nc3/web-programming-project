@@ -26,6 +26,10 @@ def env_bool(name, default=False):
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
+def clean_env_value(value):
+    return str(value).strip().strip('"').strip("'")
+
+
 def env_list(name, default=None):
     value = os.getenv(name)
 
@@ -33,10 +37,10 @@ def env_list(name, default=None):
         if default is None:
             return []
         if isinstance(default, (list, tuple)):
-            return [item for item in default if item]
+            return [clean_env_value(item) for item in default if clean_env_value(item)]
         value = default
 
-    return [item.strip() for item in str(value).split(",") if item.strip()]
+    return [clean_env_value(item) for item in str(value).split(",") if clean_env_value(item)]
 
 
 # Quick-start development settings - unsuitable for production
