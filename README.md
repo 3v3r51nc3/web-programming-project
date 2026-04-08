@@ -52,8 +52,11 @@ API available at `http://localhost:8000/api/`
 
 ### Node.js / Express (port 3001)
 
+Use Node.js 22 for this backend because `better-sqlite3` is a native dependency.
+
 ```bash
 cd node
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"  # macOS Homebrew Node 22
 npm install
 npm run dev
 ```

@@ -18,6 +18,11 @@ export default function AuthModal({
 }) {
   const isRegisterMode = mode === 'register'
   const windowTitle = isRegisterMode ? 'EventHub Registration Center' : 'EventHub Member Access'
+  const introLabel = isRegisterMode ? 'Create account' : 'Sign in'
+  const introTitle = isRegisterMode ? 'Join EventHub' : 'Welcome back'
+  const introCopy = isRegisterMode
+    ? 'Create an account to register for events and connect with people around you.'
+    : 'Sign in to manage registrations, follow events, and keep your account up to date.'
   const introPoints = isRegisterMode
     ? [
         'Create your account and start registering for events in minutes.',
@@ -52,24 +57,6 @@ export default function AuthModal({
         </div>
 
         <div className="auth-modal__body">
-          <aside className="auth-modal__intro">
-            <p className="panel-label">{isRegisterMode ? 'Create account' : 'Sign in'}</p>
-            <h2 className="surface-title" id="auth-modal-title">
-              {isRegisterMode ? 'Join EventHub' : 'Welcome back'}
-            </h2>
-            <p className="surface-copy">
-              {isRegisterMode
-                ? 'Create an account to register for events and connect with people around you.'
-                : 'Sign in to manage registrations, follow events, and keep your account up to date.'}
-            </p>
-
-            <ul className="auth-modal__feature-list">
-              {introPoints.map((point) => (
-                <li key={point}>{point}</li>
-              ))}
-            </ul>
-          </aside>
-
           <div className="auth-modal__content">
             <div className="auth-modal__switch">
               <button
@@ -88,26 +75,38 @@ export default function AuthModal({
               </button>
             </div>
 
-            <div className="auth-modal__social">
-              <p className="panel-label">Social sign-in</p>
-              <SocialAuthButtons onUnavailableProvider={onSocialUnavailable} />
-              <p className="micro-copy">Choose a social sign-in option when available, or continue with email below.</p>
-              {socialNotice ? <InlineNotice message={socialNotice} tone="error" /> : null}
-            </div>
-
-            <div className="auth-modal__divider" aria-hidden="true">
-              <span>or use email</span>
-            </div>
-
-            {authState.error && !isRegisterMode ? <InlineNotice message={authState.error} tone="error" /> : null}
-            {registerState.error && isRegisterMode ? <InlineNotice message={registerState.error} tone="error" /> : null}
-
             <div className="auth-modal__form-shell">
               {isRegisterMode ? (
                 <RegisterForm authState={registerState} onSubmit={onRegister} />
               ) : (
                 <LoginForm authState={authState} onSubmit={onSubmit} />
               )}
+            </div>
+          </div>
+
+          <div className="auth-modal__support">
+            <aside className="auth-modal__intro auth-modal__intro--compact">
+              <p className="panel-label">{introLabel}</p>
+              <h2 className="surface-title auth-modal__intro-title" id="auth-modal-title">
+                {introTitle}
+              </h2>
+              <p className="surface-copy auth-modal__intro-copy">{introCopy}</p>
+
+              <ul className="auth-modal__feature-list">
+                {introPoints.map((point) => (
+                  <li key={point}>{point}</li>
+                ))}
+              </ul>
+            </aside>
+
+            <div className="auth-modal__social">
+              <div className="auth-modal__divider" aria-hidden="true">
+                <span>{isRegisterMode ? 'more ways to connect' : 'other ways to sign in'}</span>
+              </div>
+              <p className="panel-label">Social sign-in</p>
+              <SocialAuthButtons onUnavailableProvider={onSocialUnavailable} />
+              <p className="micro-copy">Choose a social sign-in option when available, or continue with email above.</p>
+              {socialNotice ? <InlineNotice message={socialNotice} tone="error" /> : null}
             </div>
           </div>
         </div>

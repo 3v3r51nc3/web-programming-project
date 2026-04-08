@@ -8,9 +8,34 @@ import errorHandler from "./middleware/errorHandler.js";
 
 const app = express();
 const port = process.env.PORT || 3001;
+const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+function isAllowedOrigin(origin) {
+  if (!origin) {
+    return true;
+  }
+
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+
+  return /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin);
+}
 
 // Middleware
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(cors({
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error(`CORS origin not allowed: ${origin}`));
+  },
+}));
 app.use(express.json());
 
 // Routes

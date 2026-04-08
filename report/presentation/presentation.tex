@@ -1,8 +1,8 @@
 \documentclass[aspectratio=169,11pt]{beamer}
 
-\usetheme{Madrid}
-\usecolortheme{default}
+\usetheme{default}
 \setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
 
 \usepackage[T1]{fontenc}
 \usepackage{booktabs}
@@ -10,42 +10,62 @@
 \usepackage{xcolor}
 \usepackage{graphicx}
 
-\definecolor{panel}{HTML}{FFF8EE}
-\definecolor{linegold}{HTML}{D7B98A}
-\definecolor{softgreen}{HTML}{F4F8F4}
-\definecolor{skywash}{HTML}{EAF4FF}
-\definecolor{mintwash}{HTML}{EDF8F1}
-\definecolor{rosewash}{HTML}{FFF0EC}
-\definecolor{sunwash}{HTML}{FFF4CF}
-\definecolor{ink}{HTML}{182620}
-\definecolor{warmtext}{HTML}{8A6A3B}
-\definecolor{accentred}{HTML}{C2573F}
+\definecolor{pageblue}{HTML}{1B58B8}
+\definecolor{pagedeep}{HTML}{0A2F73}
+\definecolor{winsurface}{HTML}{D4D0C8}
+\definecolor{winborder}{HTML}{001D63}
+\definecolor{wintext}{HTML}{081A38}
+\definecolor{mutedtext}{HTML}{233B68}
+\definecolor{hotpink}{HTML}{D4007F}
+\definecolor{chromeyellow}{HTML}{FFF799}
+\definecolor{chromeblue}{HTML}{7EC5FF}
+\definecolor{paperwhite}{HTML}{FFFDF1}
+\definecolor{orange}{HTML}{FF6B00}
 
-\setbeamercolor{structure}{fg=ink}
-\setbeamercolor{title}{fg=ink}
-\setbeamercolor{subtitle}{fg=accentred}
-\setbeamercolor{author}{fg=ink}
-\setbeamercolor{date}{fg=warmtext}
-\setbeamercolor{frametitle}{fg=ink,bg=skywash}
-\setbeamercolor{block title}{fg=ink,bg=softgreen}
-\setbeamercolor{block body}{fg=black,bg=panel}
-\setbeamercolor{exampleblock title}{fg=ink,bg=mintwash}
-\setbeamercolor{exampleblock body}{fg=black,bg=softgreen}
-\setbeamercolor{alertblock title}{fg=ink,bg=rosewash}
-\setbeamercolor{alertblock body}{fg=black,bg=panel}
-\setbeamercolor{palette primary}{fg=white,bg=ink}
-\setbeamercolor{palette secondary}{fg=ink,bg=sunwash}
-\setbeamercolor{palette tertiary}{fg=ink,bg=skywash}
-\setbeamercolor{item}{fg=accentred}
-\setbeamercolor{titlebox}{fg=ink,bg=skywash}
-\setbeamercolor{rolebox}{fg=ink,bg=panel}
-\setbeamercolor{tagbox}{fg=ink,bg=mintwash}
+\setbeamercolor{background canvas}{bg=pageblue!9}
+\setbeamercolor{normal text}{fg=wintext,bg=pageblue!9}
+\setbeamercolor{structure}{fg=hotpink}
+\setbeamercolor{title}{fg=winborder}
+\setbeamercolor{subtitle}{fg=hotpink}
+\setbeamercolor{author}{fg=wintext}
+\setbeamercolor{date}{fg=mutedtext}
+\setbeamercolor{frametitle}{fg=winborder,bg=chromeyellow}
+\setbeamercolor{block title}{fg=winborder,bg=chromeyellow}
+\setbeamercolor{block body}{fg=wintext,bg=winsurface}
+\setbeamercolor{exampleblock title}{fg=winborder,bg=chromeblue}
+\setbeamercolor{exampleblock body}{fg=wintext,bg=paperwhite}
+\setbeamercolor{alertblock title}{fg=white,bg=hotpink}
+\setbeamercolor{alertblock body}{fg=wintext,bg=paperwhite}
+\setbeamercolor{item}{fg=hotpink}
+\setbeamercolor{titlebox}{fg=winborder,bg=winsurface}
+\setbeamercolor{rolebox}{fg=wintext,bg=paperwhite}
+\setbeamercolor{tagbox}{fg=winborder,bg=chromeyellow}
+\setbeamercolor{browserbar}{fg=winborder,bg=chromeblue}
+\setbeamercolor{urlbar}{fg=wintext,bg=paperwhite}
+\setbeamercolor{footerbar}{fg=paperwhite,bg=winborder}
 \setbeamerfont{title}{size=\LARGE,series=\bfseries}
-\setbeamerfont{subtitle}{size=\Large,series=\bfseries}
-\setbeamertemplate{blocks}[rounded][shadow=true]
+\setbeamerfont{subtitle}{size=\large,series=\bfseries}
+\setbeamerfont{frametitle}{size=\large,series=\bfseries}
+\setbeamerfont{block title}{size=\normalsize,series=\bfseries}
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{itemize item}{\ttfamily\color{hotpink}>}
+\setbeamertemplate{itemize subitem}{\ttfamily\color{hotpink}+}
+\setbeamertemplate{enumerate item}{\colorbox{chromeyellow}{\color{winborder}\insertenumlabel.}}
+\setbeamertemplate{frametitle}{%
+  \vspace{0.35em}%
+  \begin{beamercolorbox}[wd=\paperwidth,sep=0.55em,leftskip=0.8em,rightskip=0.8em]{frametitle}
+    \insertframetitle\hfill{\ttfamily\scriptsize EventHub.html}
+  \end{beamercolorbox}%
+}
+\setbeamertemplate{footline}{%
+  \leavevmode%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=2.4ex,dp=0.9ex,leftskip=1em,rightskip=1em]{footerbar}
+    {\ttfamily EventHub Online}\hfill{\ttfamily slide \insertframenumber/\inserttotalframenumber}
+  \end{beamercolorbox}%
+}
 
 \title[EventHub]{EventHub Project Presentation}
-\subtitle{Final Release and Technical Walkthrough}
+\subtitle{What We Built and How It Runs}
 \author[Mehdi AGHAEI / Maksym DOLHOV]{Mehdi AGHAEI \and Maksym DOLHOV}
 \institute[UPCite]{Universite Paris Cite}
 \titlegraphic{\includegraphics[width=0.28\textwidth]{../upcite-logo.png}}
@@ -54,9 +74,18 @@
 \begin{document}
 
 \begin{frame}[plain]
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.35em,leftskip=0.7em,rightskip=0.7em]{browserbar}
+    {\ttfamily EventHub Online}\hfill{\ttfamily [ ] [ ] [x]}
+  \end{beamercolorbox}
+  \begin{beamercolorbox}[wd=\textwidth,sep=0.35em,leftskip=0.7em,rightskip=0.7em]{urlbar}
+    {\ttfamily http://localhost:5173/}\hfill{\ttfamily API :8000 \quad Express :3001}
+  \end{beamercolorbox}
+
+  \vspace{0.75em}
+
   \begin{columns}[c,totalwidth=\textwidth]
     \begin{column}{0.62\textwidth}
-      \begin{beamercolorbox}[wd=\linewidth,sep=1.2em,rounded=true,shadow=true]{titlebox}
+      \begin{beamercolorbox}[wd=\linewidth,sep=1.1em]{titlebox}
         {\usebeamerfont{title}\inserttitle\par}
         \vspace{0.45em}
         {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
@@ -64,7 +93,7 @@
 
       \vspace{0.8em}
 
-      \begin{beamercolorbox}[wd=\linewidth,sep=0.9em,rounded=true,shadow=true]{rolebox}
+      \begin{beamercolorbox}[wd=\linewidth,sep=0.8em]{rolebox}
         \textbf{Frontend:} Mehdi AGHAEI\par
         \textbf{Backend:} Maksym DOLHOV\par
         \vspace{0.5em}
@@ -78,38 +107,39 @@
 
       \vspace{0.8em}
 
-      \begin{beamercolorbox}[wd=\linewidth,sep=0.8em,rounded=true,shadow=true,center]{tagbox}
-        \textbf{Retro-responsive SPA}\\[0.25em]
-        React + Django + Express
+      \begin{beamercolorbox}[wd=\linewidth,sep=0.7em,center]{tagbox}
+        \textbf{Responsive EventHub SPA}\\[0.25em]
+        React frontend, Django backend, Express comparison
       \end{beamercolorbox}
     \end{column}
   \end{columns}
 \end{frame}
 
 \begin{frame}{Project Overview}
+  \small
   \begin{exampleblock}{Project goal}
-    \textbf{EventHub} is a responsive event-management platform built to manage
-    \textbf{events}, \textbf{participants}, and \textbf{registrations} inside one
-    coherent SPA with a public landing page and a protected workspace.
+    In this project, we built \textbf{EventHub}, a responsive web app for
+    \textbf{events}, \textbf{participants}, and \textbf{registrations}. It combines
+    a public landing page with a protected React workspace connected to a Django REST API.
   \end{exampleblock}
 
   \begin{columns}[T]
     \begin{column}{0.52\textwidth}
       \begin{block}{What the project must show}
         \begin{itemize}
-          \item Public home page plus protected user access
-          \item CRUD workflows on real entities
-          \item Clean frontend/backend separation
-          \item Responsive UX on desktop and mobile
+          \item Public event discovery and protected user access
+          \item CRUD workflows on real database entities
+          \item Clear separation between frontend, backend, and API
+          \item Responsive behavior on desktop and mobile
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.44\textwidth}
       \begin{exampleblock}{Core entities}
         \begin{itemize}
-          \item \texttt{Event}
-          \item \texttt{Participant}
-          \item \texttt{Registration}
+          \item \texttt{Event}: title, date, location, capacity
+          \item \texttt{Participant}: identity and email
+          \item \texttt{Registration}: event-participant link
         \end{itemize}
       \end{exampleblock}
     \end{column}
@@ -119,23 +149,23 @@
 \begin{frame}{Main User Flow}
   \begin{columns}[T]
     \begin{column}{0.56\textwidth}
-      \begin{block}{Demo journey}
+      \begin{block}{Typical user flow}
         \begin{enumerate}
-          \item Open the public landing page at \texttt{/}
-          \item Click a public event preview and trigger the sign-in warning
-          \item Sign in through the retro auth modal
-          \item Use the dashboard for a live project summary
-          \item Create, edit, filter, and inspect events and participants with small pop-up windows
+          \item Open the landing page and preview upcoming events
+          \item Register or log in with the modal
+          \item Enter the dashboard and load live API data
+          \item Create, edit, filter, and inspect events and participants
+          \item Manage registrations from the event details page
         \end{enumerate}
       \end{block}
     \end{column}
     \begin{column}{0.40\textwidth}
-      \begin{exampleblock}{Visible product features}
+      \begin{exampleblock}{Visible features}
         \begin{itemize}
           \item Event filtering by text, date, and status
-          \item Theme toggle and consistent header controls
+          \item Theme toggle and consistent navigation controls
           \item Modal-based sign-in, register, create, and edit flows
-          \item Loading, refresh, warning, and success states
+          \item Loading, refresh, warning, success, and error states
         \end{itemize}
       \end{exampleblock}
     \end{column}
@@ -144,12 +174,12 @@
 
 \begin{frame}{Architecture and Data Model}
   \begin{block}{Main system flow}
-    Browser $\rightarrow$ React SPA $\rightarrow$ Django REST API $\rightarrow$ Database
+    Browser $\rightarrow$ Vite / React SPA $\rightarrow$ Django REST API on \texttt{:8000} $\rightarrow$ SQLite database
   \end{block}
 
   \begin{alertblock}{Comparison backend}
-    Node.js / Express is kept as a smaller comparison backend, while Django remains
-    the main production-style backend for the project.
+    Node.js / Express runs separately on \texttt{:3001}. It is here for comparison,
+    while Django remains the main backend of the project.
   \end{alertblock}
 
   \vspace{0.25em}
@@ -158,9 +188,9 @@
     \toprule
     \textbf{Entity} & \textbf{Role in the system} \\
     \midrule
-    Event & stores title, date, location, description, and capacity \\
-    Participant & stores attendee identity information \\
-    Registration & explicit link between one participant and one event; enables validation and status tracking \\
+    Event & stores title, description, date, location, capacity, and creation time \\
+    Participant & stores attendee identity information and unique email \\
+    Registration & links one participant to one event; enforces uniqueness, status, and capacity validation \\
     \bottomrule
   \end{tabularx}
 \end{frame}
@@ -168,42 +198,42 @@
 \begin{frame}{Frontend Implementation}
   \begin{block}{Reusable frontend structure}
     \begin{itemize}
-      \item \texttt{components/common}: shared site frame and branding
+      \item \texttt{components/common}: shared site frame, banners, and loading states
       \item \texttt{components/auth}: login, register, social buttons, and auth modal
-      \item \texttt{components/event}: CRUD, filters, cards, and registration widgets
-      \item \texttt{components/header}, \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, and \texttt{styles}
+      \item \texttt{components/event}: CRUD forms, filters, cards, and registration widgets
+      \item \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, and \texttt{styles} separate screen, API, and helper logic
     \end{itemize}
   \end{block}
 
   \begin{exampleblock}{Frontend engineering choices}
     \begin{itemize}
-      \item One shared site frame for public and authenticated pages
-      \item API calls isolated in a service layer
-      \item Local storage for theme, session, and visitor counter behavior
-      \item Responsive CSS and reusable UI states across pages
+      \item \texttt{VITE\_API\_BASE\_URL} controls which backend the SPA calls
+      \item API calls are isolated in \texttt{src/services}
+      \item Local storage keeps theme, session, and profile metadata
+      \item Responsive CSS and reusable UI states keep the pages consistent
     \end{itemize}
   \end{exampleblock}
 \end{frame}
 
-\begin{frame}{Final Frontend Release Highlights}
+\begin{frame}{Frontend Changes in the Final Version}
   \begin{columns}[T]
     \begin{column}{0.53\textwidth}
-      \begin{block}{Release-facing improvements}
+      \begin{block}{Main improvements}
         \begin{itemize}
-          \item Public home page replaces the old hash-login entry
-          \item 1998-inspired visual redesign gives the app a memorable identity
-          \item Event and participant create or edit flows use compact pop-up windows
-          \item Top-right controls stay consistent between public and private screens
+          \item Public home page introduces the project before authentication
+          \item Retro-inspired redesign gives the app a clear identity
+          \item Event and participant create/edit flows use compact modal windows
+          \item Protected workspace uses a reusable shell and sidebar navigation
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.43\textwidth}
-      \begin{exampleblock}{Small browser features}
+      \begin{exampleblock}{Extra frontend details}
         \begin{itemize}
-          \item Theme toggle with sun and moon icons
-          \item Real mailto link, web-ring style links, and local visitor counter
-          \item Clickable public event previews with access-warning modal
-          \item Simplified favicon and release-safe placeholders
+          \item Theme toggle and persistent visitor-facing preferences
+          \item Public event previews with an access-warning modal
+          \item Inline banners for success, error, refresh, and session state
+          \item Production build output in \texttt{frontend/dist}
         \end{itemize}
       \end{exampleblock}
     \end{column}
@@ -216,56 +246,89 @@
       \begin{block}{Django}
         \begin{itemize}
           \item Models, serializers, and viewsets
-          \item Token-based authentication endpoints
+          \item JWT endpoints for register, login, refresh, and profile
           \item CRUD endpoints for events, participants, and registrations
-          \item Validation of duplicate and invalid submissions
+          \item Validation for dates, duplicates, permissions, and capacity
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.44\textwidth}
       \begin{exampleblock}{Frontend integration contract}
         \begin{itemize}
-          \item \texttt{/auth/login/}, \texttt{/auth/me/}
+          \item \texttt{/auth/register/}, \texttt{/auth/token/}
+          \item \texttt{/auth/token/refresh/}, \texttt{/auth/me/}
           \item \texttt{/events/}, \texttt{/participants/}
           \item \texttt{/registrations/}
-          \item Clear loading, success, and error handling in the SPA
+          \item Express comparison: \texttt{:3001/api/events} and \texttt{:3001/api/participants}
         \end{itemize}
       \end{exampleblock}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Project Status and Conclusion}
+\begin{frame}{Django vs Node.js / Express}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \begin{block}{Django}
+        \begin{itemize}
+          \item Full framework with models, serializers, auth, admin, and migrations
+          \item Strong project structure and clear CRUD organization
+          \item Better fit for EventHub because registrations and validation are central
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \begin{exampleblock}{Node.js / Express}
+        \begin{itemize}
+          \item Node.js runtime with Express as a lightweight HTTP framework
+          \item More flexible file structure, but more manual validation and setup
+          \item Useful for smaller APIs and I/O-heavy services
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+
+  \vspace{0.25em}
+
+  \begin{alertblock}{Why both appear in this project}
+    Django is the main backend because EventHub needs models, authentication,
+    and registration logic. Express stays as the comparison backend to show the lighter approach.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Current State and Conclusion}
+  \footnotesize
   \begin{exampleblock}{Key message}
-    EventHub is a coherent full-stack project with a clear domain, a reusable frontend,
-    a structured Django backend, and a demo-ready final release story.
+    EventHub is a complete full-stack course project with a clear domain, a reusable frontend,
+    a structured Django backend, and a smaller Express comparison backend.
   \end{exampleblock}
 
   \begin{columns}[T]
     \begin{column}{0.5\textwidth}
       \begin{block}{Current result}
         \begin{itemize}
-          \item Reusable React frontend architecture
-          \item Updated report with explained appendix
-          \item Updated slides aligned with the final product
-          \item Frontend passes lint and production build
+          \item Django runs from the single project \texttt{.venv} on \texttt{:8000}
+          \item React runs with Vite and calls \texttt{http://localhost:8000/api}
+          \item Express runs with Homebrew Node.js 22 on \texttt{:3001}
+          \item Local CORS is configured for Vite development ports
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.46\textwidth}
       \begin{exampleblock}{Closing message}
         \begin{itemize}
-          \item The project is centered on real workflows, not isolated pages
-          \item The architecture separates frontend, API, and data concerns clearly
-          \item The appendix now doubles as a defense and revision guide
+          \item The project is based on real workflows, not isolated pages
+          \item Django is the main backend, and Express is used for comparison
+          \item The report and slides match the final runnable workspace
         \end{itemize}
       \end{exampleblock}
     \end{column}
   \end{columns}
 
-  \vfill
+  \vspace{0.2em}
   \centering
-  {\color{warmtext}\Large Questions?}
+  {\color{hotpink}\large Questions?}
 \end{frame}
 
 \end{document}

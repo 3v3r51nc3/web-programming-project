@@ -172,7 +172,7 @@
 \par\vspace{0.8em}
 {\sffamily\footnotesize\color{warmtext}Comparison path}\par\vspace{0.35em}
 \makebox[\linewidth][c]{%
-\FlowCard{softgreen}{0.56\linewidth}{14mm}{The same frontend can also target the smaller Node.js / Express backend for comparison and discussion.}}
+\FlowCard{softgreen}{0.64\linewidth}{14mm}{A smaller Node.js / Express service exposes events and participants for comparison; Django keeps auth and registrations.}}
 }
 }
 
@@ -655,9 +655,9 @@ Events list\\[0.8em]
 \centering
 \fcolorbox{black}{sunwash}{\parbox[t][42mm][t]{0.88\linewidth}{\centering
 \textbf{Node.js / Express}\par\vspace{0.7em}
-\CardItem{JavaScript runtime with lightweight routing}
-\CardItem{Manual middleware and custom structure}
-\CardItem{Flexible for smaller APIs and experiments}
+\CardItem{JavaScript runtime plus lightweight routing}
+\CardItem{Manual middleware, CORS, and route structure}
+\CardItem{Events and participants API on port 3001}
 \vspace{0.6em}{\footnotesize strongest when low ceremony and custom composition matter more than built-ins}
 }}
 \end{minipage}
@@ -801,7 +801,6 @@ Events list\\[0.8em]
 \textbf{Deliverables}\\[0.7em]
 \CardItem{Formal report}
 \CardItem{Attached appendix}
-\CardItem{Demo-ready repo}
 }}
 \end{minipage}
 }
@@ -830,37 +829,30 @@ Events list\\[0.8em]
 \begin{center}
 \includegraphics[width=0.27\textwidth]{upcite-logo.png}\\[1.2em]
 {\Huge\bfseries EventHub Project Report}\\[0.55em]
-{\Large Final Responsive SPA, Django API, and Express Comparison}\\[1.0em]
+{\Large React Frontend, Django Backend, and Express Comparison}\\[1.0em]
 \textcolor{warmtext}{\large Formal Technical Report with Attached Appendix}\\[1.5em]
-\begin{tabularx}{0.84\linewidth}{@{}YY@{}}
-\fcolorbox{black}{panel}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
-\textbf{Mehdi AGHAEI}\\
-\small Frontend developer
-}}
-&
-\fcolorbox{black}{skywash}{\parbox[c][16mm][c]{0.42\linewidth}{\centering
-\textbf{Maksym DOLHOV}\\
-\small Backend developer
-}}
-\end{tabularx}\\[1.4em]
+{\large\textbf{Mehdi AGHAEI}}\\[0.2em]
+{\small Frontend developer}\\[0.9em]
+{\large\textbf{Maksym DOLHOV}}\\[0.2em]
+{\small Backend developer}\\[1.4em]
 {\small Universite Paris Cite}\\[0.35em]
-{\small March 29, 2026}
+{\small April 8, 2026}
 \end{center}
 
 \vspace{1.1em}
 \ProjectSnapshotFigure
 
 \PanelBox{
-EventHub is a full-stack course project built around one central goal: deliver a responsive Single Page Application for event and participant management, implement the primary backend with Django, and keep a smaller Node.js / Express backend for comparison. The final integrated frontend now includes a public home page at \texttt{/}, a deliberately retro 1998-inspired visual identity, consistent dashboard navigation, modal-based CRUD flows, and verification-ready documentation. The first 6--8 pages of this document provide the formal technical report required by the assignment, and the appendix follows immediately afterward in the same PDF for supporting explanations, worked examples, and defense preparation.
+EventHub is a full-stack course project about event management. We built a responsive React SPA, used Django for the main backend, and kept a smaller Node.js / Express backend for comparison. In the current version, the frontend includes a public home page at \texttt{/}, a retro 1998-inspired style, clearer dashboard navigation, and modal CRUD flows. The first pages of this document are the formal report for the project, and the appendix after that contains extra explanations, examples, and revision notes.
 }
 \end{titlepage}
 \newpage
 
 \section{Introduction}
 
-EventHub is a full-stack web application project whose goal is to deliver a responsive Single Page Application (SPA) for managing events, participants, and registrations. The project combines a React frontend, a primary backend in \textbf{Django}, and a smaller comparative backend in \textbf{Node.js and Express}. In its final state, the application opens on a public landing page, encourages authentication through modal sign-in and registration flows, and gives authenticated users a role-aware workspace for dashboard, event, participant, and registration tasks. The report therefore addresses both software construction and software justification.
+EventHub is a full-stack web application for managing events, participants, and registrations. The project combines a React frontend, a main backend in \textbf{Django}, and a smaller comparison backend in \textbf{Node.js and Express}. In the current version, the app opens on a public landing page, lets users log in or register through a modal, and gives authenticated users access to the dashboard, event pages, participant pages, and registration tools. This report explains both how the project was built and why these technical choices were made.
 
-From a course perspective, the project is designed to connect the main web-programming layers in one coherent system. The frontend is responsible for interaction, responsive layout, navigation, rendering, browser storage, and release-quality user flows. The backend is responsible for data modeling, validation, routing, and JSON responses. The two parts communicate through HTTP requests and REST-style API endpoints. The final application must show that these layers are not isolated topics from different lectures, but one integrated engineering workflow that can be demonstrated live.
+From a course perspective, the project brings together the main web-programming layers in one application. The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints. One important part of the project is showing that these topics are connected in practice, not only studied separately in class.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -875,7 +867,7 @@ Maksym DOLHOV & Backend developer responsible for the Django API, backend valida
 
 \section{Project Scope and Requirements}
 
-The technical scope of EventHub is driven by the assignment requirements and by the team's chosen repository organization. The application must provide clear screens for event information, participant data, and the registration relationship that links them. It must remain usable on desktop and mobile screens, which makes responsive design a core requirement rather than a cosmetic improvement. The finished frontend also had to become more presentation-ready: the landing page was redesigned with a retro 1998 style, non-release copy was removed, navigation was simplified, and the create or edit flows were converted into smaller pop-up windows that fit the overall design language.
+The scope of EventHub comes from the assignment requirements and from the way the team organized the repository. The application needs clear screens for events, participants, and the registration relation that links them. It also needs to work on desktop and mobile screens, so responsive design is not just a visual extra. In the last stage of the project, we also cleaned up the frontend: we redesigned the landing page in a retro 1998 style, removed draft text, simplified navigation, and changed the create or edit flows into smaller pop-up windows that fit the rest of the interface better.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -887,16 +879,16 @@ Main backend in Django & Relational models, serializers, viewsets, validation ru
 Backend comparison & Separate Node.js and Express service kept smaller and used as a comparative study backend \\
 Event registration logic & Dedicated \texttt{Registration} model instead of a hidden many-to-many shortcut \\
 Team collaboration & One repository with separate folders for frontend, Django backend, Node backend, and report material \\
-Release readiness & Public landing page, consistent dashboard controls, verified builds, and documentation updated to match the final demo \\
+Release readiness & Public landing page, consistent dashboard controls, verified builds, and documentation updated to match the current project state \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-In practical terms, the project must solve two problems at once. First, it must produce a usable web application. Second, it must show that the team understands why each layer exists and how the layers connect. That is why the report emphasizes architecture and data flow rather than presenting the work as a collection of unrelated files.
+In practice, the project has to do two things at the same time. First, it has to produce a usable web application. Second, it has to show that the team understands why each layer exists and how the layers connect. That is why this report focuses on architecture and data flow instead of listing files one by one.
 
 \section{System Architecture}
 
-The architecture follows a clear full-stack separation. The browser loads the React SPA, the SPA sends requests to the Django REST API for the main application logic, the database stores persistent data, and a smaller Node.js and Express backend is kept in the repository as a comparative path. This separation keeps responsibilities clear and allows frontend and backend work to progress in parallel.
+The architecture follows a clear full-stack separation. The browser loads the React SPA, the SPA sends requests to the Django REST API for the main application logic, the database stores persistent data, and a smaller Node.js and Express backend is kept in the repository as a comparative path. In the final local setup, Django runs on \texttt{localhost:8000}, Vite serves the React frontend on its development port, and Express runs independently on \texttt{localhost:3001}. This separation keeps responsibilities clear and allows frontend and backend work to progress in parallel.
 
 \ArchitectureFigure
 
@@ -909,12 +901,12 @@ Browser & Hosts the visible user interface and executes frontend JavaScript \\
 React SPA & Renders pages, manages state, sends API requests, and updates the UI without full reloads \\
 Django REST API & Applies the main business rules, validates data, and exposes the official CRUD endpoints \\
 Database & Persists events, participants, and registrations safely across sessions \\
-Node.js / Express & Provides a smaller comparison backend to contrast flexibility with Django's stronger default structure \\
+Node.js / Express & Provides a smaller comparison backend for \texttt{/api/events}, \texttt{/api/participants}, and \texttt{/api/health} \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-The architecture is intentionally asymmetric: Django is the main service, and Express is the comparative service. This is an important design decision. The assignment does not ask for two equal production backends. It asks for one serious backend implementation and one smaller comparison that makes the trade-offs visible. In EventHub, the main system flow therefore goes through Django, while Node.js and Express are retained to support analysis and comparison.
+The architecture is intentionally asymmetric: Django is the main service, and Express is only the comparison service. This fits the assignment better than trying to build two full backends. In EventHub, the main application flow goes through Django, while Node.js and Express are kept to show a lighter and more manual backend style. The Express backend does not implement the full authentication or registration workflow; those routes stay on the Django side.
 
 \section{Backend Design}
 
@@ -937,7 +929,7 @@ Admin & Provide a fast inspection and management interface during development an
 \end{tabularx}
 \end{center}
 
-The most important modeling decision is the explicit \texttt{Registration} model. This model does more than link two tables. It provides a place where business logic can live. For example, it can prevent duplicate registrations, record registration-specific metadata, and later support richer states such as approval or payment status.
+One important modeling decision is the explicit \texttt{Registration} model. It is not just a link between two tables. It is also the place where registration logic can live. For example, it can prevent duplicate registrations, store registration-specific data, and later support richer states such as approval or payment status.
 
 \RegistrationFigure
 
@@ -974,29 +966,32 @@ Validation is a major backend responsibility. The frontend may offer helpful mes
 
 \subsection{Node.js and Express as the comparison backend}
 
-Node.js and Express are kept in the project to make the backend comparison concrete. \textbf{Node.js} is the JavaScript runtime. \textbf{Express} is the lightweight framework that defines routes and HTTP behavior. In this project, the Node backend is intentionally smaller. Its role is to illustrate a more manual style of backend development rather than to replace the Django service.
+Node.js and Express are kept in the project to make the backend comparison concrete. \textbf{Node.js} is the JavaScript runtime. \textbf{Express} is the lightweight framework that defines routes and HTTP behavior. In this project, the Node backend is intentionally smaller. Its role is to illustrate a more manual style of backend development rather than to replace the Django service. In simple terms, Django is a full framework with many built-in tools, while Express starts lighter and leaves more decisions to the developer.
+
+The Node workspace lives in \texttt{node/}. It exposes a health check plus event and participant resource routes on port \texttt{3001}. It uses \texttt{express} for routing, \texttt{cors} for local frontend access, and \texttt{better-sqlite3} for a small local SQLite database stored separately from the Django database. The Node side is organized mainly around \texttt{src/server.js}, \texttt{src/db.js}, and route files for events and participants. This makes the contrast easier to explain: Django provides a structured project layout, serializers, migrations, and admin support, while Express shows the same kind of API with more manual organization.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lYY@{}}
 \toprule
-\textbf{Criterion} & \textbf{Django} & \textbf{Node.js / Express} \\
+\textbf{Aspect} & \textbf{Django} & \textbf{Node.js / Express} \\
 \midrule
-Project role & Main backend & Comparative backend \\
-Structure & Strong defaults and conventions & Flexible and lightweight organization \\
-CRUD productivity & Very strong for relational business apps & Good for smaller custom APIs, but more manual \\
-Validation style & Model and serializer driven & Middleware and custom logic driven \\
-Administration support & Built-in admin tools & Must be built manually or omitted \\
+Project structure & Enforced project and app layout with migrations & Flexible file layout with manual organization \\
+Framework philosophy & Batteries included and opinionated & Minimal and unopinionated \\
+Validation and schema & Serializer, model rules, and tracked migrations & Manual checks and SQL changes unless extra tools are added \\
+Built-in tools & ORM, admin, auth, and routing conventions & Pick packages and patterns manually \\
+Concurrency style & Common Python multi-worker setup & Event-loop model, strong for I/O-heavy work \\
+Role in EventHub & Main backend for auth, events, participants, and registrations & Comparison backend for health, events, and participants \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-This comparison supports the report argument directly: Django is the better primary backend for EventHub because the application is model-heavy and validation-heavy, while Express remains useful as a teaching and comparison tool.
+This comparison helps justify the final architecture. Django is the better main backend for EventHub because the application depends on models, authentication, validation, and a clear CRUD structure. Express is still useful here, but mainly as a comparison tool that shows what becomes more manual when the framework is lighter.
 
 \section{Frontend Design}
 
 \FrontendFigure
 
-The frontend is a React SPA whose job is to provide a responsive interface for the main user workflows of the application. In the final release version, it does more than display data: it presents a public home page, opens authentication in a retro-styled modal, gates protected content behind sign-in, keeps a consistent header across public and private screens, and uses compact pop-up forms for create or edit tasks. It also includes a theme switcher, a local visitor counter, direct utility links, and a favicon so that the application feels like a coherent product rather than a disconnected student prototype.
+The frontend is a React SPA that provides the main user interface of the application. In the current version, it includes a public home page, a retro-styled authentication modal, protected content after sign-in, a consistent header, and compact pop-up forms for create or edit actions. It also includes a theme switcher, a local visitor counter, utility links, and a favicon. These details make the app feel more complete and easier to use.
 
 \subsection{HTML, CSS, and React responsibilities}
 
@@ -1036,12 +1031,12 @@ Participants workspace & Manage participant information and support CRUD operati
 
 Responsive design is treated as a functional requirement. The page must remain readable on desktop and mobile widths, which means the CSS strategy must favor flexible grids, meaningful spacing, scalable typography, and component layouts that can collapse from multiple columns to one column without breaking the content hierarchy. In practice this means, for example, that the sidebar collapses behind a toggle on smaller screens, public event cards stay readable without overflow, modal forms reflow into single-column layouts, and the social sign-in buttons stack cleanly when space becomes limited.
 
-\subsection{Final frontend release highlights}
+\subsection{Frontend Highlights}
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
-\textbf{Implemented release feature} & \textbf{Why it matters} \\
+\textbf{Implemented feature} & \textbf{Why it matters} \\
 \midrule
 Home route at \texttt{/} & The application now opens on a real landing page instead of an internal hash-login route \\
 Retro 1998 visual system & Gives the project a memorable identity and demonstrates intentional CSS customization rather than default boilerplate styling \\
@@ -1061,46 +1056,47 @@ The same principle applies to forms. When a user submits data, the frontend shou
 
 \section{Integration, Repository Structure, and Deployment Plan}
 
-Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface. In the final project state, this integration is visible from the public home page all the way to protected CRUD flows, event detail management, and role-aware dashboard behavior.
+Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface. In the current project, this integration is visible from the public home page all the way to protected CRUD flows, event detail management, and role-aware dashboard behavior.
 
 \BackendJourneyFigure
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
-\textbf{Repository area} & \textbf{Role in the final integrated branch} \\
+\textbf{Repository area} & \textbf{Role in the integrated branch} \\
 \midrule
 \texttt{frontend/} & React SPA and its styles, components, and build configuration \\
 \texttt{backend/} & Django project and REST API implementation \\
-\texttt{node/} & Node.js and Express comparison backend \\
+\texttt{node/} & Node.js and Express comparison backend with its own SQLite database and package lock \\
 \texttt{report/} & Formal report and supporting appendix material \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-This repository structure supports teamwork cleanly. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the point where the pieces are brought together and verified as one submission-ready repository. This workflow is compatible with branch-based collaboration as long as the final submitted branch contains all required folders and a working integrated structure. It also supports the current documentation update, because the report, the presentation, and the application source all live close enough together to be revised consistently before final submission.
+This repository structure also helps team work. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the place where the pieces are merged and checked as one final repository. This workflow fits normal branch-based collaboration, as long as the final submitted branch contains all required folders and a working integrated structure. It also makes documentation updates easier because the report, presentation, and source code stay close together in the same project.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
 \textbf{Integration concern} & \textbf{Planned handling} \\
 \midrule
-CORS and local development & Backend configured to allow frontend development requests during integration \\
+CORS and local development & Django and Express configured to allow local Vite development requests during integration \\
 Data exchange & JSON payloads with stable field names and predictable validation responses \\
 Frontend verification & \texttt{npm run lint} and \texttt{npm run build} confirm that the SPA compiles and remains structurally valid after UI refinements \\
-Usability verification & Responsive checks, overflow fixes, modal adjustments, and placeholder cleanup keep the release version presentation-ready \\
+Usability verification & Responsive checks, overflow fixes, modal adjustments, and placeholder cleanup keep the interface clean and usable \\
+Node comparison verification & Use Node.js 22, run \texttt{npm run dev} in \texttt{node/}, then check \texttt{http://localhost:3001/api/health} \\
 Deployment & Separate production-ready frontend and backend hosting with environment-specific configuration \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript. Even the project presentation material is part of this readiness, because a live defense is easier when the route structure, seeded demo accounts, and visible product story are all stable and documented.
+Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript. Clear documentation also helps here because the route structure, test accounts, and main user flow are stable and documented.
 
 \section{Conclusion}
 
-The main technical argument of EventHub is straightforward. A responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend form a coherent academic project because each layer has a clear and defensible role. Django is the correct main backend choice for the application domain, React is the correct frontend model for a SPA, and the repository structure supports parallel team work and later integration. The final frontend polish strengthens that argument further because it shows the team can take the application from a technically working prototype to a more coherent and demonstrable release candidate.
+The main technical idea behind EventHub is simple. The project combines a responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend, and each part has a clear role. Django is the right main backend choice for this kind of application, React fits the SPA structure well, and the repository layout supports team work and integration. The final frontend polish also matters because it shows that the project was not left at a rough prototype stage.
 
-For that reason, the formal report ends here and the longer supporting material continues immediately below as an appendix inside the same PDF. That appendix has now been updated to explain how it should be used, how it maps to the finished EventHub implementation, and how its worked examples, study notes, and defense-preparation material connect back to the project.
+The formal report ends here. The longer appendix continues below in the same PDF and gives extra explanations, worked examples, and revision material connected to the final EventHub implementation.
 
 \clearpage
 \setcounter{page}{1}
@@ -1112,12 +1108,12 @@ For that reason, the formal report ends here and the longer supporting material 
 \appendix
 
 \PanelBox{
-This appendix is written as a \textbf{self-contained beginner guide} attached after the formal report. You should not need to open other PDFs to understand the core ideas. The learning order is always the same: \textbf{concept -> exact solved code -> visible result -> explanation -> memory hook}. When a question appears, the worked solution is included immediately after it. The appendix is also the bridge between the final EventHub implementation and course revision: it explains the frontend and backend ideas used in the project, then expands them into reusable study material for the oral defense and the CC1 exam.
+This appendix is written as supporting material after the formal report. The idea is to keep the core explanations in one place, with a simple order: \textbf{concept -> solved code -> result -> explanation}. When a question appears, the worked solution is given just after it. The appendix also connects the final EventHub project to course revision by explaining the frontend and backend ideas used in the implementation and turning them into study material for the oral defense and the CC1 exam.
 }
 
 \section{How to Read This Appendix}
 
-This appendix is intentionally larger than the formal report because it serves three different jobs at once. First, it is a study guide for beginners who need the core web concepts explained slowly and clearly. Second, it is a revision bank for the oral defense, where the team may need to justify technical choices under time pressure. Third, it is a practical memory aid for the final EventHub implementation, especially now that the product includes a richer landing page, a stronger visual identity, and more refined frontend behavior.
+This appendix is longer than the formal report because it has three roles. First, it works as a study guide for the main web concepts. Second, it helps with oral defense preparation when technical choices need to be justified quickly. Third, it acts as a revision support for the final EventHub implementation, especially after the landing page, visual style, and frontend behavior were improved in the final version.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -1133,11 +1129,11 @@ CC1 practice section & Train on mixed theory and practical questions in the styl
 \end{tabularx}
 \end{center}
 
-The most useful way to read the appendix is not from curiosity, but from a concrete need. If the question is visual, start with the frontend sections. If the question is about data trust, validation, or the relation between events and participants, move to the backend sections. If the question is ``what should we show in the defense?'', jump directly to the live demonstration storyboard and the follow-up question tables.
+The easiest way to read the appendix is to jump to the part you need. If the question is mainly visual, start with the frontend sections. If it is about validation, data flow, or the relation between events and participants, go to the backend sections. If the question is about the final defense, go directly to the live demonstration storyboard and the follow-up question tables.
 
 \subsection{How the appendix maps to the finished EventHub project}
 
-Because the frontend evolved significantly during the final release pass, it is important to connect the appendix back to the actual application screens that now exist in the repository.
+Because the frontend changed a lot during the final phase, it is useful to connect the appendix to the screens that now exist in the repository.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -2350,12 +2346,23 @@ if duplicate_qs.exists():
 
 \subsection{Step 6: build the Node.js and Express comparison backend}
 
-The comparative backend should stay smaller than Django. Its job is not to replace Django. Its job is to make the comparison concrete.
+The comparative backend should stay smaller than Django. Its job is not to replace Django. Its job is to make the comparison concrete. In the final workspace, the Express service runs on port \texttt{3001}, stores its own data in \texttt{node/db.sqlite3}, and focuses on events and participants rather than authentication and registrations.
+
+\begin{lstlisting}[style=terminal, caption={Local Node backend startup}]
+cd node
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+npm install
+npm run dev
+\end{lstlisting}
 
 \begin{lstlisting}[style=code, language=JavaScript, caption={Minimal Express server}]
 import express from 'express'
+import cors from 'cors'
 
 const app = express()
+const port = process.env.PORT || 3001
+
+app.use(cors())
 app.use(express.json())
 
 app.get('/api/health', (req, res) => {
@@ -2365,10 +2372,14 @@ app.get('/api/health', (req, res) => {
   })
 })
 
-app.listen(3001)
+app.listen(port, () => {
+  console.log(`Node backend listening on http://localhost:${port}`)
+})
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal, caption={Expected JSON output}]
+GET http://localhost:3001/api/health
+
 {
   "status": "ok",
   "service": "eventhub-node-backend"
@@ -2377,16 +2388,21 @@ app.listen(3001)
 
 \subsection{Step 7: compare Django and Express clearly}
 
+Django and Express can both expose a CRUD API, but they do not guide the developer in the same way. Django starts with a stricter structure: projects, apps, models, serializers, URLs, and migrations all have a clear place. Express is more open. That flexibility can feel simpler at the beginning, but it also means the team has to decide more things manually.
+
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lYY@{}}
 \toprule
 \textbf{Criterion} & \textbf{Django} & \textbf{Node.js / Express} \\
 \midrule
-Structure & Strong and opinionated & Flexible and lightweight \\
-Speed of setup & Fast for CRUD business apps & Fast for small custom APIs \\
-Admin tools & Built-in admin & Manual setup required \\
-Validation & Strong model and serializer flow & More manual organization \\
+Project structure & Project and app layout enforced by the framework & File layout is chosen manually by the developer \\
+Framework style & Batteries included and opinionated & Minimal and unopinionated \\
+Schema changes & Migrations track database changes clearly & SQL changes are manual unless extra tools are added \\
+Validation & Strong serializer and model flow & Often written directly in route handlers or middleware \\
+Admin and auth & Built-in admin and auth support & Must be added with extra packages or custom code \\
+Scalability style & Good for model-heavy business applications & Good for I/O-heavy APIs and lightweight services \\
 Project role here & Main backend & Comparative backend \\
+Runtime note & Python virtual environment & Node.js 22 for native SQLite dependency \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -2394,6 +2410,8 @@ Project role here & Main backend & Comparative backend \\
 \LearningCallout{skywash}{
 \textbf{Memory comparison.} Django gives a strong default structure for business applications. Express gives a lighter starting point but requires more manual organization. For EventHub, that is why Django is the main backend and Express is the comparison backend.
 }
+
+Another useful way to remember the difference is this: Django gives more tools at the start, while Express gives more freedom at the start. In a student project, Express can feel quick because the first routes are easy to write in JavaScript. But as the project grows, Django often saves time because validation, authentication, admin support, and schema tracking already have a clear place in the framework. The Node.js event loop is still an advantage for highly concurrent I/O-heavy services, which is why Node remains an important comparison case in web development.
 
 \subsection{Step 8: read one POST request from the form to the database}
 
@@ -2594,6 +2612,10 @@ python manage.py runserver
 python manage.py makemigrations
 python manage.py migrate
 curl http://localhost:8000/api/events/
+cd node
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+npm run dev
+curl http://localhost:3001/api/health
 \end{lstlisting}
 
 \begin{center}
@@ -2602,6 +2624,7 @@ curl http://localhost:8000/api/events/
 \textbf{Symptom} & \textbf{Likely cause} & \textbf{First check} \\
 \midrule
 404 on an endpoint & wrong URL or missing router entry & API route registration \\
+Connection refused & backend process is not running or the wrong port is used & confirm \texttt{:8000} for Django and \texttt{:3001} for Express \\
 400 on POST & validation or missing field & serializer errors and request body \\
 401 or 403 & authentication or permission failure & login state and permission classes \\
 500 server error & exception in code & terminal traceback and recent code changes \\
@@ -2611,7 +2634,7 @@ Frontend shows nothing & request failed before render & test the endpoint with \
 \end{center}
 
 \ChecklistBox{
-Use this order every time. Is the Django server running. Does the endpoint exist. Does the request body match the serializer fields. Does validation accept the data. Does the JSON response match what React expects.
+Use this order every time. Is the right server running on the right port. Does the endpoint exist. Does the request body match the serializer or route fields. Does validation accept the data. Does the JSON response match what React expects. If the endpoint is \texttt{/api/auth/...} or \texttt{/api/registrations/...}, check Django. If the endpoint is the Express comparison API, check Node on \texttt{:3001}.
 }
 
 \subsection{Mini Active Learning: backend comparison}
@@ -2853,49 +2876,55 @@ Anonymous POST -> 401 Unauthorized
 \textbf{Explanation.} Permissions are part of the assignment logic, not an optional detail. A project with roles needs route protection from the start.
 
 \subsubsection*{Exercise 28: Start a minimal Express server}
-\textbf{Question.} What is the smallest valid Node.js and Express backend for comparison?
+\textbf{Question.} What is the smallest valid Node.js and Express backend for comparison, and how should it be started in this project?
+
+\begin{lstlisting}[style=terminal]
+cd node
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+npm run dev
+\end{lstlisting}
 
 \begin{lstlisting}[style=code, language=JavaScript]
 import express from 'express'
 
 const app = express()
+const port = process.env.PORT || 3001
 
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' })
+  res.json({ status: 'ok', service: 'eventhub-node-backend' })
 })
 
-app.listen(3001)
+app.listen(port)
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal]
-GET /api/health
-{"status":"ok"}
+GET http://localhost:3001/api/health
+{"status":"ok","service":"eventhub-node-backend"}
 \end{lstlisting}
 
-\textbf{Explanation.} This demonstrates the Express philosophy: less built-in structure, faster start, and more manual control.
+\textbf{Explanation.} This demonstrates the Express philosophy: less built-in structure, faster start, and more manual control. In this repository the Node backend should be run with Node.js 22 because \texttt{better-sqlite3} is a native dependency.
 
 \subsubsection*{Exercise 29: Add a simple Express collection route}
-\textbf{Question.} How do you return a small JSON list in Express?
+\textbf{Question.} How does the comparison backend return the events collection in Express?
 
 \begin{lstlisting}[style=code, language=JavaScript]
-const events = [
-  { id: 1, title: 'Node Meetup' },
-  { id: 2, title: 'API Lab' },
-]
+import { Router } from 'express'
+import db from '../db.js'
 
-app.get('/api/events', (req, res) => {
+const router = Router()
+
+router.get('/', (req, res) => {
+  const events = db.prepare('SELECT * FROM events ORDER BY id').all()
   res.json(events)
 })
 \end{lstlisting}
 
 \begin{lstlisting}[style=terminal]
-[
-  {"id":1,"title":"Node Meetup"},
-  {"id":2,"title":"API Lab"}
-]
+GET http://localhost:3001/api/events/
+[]
 \end{lstlisting}
 
-\textbf{Explanation.} This exercise shows how transparent Express is. What you gain in simplicity, you later repay with more manual architecture.
+\textbf{Explanation.} This exercise shows how transparent Express is. The route callback directly reads from SQLite and returns JSON. What you gain in simplicity, you later repay with more manual architecture, because authentication, registration filtering, admin tools, and advanced validation are not automatically provided.
 
 \subsubsection*{Exercise 30: Write the backend comparison}
 \textbf{Question.} After implementing both backends, what should the report conclude?
@@ -2930,7 +2959,7 @@ The best step-by-step order for this project is:
 
 \section{Memorization, Debugging, and Defense Atlas}
 
-This section makes the appendix more useful as a complete study document. It turns the project into something you can revise quickly before coding sessions, oral defense preparation, and the CC1 exam. The goal is not only to know the final answer, but to remember \emph{why} each answer is correct and \emph{how} to recover when something breaks.
+This section is here to make revision easier before coding sessions, oral defense preparation, and the CC1 exam. The goal is not only to know the answer, but also to remember \emph{why} it is correct and what to check when something breaks.
 
 \subsection{One-sentence memory ladders}
 
@@ -3064,7 +3093,7 @@ For backend debugging, the status code is a memory shortcut.\\
 
 \subsection{Annotated mini walkthrough: login to protected action}
 
-Even if the exact authentication implementation changes later, the logic should stay easy to remember. The flow below teaches the concept that the defense will test.
+Even if the authentication code changes later, the main idea stays the same. The flow below is the part that matters for the defense.
 
 \begin{lstlisting}[style=terminal, caption={Protected-action story}]
 User logs in
@@ -3081,6 +3110,39 @@ User logs in
 \textbf{Why this story matters.}\\
 The project does not only need forms and lists. It also needs controlled behavior depending on who the user is.\\
 That is why role-based behavior must be explained both in the UI and in the API layer.
+}
+
+\subsection{Exact frontend example: \texttt{withSessionGuard}}
+
+One concrete helper used in the frontend is \texttt{frontend/src/HOC/withSessionGuard.jsx}. This file is a small \textbf{Higher-Order Component (HOC)}. Here, that means a function that receives a component and returns a protected version of it.
+
+\begin{lstlisting}[style=code, language=JavaScript, caption={Project route-protection helper}]
+import { createElement } from 'react'
+
+export default function withSessionGuard(Component) {
+  return function GuardedComponent({ fallback = null, session, ...props }) {
+    if (!session?.accessToken) {
+      return fallback
+    }
+
+    return createElement(Component, props)
+  }
+}
+\end{lstlisting}
+
+\begin{enumerate}
+  \item \texttt{withSessionGuard(Component)} receives a component as input.
+  \item It returns a new wrapper component called \texttt{GuardedComponent}.
+  \item The wrapper reads \texttt{session?.accessToken} to decide whether the user is authenticated.
+  \item If no access token exists, it returns the \texttt{fallback} view, which can be \texttt{null} or a public screen.
+  \item If an access token exists, it renders the original component.
+  \item \texttt{createElement(Component, props)} is the React call that performs that rendering.
+  \item Because \texttt{session} is removed from \texttt{...props}, the wrapped component does not receive it automatically. The session is used only for the guard decision.
+\end{enumerate}
+
+\LearningCallout{skywash}{
+\textbf{Why this helper is useful.}\\
+It keeps route protection simple and reusable. Instead of repeating ``if not logged in, block this page'' in many different components, the project defines that logic once and reuses it where needed. In EventHub, this helper is connected in \texttt{App.jsx} to protect the main workspace shell. The exact usage appears in the declaration \texttt{const ProtectedWorkspaceShell = withSessionGuard(...)} before the protected interface renders \texttt{AppShell}.
 }
 
 \subsection{Memorable code-reading rules}
@@ -3107,7 +3169,7 @@ That is why role-based behavior must be explained both in the UI and in the API 
 
 \section{Complete Independent Study Bank}
 
-This section is the full theory-and-practice revision layer of the appendix. It reorganizes the complete learning path by topic so that the document can be used on its own, without consulting any outside document. The goal is simple: one self-contained study bank that moves from web foundations to React, APIs, and exam-style practice.
+This section reorganizes the learning path by topic so it can be used as a revision bank on its own. It goes from web foundations to React, APIs, and exam-style practice in a more direct order.
 
 \CoverageFigure
 
@@ -3130,7 +3192,7 @@ Hands-on practice & frontend and backend exercises, practical tasks, and impleme
 \end{center}
 
 \PanelBox{
-Study strategy: work through these sections in order. Each topic block below gives direct questions, answers, and explanations so that the appendix remains complete on its own. The aim is not traceability to external files; the aim is memorization, understanding, and exam readiness from one PDF.
+Study strategy: work through these sections in order. Each topic block gives questions, answers, and explanations so the appendix can be used directly for revision from one PDF.
 }
 
 \subsection{Web architecture, REST, and deployment}
