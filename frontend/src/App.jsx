@@ -1,4 +1,9 @@
 // Frontend developer: Mehdi AGHAEI
+// This file is the app-level coordinator.
+// Quick hook guide for this file:
+// - useState: stores values that should survive re-renders, like session, route, banner, and workspace data.
+// - useEffect: runs side effects after render, like syncing local storage, loading data, or attaching listeners.
+// - useCallback: keeps a function reference stable when we want to reuse the same function across renders.
 import { startTransition, useCallback, useEffect, useRef, useState } from 'react'
 import withSessionGuard from './HOC/withSessionGuard'
 import LoadingState from './components/common/LoadingState'
@@ -39,6 +44,7 @@ const ProtectedWorkspaceShell = withSessionGuard(function WorkspaceShell({ rende
 })
 
 function App() {
+  // App-wide state lives here because multiple pages depend on it.
   const [session, setSession] = useState(() => readStoredSession())
   const sessionRef = useRef(session)
   const [route, setRoute] = useState(() => parseRouteFromLocation(window.location))
@@ -51,6 +57,7 @@ function App() {
   const [themeMode, setThemeMode] = useState(() => readStoredTheme())
 
   const clearSession = useCallback((message = 'Your session expired. Please sign in again.') => {
+    // Central place to reset authenticated app state when a session becomes unusable.
     sessionRef.current = null
     setSession(null)
     setWorkspace(createEmptyWorkspace())
@@ -62,6 +69,7 @@ function App() {
   }, [])
 
   const requestWithAuth = useCallback(async (path, options = {}, sessionSnapshot = sessionRef.current, allowRefresh = true) => {
+    // Every authenticated request goes through here so token refresh logic stays in one place.
     try {
       return await requestJson(path, {
         ...options,
@@ -101,11 +109,13 @@ function App() {
   }, [clearSession])
 
   useEffect(() => {
+    // Keep the ref and local storage in sync with the latest session.
     sessionRef.current = session
     writeStoredSession(session)
   }, [session])
 
   useEffect(() => {
+    // Theme is mirrored onto the document so CSS can react immediately.
     document.documentElement.dataset.theme = themeMode
     document.documentElement.style.colorScheme = themeMode
     writeStoredTheme(themeMode)
@@ -126,6 +136,7 @@ function App() {
   }, [banner])
 
   useEffect(() => {
+    // Route state follows the browser location, and logged-in users should not stay on the login page.
     const syncRoute = () => {
       startTransition(() => {
         setRoute(parseRouteFromLocation(window.location))
@@ -142,6 +153,8 @@ function App() {
   }, [hasSession])
 
   useEffect(() => {
+    // Guard navigation in both directions:
+    // guests get pushed to login, authenticated users get pushed into the app.
     if (!hasSession) {
       if (route.name !== 'login') {
         navigateTo(APP_ROUTES.login)
@@ -167,6 +180,7 @@ function App() {
     let isCancelled = false
 
     async function loadWorkspace() {
+      // One fetch hydrates the shared workspace used across the whole app.
       setWorkspace((currentWorkspace) => ({
         ...currentWorkspace,
         status: currentWorkspace.lastUpdated ? 'refreshing' : 'loading',
@@ -366,6 +380,7 @@ function App() {
   }
 
   function refreshWorkspace() {
+    // We refetch after mutations instead of manually stitching updated records into every list.
     setRefreshTick((currentValue) => currentValue + 1)
   }
 
@@ -402,6 +417,8 @@ function App() {
   }
 
   async function handleSaveParticipant(formValues, participantId) {
+    // This stays in App because saving a participant affects global app concerns:
+    // authenticated API access, the shared workspace cache, and the top-level success banner.
     const payload = {
       first_name: formValues.first_name.trim(),
       last_name: formValues.last_name.trim(),
@@ -474,6 +491,7 @@ function App() {
   }
 
   function renderWorkspace() {
+    // App decides which page to render and wires each page to the shared mutation handlers.
     if (isInitialLoading) {
       return <LoadingState />
     }
