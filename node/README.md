@@ -14,6 +14,8 @@ It is intentionally smaller than the Django backend and it focus on:
 
 Use Node.js 22 for this backend because `better-sqlite3` is a native dependency.
 
+The project includes a `.nvmrc`, so `nvm use` should select the correct version automatically.
+
 ## Install Node.js 22
 
 ### macOS with Homebrew
@@ -80,7 +82,7 @@ npm run dev
 
 Import this collection into Postman to test the whole Node API:
 
-[`postman/EventHub-Node-API.postman_collection.json`](/Users/sigmoid/Desktop/Coding/GitHub/S2/web-programming-project/node/postman/EventHub-Node-API.postman_collection.json)
+[`postman/EventHub-Node-API.postman_collection.json`](/Users/sorooshaghaei/Desktop/Paris_cite_projects/web-programming-project/node/postman/EventHub-Node-API.postman_collection.json)
 
 Default collection variable:
 
