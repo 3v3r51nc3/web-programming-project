@@ -44,7 +44,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{\sffamily\small EventHub Project Report}
-\fancyhead[R]{\sffamily\small March 29, 2026}
+\fancyhead[R]{\sffamily\small April 9, 2026}
 \fancyfoot[C]{\sffamily\small \thepage}
 \renewcommand{\headrulewidth}{0.3pt}
 \setlength{\headheight}{14pt}
@@ -842,12 +842,14 @@ Events list\\[0.8em]
 {\Huge\bfseries EventHub Project Report}\\[0.55em]
 {\Large React Frontend, Django Backend, and Express Comparison}\\[1.0em]
 \textcolor{warmtext}{\large Formal Technical Report with Attached Appendix}\\[1.5em]
+{\large\textbf{Alla JAMMINE}}\\[0.2em]
+{\small Professor}\\[0.9em]
 {\large\textbf{Mehdi AGHAEI}}\\[0.2em]
 {\small Frontend developer}\\[0.9em]
 {\large\textbf{Maksym DOLHOV}}\\[0.2em]
 {\small Backend developer}\\[1.4em]
 {\small Universite Paris Cite}\\[0.35em]
-{\small April 8, 2026}
+{\small April 9, 2026}
 \end{center}
 
 \vspace{1.1em}
@@ -866,7 +868,7 @@ The \textbf{first 7 pages} of this document are the formal report for the projec
 
 EventHub is a full-stack web application for managing events, participants, and registrations. The project combines a React frontend, a main backend in \textbf{Django}, and a smaller comparison backend in \textbf{Node.js and Express}. The wweb app opens on a public landing page, lets users log in or register through a modal, and gives authenticated users access to the dashboard, event pages, participant pages, and registration tools. This report explains both how the project was built and why these technical choices were made.
 
-From a course perspective, the project brings together the main web-programming layers in one application. The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints.
+The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -991,7 +993,6 @@ Framework philosophy & Batteries included and opinionated & Minimal and unopinio
 Validation and schema & Serializer, model rules, and tracked migrations & Manual checks and SQL changes unless extra tools are added \\
 Built-in tools & ORM, admin, auth, and routing conventions & Pick packages and patterns manually \\
 Concurrency style & Common Python multi-worker setup & Event-loop model, strong for I/O-heavy work \\
-Role in EventHub & Main backend for auth, events, participants, and registrations & Comparison backend for health, events, and participants \\
 \bottomrule
 \end{tabularx}
 \end{center}
@@ -1002,13 +1003,30 @@ This comparison helps justify the final architecture. Django is the better main 
 
 \FrontendFigure
 
-The frontend is a React SPA that provides the main user interface of the application. In the current version, it includes a public home page, a retro-styled authentication modal, protected content after sign-in, a consistent header, and compact pop-up forms for create or edit actions. It also includes a theme switcher, a local visitor counter, utility links, and a favicon. These details make the app feel more complete and easier to use.
+The frontend is a modern React Single Page Application (SPA) that serves as the primary interface for the application. It features a visually engaging public home page, a distinctive retro-styled authentication modal, and a clean, consistent header that enhances navigation and branding. After sign-in, users access personalized, protected content, while compact pop-up forms streamline create and edit actions. The application also includes a theme switcher for user customization, a local visitor counter for engagement, utility links for quick access to support, and a favicon for a polished, professional touch. Each element is designed with UI/UX best practices in mind, ensuring an intuitive, cohesive, and memorable user experience.
 
 \subsection{HTML, CSS, and React responsibilities}
 
-The frontend is built on three complementary layers. HTML provides semantic structure. CSS provides visual layout and responsive behavior. React organizes the page into reusable components and keeps the visible interface synchronized with state changes. A weakness in any one of these layers reduces the quality of the final SPA.
+The frontend is built on three complementary layers. HTML provides semantic structure. CSS provides visual layout and responsive behavior. React organizes the page into reusable components and keeps the visible interface synchronized with state changes.
 
-In the final frontend, we also introduced a shared \texttt{WorkspaceContext} with React's \texttt{useContext()} hook. This lets the authenticated shell and the main pages read shared data such as the current user, role, events, participants, registrations, and navigation helpers without passing the same props through many intermediate components.
+Imagine a React application structured hierarchically as:
+
+\begin{itemize}
+    \item \texttt{App}
+    \begin{itemize}
+        \item \texttt{Header}
+        \item \texttt{MainContent}
+        \begin{itemize}
+            \item \texttt{Sidebar}
+            \item \texttt{Page}
+            \begin{itemize}
+                \item \texttt{UserProfile}
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+Previously, sharing data like \texttt{currentUser} from \texttt{App} to \texttt{UserProfile} required passing it through all intermediate components (\texttt{MainContent}, \texttt{Sidebar}, \texttt{Page}), even when unnecessary. To resolve this, we implemented a shared \texttt{WorkspaceContext} using React's \texttt{useContext()} hook, enabling direct access to shared data—such as the current user, role, events, participants, registrations, and navigation helpers—without prop drilling.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -1051,12 +1069,10 @@ Responsive design is treated as a functional requirement. The page must remain r
 \toprule
 \textbf{Implemented feature} & \textbf{Why it matters} \\
 \midrule
-Home route at \texttt{/} & The application now opens on a real landing page instead of an internal hash-login route \\
-Retro 1998 visual system & Gives the project a memorable identity and demonstrates intentional CSS customization rather than default boilerplate styling \\
 Consistent top-right controls & The theme toggle and auth or workspace actions now stay in the same place across public and authenticated views \\
 Pop-up CRUD forms & Create and edit actions for events and participants are easier to understand and fit better on narrow layouts \\
 Public event warning modal & Unauthenticated visitors can click public event previews and are clearly prompted to sign in or register for full details \\
-Local browser extras & Visitor counter, stored theme, favicon, and utility links demonstrate small but real browser-side behaviors \\
+React hooks with \texttt{useState()} and \texttt{useEffect()} & The frontend uses component state for filters, forms, modals, session feedback, and theme changes, and uses effects for API loading, route or theme synchronization, timed banner cleanup, and browser event listeners \\
 Workspace context with \texttt{useContext()} & Reduces prop drilling by sharing authenticated workspace state and navigation helpers across the React shell and pages \\
 \bottomrule
 \end{tabularx}
@@ -1064,30 +1080,17 @@ Workspace context with \texttt{useContext()} & Reduces prop drilling by sharing 
 
 \subsection{Frontend-to-backend communication}
 
-The frontend communicates with the backend through JSON-based HTTP requests. In practice, this means the React components must support at least three states whenever data is loaded from the API: loading, success, and error. This is a core part of the UI architecture because a professional SPA cannot assume that network requests always succeed immediately. The final interface also keeps a small status banner for login or registration feedback and automatically clears non-error notices after a short delay so the UI remains readable.
+The frontend communicates with the backend through \textbf{JSON}-based \textbf{HTTP} requests, following \textit{REST} principles. In practice, each API call involves three common states: \textit{loading}, \textit{success}, and \textit{error}. The \textit{loading} state represents the period during which the request is being sent and the application is waiting for a response. The \textit{success} state indicates that the request has been completed correctly and that a valid response has been received from the server. The \textit{error} state is used when the request fails, for example because of network issues, server problems, or invalid input. Handling these three states is an important part of frontend design, especially in single-page applications, where communication with the backend is asynchronous and cannot always be assumed to work instantly or reliably.
 
-The same principle applies to forms. When a user submits data, the frontend should send a structured request, wait for the backend response, and then either update the screen or render a clear validation message. The frontend therefore acts as a disciplined API client, not as a source of truth about the data model.
+To make the interaction clearer for the user, the interface includes a simple status banner that displays short feedback messages, such as the result of a login or registration attempt. These messages help the user understand what is happening in the application without interrupting the overall experience. When the notification is not essential, it is automatically dismissed after a short period of time in order to keep the interface clean and avoid unnecessary visual clutter.
+
+Form submission follows the same structured logic. After the user enters the required information, the frontend sends a well-organized \textbf{JSON} payload to the backend and waits for the asynchronous response. Once the response is received, the interface either updates the displayed content or shows validation errors and feedback messages, depending on the result. This approach highlights a clear separation of concerns: the frontend acts as a disciplined client responsible for presentation and user interaction, while the backend remains responsible for validation, business logic, and data persistence.
 
 \section{Integration, Repository Structure, and Deployment Plan}
 
 Integration is the point where architecture becomes observable. The frontend sends an HTTP request, the backend routes the request, validates the data, interacts with the database, and returns JSON. The frontend then uses that response to update the visible interface. In the current project, this integration is visible from the public home page all the way to protected CRUD flows, event detail management, and role-aware dashboard behavior.
 
 \BackendJourneyFigure
-
-\begin{center}
-\begin{tabularx}{\textwidth}{@{}lY@{}}
-\toprule
-\textbf{Repository area} & \textbf{Role in the integrated branch} \\
-\midrule
-\texttt{frontend/} & React SPA and its styles, components, and build configuration \\
-\texttt{backend/} & Django project and REST API implementation \\
-\texttt{node/} & Node.js and Express comparison backend with its own SQLite database and package lock \\
-\texttt{report/} & Formal report and supporting appendix material \\
-\bottomrule
-\end{tabularx}
-\end{center}
-
-This repository structure also helps team work. One contributor can focus on the frontend SPA while another works on Django and the Node.js comparison backend. The integration branch then becomes the place where the pieces are merged and checked as one final repository. This workflow fits normal branch-based collaboration, as long as the final submitted branch contains all required folders and a working integrated structure. It also makes documentation updates easier because the report, presentation, and source code stay close together in the same project.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -1104,13 +1107,15 @@ Deployment & Separate production-ready frontend and backend hosting with environ
 \end{tabularx}
 \end{center}
 
-Deployment is the final engineering step rather than an afterthought. The frontend must be built in production mode, the backend must run with the correct environment settings, and the integrated system must be tested through real API calls. The report therefore treats deployment readiness as part of the architecture, not as a postscript. Clear documentation also helps here because the route structure, test accounts, and main user flow are stable and documented.
 
 \section{Conclusion}
 
-The main technical idea behind EventHub is simple. The project combines a responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend, and each part has a clear role. Django is the right main backend choice for this kind of application, React fits the SPA structure well, and the repository layout supports team work and integration. The final frontend polish also matters because it shows that the project was not left at a rough prototype stage.
+The main technical idea behind EventHub is simple. The project combines a responsive SPA frontend, a structured Django backend, and a smaller Node.js and Express comparison backend, and each part has a clear role. Django is the right main backend choice for this kind of application, React fits the SPA structure well, and the repository layout supports team work and integration. 
 
-The formal report ends here. The longer appendix continues below in the same PDF and gives extra explanations, worked examples, and revision material connected to the final EventHub implementation.
+The report ends here. Thank you for your attention.
+
+
+The longer appendix continues below in the same PDF and gives extra explanations, worked examples, and revision material connected to the final EventHub implementation.
 
 \clearpage
 \setcounter{page}{1}

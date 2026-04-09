@@ -1,0 +1,146 @@
+Dear students,
+
+
+
+Here you can find last lecture 10 and import document for Friday.
+
+This Friday you will present your full-stack project. Please read the instructions carefully.
+
+
+
+What you MUST prepare
+
+Each team must:
+
+Prepare a presentation (5–7 slides, max 6 minutes)
+Prepare a working deployed application
+Be ready for a live demonstration
+Print 1 copy per team of the provided document:
+ Project WEB_Prog (attached)
+Bring it to the defense.
+
+ 
+
+Printed Document (IMPORTANT)
+
+One printed copy per team
+Fill in Names, Student IDs, Roles. 
+You will use this document during the presentation it will aslo help you to prepare yourselves and check if you have done everything is required.
+ 
+
+How the defense will work
+
+
+
+Your presentation will be interactive and controlled by me.
+
+You will NOT just present slides.
+
+I will ask you to:
+
+show specific features
+perform actions live
+explain your technical choices
+Structure of the defense (6 minutes)
+
+You should be ready to:
+
+1. Very short introduction
+
+Explain:
+
+what your system does
+what problem it solves
+2. Live Demonstration (MAIN PART)
+
+You will be asked to immediately show:
+
+Login
+Create an event
+Create a participant
+Register a participant to an event
+Try duplicate registration (must be blocked)
+Filter events
+Show role-based behavior (admin vs viewer)
+3. Technical Questions
+
+Be ready to explain:
+
+your architecture
+your database design
+your API
+differences between Django and Node.js
+frontend logic (React, hooks, state handling)
+deployment choices
+ Important rules
+
+All team members must be able to answer questions
+You must understand the entire project, not only your part
+The demo must be real and working (not screenshots)
+Not acceptable
+
+No live demo
+Only slides without system
+Reading from slides
+Missing key features:
+authentication
+CRUD
+many-to-many relationship
+What I evaluate
+
+Does your system work end-to-end?
+Do you understand what you built?
+Can you explain your decisions clearly?
+Can you demonstrate it live without issues?
+
+
+Final advice
+
+Prepare like this:
+
+Practice the demo (it should take < 3 minutes)
+Make sure everything works in production
+Be ready to answer “why?” for every decision
+If your system works and you understand it — you will do well.
+
+
+
+
+If your project is not fully complete — do not panic. 
+
+
+
+You can still achieve a good result if you:
+
+
+
+1. Focus on one part of the system and present it well
+
+(for example: backend logic, frontend, or authentication)
+
+2. Clearly explain what is implemented vs not implemented
+
+3. Demonstrate that you understand your code and decisions
+
+
+
+It is better to show:
+
+a working partial system with clear explanations than a broken full system you cannot explain
+
+
+
+You are evaluated not only on completeness, but also on: understanding, reasoning, ability to explain your work
+
+Stay calm, be clear, and show what you do know.
+
+ 
+
+
+Good luck!
+
+
+
+My best regards,
+
+Alla Jammine
