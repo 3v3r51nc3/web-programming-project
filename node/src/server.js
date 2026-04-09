@@ -42,9 +42,27 @@ app.use(express.json());
 app.use("/api/events", eventsRouter);
 app.use("/api/participants", participantsRouter);
 
+// Root route to make browser visits clearer during manual testing.
+app.get("/", (req, res) => {
+  res.json({
+    service: "eventhub-node-backend",
+    status: "ok",
+    available_routes: [
+      "/api/health",
+      "/api/events",
+      "/api/participants",
+    ],
+  });
+});
+
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", service: "eventhub-node-backend" });
+});
+
+// Browsers often request this automatically. Returning 204 avoids a noisy 404 in dev tools.
+app.get("/favicon.ico", (req, res) => {
+  res.status(204).end();
 });
 
 // 404 handler for unknown routes

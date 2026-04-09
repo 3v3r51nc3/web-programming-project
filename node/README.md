@@ -84,7 +84,7 @@ Import this collection into Postman to test the whole Node API:
 
 Default collection variable:
 
-- `baseUrl = http://localhost:3001`
+- `baseUrl = http://localhost:3001/api/`
 
 Suggested run order:
 
