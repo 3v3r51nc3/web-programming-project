@@ -78,7 +78,7 @@
     {\ttfamily defense mode}\hfill{\ttfamily 6 min \quad 7 slides}
   \end{beamercolorbox}
   \begin{beamercolorbox}[wd=\textwidth,sep=0.35em,leftskip=0.7em,rightskip=0.7em]{urlbar}
-    {\ttfamily public url: [add deployed frontend url before defense]}\hfill{\ttfamily backup: localhost}
+    {\ttfamily public url: https://web-programming-project-beta.vercel.app/}\hfill
   \end{beamercolorbox}
 
   \vspace{0.75em}
@@ -96,11 +96,9 @@
       \vspace{0.8em}
 
       \begin{beamercolorbox}[wd=\linewidth,sep=0.8em]{rolebox}
-        \textbf{frontend and react integration:} mehdi aghaei\par
-        \textbf{django backend and api logic:} maksym dolhov\par
+        \textbf{frontend:} mehdi aghaei\par
+        \textbf{django and node.js:} maksym dolhov\par
         \vspace{0.5em}
-        \textbf{shared:} node.js comparison, deployment, defense prep\par
-        \textbf{institution:} universite paris cite
       \end{beamercolorbox}
     \end{column}
     \begin{column}{0.34\textwidth}
@@ -250,8 +248,8 @@
       \end{block}
 
       \begin{exampleblock}{public urls to show live}
-        \texttt{frontend: [paste vercel url here]}\\[0.25em]
-        \texttt{backend: [paste railway url here]}
+        \texttt{frontend: web-programming-project-beta.vercel.app}\\[0.25em]
+        \texttt{backend: web-programming-project-production-3e46.up.railway.app}
       \end{exampleblock}
     \end{column}
     \begin{column}{0.47\textwidth}
@@ -273,39 +271,6 @@
   \end{columns}
 \end{frame}
 
-\begin{frame}{live demo route}
-  \footnotesize
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{3-minute proof path}
-        \begin{enumerate}
-          \item log in as admin
-          \item create an event
-          \item create a participant
-          \item register the participant
-          \item repeat registration and show the error
-          \item filter events
-          \item switch to viewer
-        \end{enumerate}
-      \end{block}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \begin{exampleblock}{what this proves}
-        \begin{itemize}
-          \item auth works end-to-end
-          \item create flows reach the database
-          \item the many-to-many model is real
-          \item business validation is enforced
-          \item filtering is state-driven in react
-          \item permissions work in frontend and backend
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
 
-  \vspace{0.35em}
-  \centering
-  {\color{hotpink}\textbf{the slides guide the story, but the live system is the real proof.}}
-\end{frame}
 
 \end{document}
