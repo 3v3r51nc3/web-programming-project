@@ -1,12 +1,16 @@
 // Frontend developer: Mehdi AGHAEI
 import { buttonClassNames } from '../../styles'
 import { formatDateTime } from '../../utils/dateUtils'
+import { getRegistrationStatusMeta } from '../../utils/eventUtils'
 import EmptyStateCard from '../cards/EmptyStateCard'
 import StatusBadge from '../common/StatusBadge'
 
 export default function EventRegistrationList({
   activeRegistrationId,
-  canEdit,
+  canDeleteOwnRegistration,
+  canManageEvent,
+  emptyDescription,
+  emptyTitle,
   eventRegistrations,
   onDelete,
   onToggleStatus,
@@ -15,8 +19,8 @@ export default function EventRegistrationList({
   if (!eventRegistrations.length) {
     return (
       <EmptyStateCard
-        description="Registrations will appear here once participants are connected to this event."
-        title="No participants in this event yet"
+        description={emptyDescription || 'Registrations will appear here once an admin adds attendees to this event.'}
+        title={emptyTitle || 'No registrations yet'}
       />
     )
   }
@@ -27,6 +31,7 @@ export default function EventRegistrationList({
         const participant = participants.find(
           (currentParticipant) => currentParticipant.id === registration.participant,
         )
+        const statusMeta = getRegistrationStatusMeta(registration)
 
         return (
           <article className="list-row list-row--card" key={registration.id}>
@@ -34,7 +39,7 @@ export default function EventRegistrationList({
               <p className="list-title">
                 {participant
                   ? `${participant.first_name} ${participant.last_name}`
-                  : `Participant #${registration.participant}`}
+                  : registration.participant_name || `Participant #${registration.participant}`}
               </p>
               <p className="list-meta">
                 {participant?.email || registration.participant_email} · Registered{' '}
@@ -43,11 +48,8 @@ export default function EventRegistrationList({
             </div>
 
             <div className="list-row__actions">
-              <StatusBadge
-                label={registration.status === 'confirmed' ? 'Confirmed' : 'Cancelled'}
-                tone={registration.status === 'confirmed' ? 'success' : 'neutral'}
-              />
-              {canEdit ? (
+              <StatusBadge label={statusMeta.label} tone={statusMeta.tone} />
+              {canManageEvent ? (
                 <>
                   <button
                     className={buttonClassNames.ghost}
@@ -66,6 +68,15 @@ export default function EventRegistrationList({
                     {activeRegistrationId === registration.id ? 'Updating...' : 'Delete'}
                   </button>
                 </>
+              ) : canDeleteOwnRegistration ? (
+                <button
+                  className={buttonClassNames.dangerGhost}
+                  disabled={activeRegistrationId === registration.id}
+                  onClick={() => onDelete(registration)}
+                  type="button"
+                >
+                  {activeRegistrationId === registration.id ? 'Removing...' : 'Remove registration'}
+                </button>
               ) : null}
             </div>
           </article>

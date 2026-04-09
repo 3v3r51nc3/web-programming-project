@@ -5,7 +5,7 @@ from rest_framework import permissions
 class IsAdminOrReadOnly(permissions.BasePermission):
     """
     SAFE methods (GET, HEAD, OPTIONS) are open to everyone.
-    Write methods (POST, PUT, PATCH, DELETE) require is_staff=True.
+    Write methods require an authenticated admin.
     """
 
     def has_permission(self, request, view):
@@ -24,19 +24,5 @@ class IsAuthenticatedReadOnlyOrAdminWrite(permissions.BasePermission):
         if not request.user or not request.user.is_authenticated:
             return False
         if request.method in permissions.SAFE_METHODS:
-            return True
-        return bool(request.user.is_staff)
-
-
-class IsAuthenticatedReadCreateOrAdminManage(permissions.BasePermission):
-    """
-    Authenticated users may read registrations and create their own registration.
-    Only admins may update or delete registrations.
-    """
-
-    def has_permission(self, request, view):
-        if not request.user or not request.user.is_authenticated:
-            return False
-        if request.method in permissions.SAFE_METHODS or request.method == "POST":
             return True
         return bool(request.user.is_staff)

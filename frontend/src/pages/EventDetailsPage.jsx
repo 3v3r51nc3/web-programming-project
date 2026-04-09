@@ -5,6 +5,7 @@ import EventCrudForm from '../components/event/EventCrudForm'
 import EventRegistrationForm from '../components/event/EventRegistrationForm'
 import EventRegistrationList from '../components/event/EventRegistrationList'
 import StatusBadge from '../components/common/StatusBadge'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { formatDateTime } from '../utils/dateUtils'
 import { eventToForm } from '../utils/formUtils'
@@ -15,17 +16,13 @@ import {
 } from '../utils/eventUtils'
 
 export default function EventDetailsPage({
-  canEdit,
   event,
-  onBack,
   onCreateRegistration,
   onDeleteRegistration,
-  onGoToParticipants,
   onSaveEvent,
   onUpdateRegistrationStatus,
-  participants,
-  registrations,
 }) {
+  const { canEdit, openEvents, openParticipants, participants, registrations } = useWorkspace()
   const [eventFormValues, setEventFormValues] = useState(() => (event ? eventToForm(event) : null))
   const [eventFormState, setEventFormState] = useState({
     pending: false,
@@ -64,14 +61,14 @@ export default function EventDetailsPage({
         <EmptyStateCard
           actionLabel="Back to events"
           description="The selected event could not be found in the loaded dataset."
-          onAction={onBack}
+          onAction={openEvents}
           title="Unknown event"
         />
       </section>
     )
   }
 
-  const isViewerMode = !canEdit
+  const canManageCurrentEvent = canEdit
   const eventRegistrations = getEventRegistrations(registrations, event.id)
   const registeredParticipantIds = new Set(eventRegistrations.map((registration) => registration.participant))
   const availableParticipants = participants.filter(
@@ -79,10 +76,6 @@ export default function EventDetailsPage({
   )
   const confirmedCount = getConfirmedRegistrationsCount(event, registrations)
   const status = getEventStatus(event, registrations)
-  const viewerParticipant = isViewerMode ? participants[0] || null : null
-  const viewerRegistration = viewerParticipant
-    ? eventRegistrations.find((registration) => registration.participant === viewerParticipant.id) || null
-    : null
 
   function updateField(eventData) {
     const { name, value } = eventData.target
@@ -139,14 +132,10 @@ export default function EventDetailsPage({
     })
 
     try {
-      const participantId = canEdit
-        ? registrationForm.participantId
-        : availableParticipants[0]?.id || viewerParticipant?.id || ''
-
       await onCreateRegistration({
         eventId: event.id,
-        participantId,
-        status: canEdit ? registrationForm.status : 'confirmed',
+        participantId: registrationForm.participantId,
+        status: registrationForm.status,
       })
       setRegistrationForm({
         participantId: '',
@@ -197,10 +186,12 @@ export default function EventDetailsPage({
     <section className="details-grid">
       <section className={`${surfaceClassNames.hero} surface-card--wide simple-section`}>
         <div className="section-heading section-heading--wrap">
-          <button className={buttonClassNames.ghost} onClick={onBack} type="button">
+          <button className={buttonClassNames.ghost} onClick={openEvents} type="button">
             Back to events
           </button>
-          <StatusBadge label={status.label} tone={status.tone} />
+          <div className="button-row">
+            <StatusBadge label={status.label} tone={status.tone} />
+          </div>
         </div>
 
         <h3 className="surface-title surface-title--large">{event.title}</h3>
@@ -219,12 +210,15 @@ export default function EventDetailsPage({
         <div className="section-heading">
           <div>
             <p className="panel-label">Participants</p>
-            <h3 className="surface-title">Add people to this event</h3>
+            <h3 className="surface-title">
+              {canManageCurrentEvent ? 'Manage registrations for this event' : 'Registration access'}
+            </h3>
           </div>
         </div>
         <p className="surface-copy">
-          Use this section to connect participants to the event. Each participant can join
-          multiple events, but only once per event.
+          {canManageCurrentEvent
+            ? 'Use this section to manage participants and keep registration statuses up to date.'
+            : 'Viewer accounts can browse this event in read-only mode. Registration changes are reserved for admins.'}
         </p>
         <ul className="rule-list">
           <li>One participant can register for many events.</li>
@@ -234,14 +228,11 @@ export default function EventDetailsPage({
 
         <EventRegistrationForm
           availableParticipants={availableParticipants}
-          canEdit={canEdit}
-          currentParticipant={viewerParticipant}
-          currentRegistration={viewerRegistration}
+          canManageEvent={canManageCurrentEvent}
           formState={formState}
           formClassName="event-details-form-grid"
-          isEventFull={status.label === 'Full'}
           onChange={updateField}
-          onGoToParticipants={onGoToParticipants}
+          onGoToParticipants={openParticipants}
           onSubmit={handleSubmit}
           values={registrationForm}
         />
@@ -249,20 +240,20 @@ export default function EventDetailsPage({
 
       <section className={`${surfaceClassNames.card} simple-section`}>
         <EventCrudForm
-          canEdit={canEdit}
+          canEdit={canManageCurrentEvent}
           editingEventId={event.id}
           formState={eventFormState}
           formValues={eventFormValues || eventToForm(event)}
           formClassName="event-details-form-grid"
           helperText={
-            canEdit
+            canManageCurrentEvent
               ? 'Update the event title, time, location, description, or capacity from here.'
               : ''
           }
           onChange={updateEventField}
           onReset={resetEventForm}
           onSubmit={handleEventSave}
-          panelLabel={canEdit ? 'Schedule' : 'View only'}
+          panelLabel={canManageCurrentEvent ? 'Schedule' : 'View only'}
           readOnlyDescription="Only admins can update the event title, time, location, description, or capacity."
           readOnlyTitle="Schedule editing"
           titleOverride="Edit schedule"
@@ -272,16 +263,29 @@ export default function EventDetailsPage({
       <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">{isViewerMode ? 'Your registration' : 'Current list'}</p>
+            <p className="panel-label">{canManageCurrentEvent ? 'Current list' : 'Privacy protected'}</p>
             <h3 className="surface-title">
-              {isViewerMode ? 'Your registration for this event' : 'People registered for this event'}
+              {canManageCurrentEvent ? 'People registered for this event' : 'Registration visibility'}
             </h3>
           </div>
         </div>
+        {!canManageCurrentEvent ? (
+          <p className="surface-copy">
+            To protect participant privacy, viewers cannot browse the attendee list for an event.
+            If an admin registered you for this event, your own record appears below.
+          </p>
+        ) : null}
 
         <EventRegistrationList
           activeRegistrationId={activeRegistrationId}
-          canEdit={canEdit}
+          canDeleteOwnRegistration={false}
+          canManageEvent={canManageCurrentEvent}
+          emptyDescription={
+            canManageCurrentEvent
+              ? 'Registrations will appear here once an admin adds attendees to this event.'
+              : 'No registration linked to your account was found for this event.'
+          }
+          emptyTitle={canManageCurrentEvent ? 'No registrations yet' : 'No personal registration'}
           eventRegistrations={eventRegistrations}
           onDelete={removeRegistration}
           onToggleStatus={toggleStatus}

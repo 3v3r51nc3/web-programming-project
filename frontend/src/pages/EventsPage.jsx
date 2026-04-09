@@ -5,18 +5,13 @@ import EmptyStateCard from '../components/cards/EmptyStateCard'
 import EventCard from '../components/event/EventCard'
 import EventCrudForm from '../components/event/EventCrudForm'
 import EventFilters from '../components/event/EventFilters'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { surfaceClassNames } from '../styles'
 import { matchesEventFilter } from '../utils/eventUtils'
 import { createEmptyEventForm, eventToForm } from '../utils/formUtils'
 
-export default function EventsPage({
-  canEdit,
-  events,
-  onDeleteEvent,
-  onOpenEvent,
-  onSaveEvent,
-  registrations,
-}) {
+export default function EventsPage({ onDeleteEvent, onSaveEvent }) {
+  const { canEdit, events, openEvent, registrations } = useWorkspace()
   const [filters, setFilters] = useState({
     query: '',
     status: 'all',
@@ -221,8 +216,8 @@ export default function EventsPage({
             <p className="panel-label">Discover</p>
             <h3 className="surface-title">Events around the community</h3>
             <p className="surface-copy section-note">
-              Browse by title, place, or date. Open an event to connect participants, and use
-              Edit schedule to update the time, location, description, or capacity.
+              Browse by title, place, or date. Admins can create and manage the schedule, while
+              viewers can explore in read-only mode.
             </p>
           </div>
           <div className="section-heading__actions">
@@ -245,13 +240,13 @@ export default function EventsPage({
           <div className="event-grid event-directory">
             {visibleEvents.map((event) => (
               <EventCard
-                canEdit={canEdit}
+                canManage={canEdit}
                 deletingId={deletingId}
                 event={event}
                 key={event.id}
                 onDelete={removeEvent}
                 onEdit={startEditing}
-                onOpen={onOpenEvent}
+                onOpen={openEvent}
                 registrations={registrations}
               />
             ))}

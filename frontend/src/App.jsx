@@ -6,6 +6,7 @@ import AppShell from './components/header/AppShell'
 import { API_BASE_URL, EDITABLE_ROLES } from './constants/appConstants'
 import { getPageMeta } from './constants/pageMeta'
 import { APP_ROUTES, DEFAULT_ROUTE } from './constants/routes'
+import { WorkspaceProvider } from './context/WorkspaceContext'
 import DashboardPage from './pages/DashboardPage'
 import EventDetailsPage from './pages/EventDetailsPage'
 import EventsPage from './pages/EventsPage'
@@ -239,6 +240,21 @@ function App() {
       ? workspace.events.find((event) => event.id === route.eventId)
       : null
   const nextThemeLabel = themeMode === 'dark' ? 'Switch to light' : 'Switch to dark'
+  const workspaceContextValue = {
+    canEdit,
+    events: workspace.events,
+    lastUpdated: workspace.lastUpdated,
+    openDashboard: handleGoToDashboardHome,
+    openEvent: (eventId) => navigateTo(`/events/${eventId}`),
+    openEvents: () => navigateTo(APP_ROUTES.events),
+    openParticipants: () => navigateTo(APP_ROUTES.participants),
+    pageMeta,
+    participants: workspace.participants,
+    registrations: workspace.registrations,
+    routeName: route.name,
+    user,
+    workspaceStatus: workspace.status,
+  }
 
   function handleToggleTheme() {
     setThemeMode((currentTheme) => (currentTheme === 'dark' ? 'light' : 'dark'))
@@ -465,12 +481,8 @@ function App() {
     if (route.name === 'events') {
       return (
         <EventsPage
-          canEdit={canEdit}
-          events={workspace.events}
           onDeleteEvent={handleDeleteEvent}
-          onOpenEvent={(eventId) => navigateTo(`/events/${eventId}`)}
           onSaveEvent={handleSaveEvent}
-          registrations={workspace.registrations}
         />
       )
     }
@@ -478,11 +490,8 @@ function App() {
     if (route.name === 'participants') {
       return (
         <ParticipantsPage
-          canEdit={canEdit}
           onDeleteParticipant={handleDeleteParticipant}
           onSaveParticipant={handleSaveParticipant}
-          participants={workspace.participants}
-          registrations={workspace.registrations}
         />
       )
     }
@@ -490,70 +499,49 @@ function App() {
     if (route.name === 'event-details') {
       return (
         <EventDetailsPage
-          canEdit={canEdit}
           event={selectedEvent}
-          onBack={() => navigateTo(APP_ROUTES.events)}
           onCreateRegistration={handleCreateRegistration}
           onDeleteRegistration={handleDeleteRegistration}
-          onGoToParticipants={() => navigateTo(APP_ROUTES.participants)}
           onSaveEvent={handleSaveEvent}
           onUpdateRegistrationStatus={handleUpdateRegistrationStatus}
-          participants={workspace.participants}
-          registrations={workspace.registrations}
         />
       )
     }
 
-    return (
-      <DashboardPage
-        canEdit={canEdit}
-        events={workspace.events}
-        onNavigateToEvent={(eventId) => navigateTo(`/events/${eventId}`)}
-        onNavigateToEvents={() => navigateTo(APP_ROUTES.events)}
-        onNavigateToParticipants={() => navigateTo(APP_ROUTES.participants)}
-        participants={workspace.participants}
-        registrations={workspace.registrations}
-        user={user}
-      />
-    )
+    return <DashboardPage />
   }
 
   return (
-    <ProtectedWorkspaceShell
-      apiBaseUrl={API_BASE_URL}
-      banner={banner}
-      canEdit={canEdit}
-      error={workspace.error}
-      fallback={
-        <LoginPage
-          authState={authState}
-          banner={banner}
-          onDismissBanner={dismissBanner}
-          onLogoClick={handleGoToPublicHome}
-          onRegister={handleRegister}
-          onSubmit={handleLogin}
-          onToggleTheme={handleToggleTheme}
-          registerState={registerState}
-          themeMode={themeMode}
-          themeToggleLabel={nextThemeLabel}
-        />
-      }
-      lastUpdated={workspace.lastUpdated}
-      onDismissBanner={dismissBanner}
-      onLogout={handleLogout}
-      onLogoClick={handleGoToDashboardHome}
-      onNavigate={navigateTo}
-      onRefresh={refreshWorkspace}
-      onToggleTheme={handleToggleTheme}
-      pageMeta={pageMeta}
-      renderContent={renderWorkspace}
-      routeName={route.name}
-      session={session}
-      themeMode={themeMode}
-      themeToggleLabel={nextThemeLabel}
-      user={user}
-      workspaceStatus={workspace.status}
-    />
+    <WorkspaceProvider value={workspaceContextValue}>
+      <ProtectedWorkspaceShell
+        apiBaseUrl={API_BASE_URL}
+        banner={banner}
+        error={workspace.error}
+        fallback={
+          <LoginPage
+            authState={authState}
+            banner={banner}
+            onDismissBanner={dismissBanner}
+            onLogoClick={handleGoToPublicHome}
+            onRegister={handleRegister}
+            onSubmit={handleLogin}
+            onToggleTheme={handleToggleTheme}
+            registerState={registerState}
+            themeMode={themeMode}
+            themeToggleLabel={nextThemeLabel}
+          />
+        }
+        onDismissBanner={dismissBanner}
+        onLogout={handleLogout}
+        onLogoClick={handleGoToDashboardHome}
+        onRefresh={refreshWorkspace}
+        onToggleTheme={handleToggleTheme}
+        renderContent={renderWorkspace}
+        session={session}
+        themeMode={themeMode}
+        themeToggleLabel={nextThemeLabel}
+      />
+    </WorkspaceProvider>
   )
 }
 

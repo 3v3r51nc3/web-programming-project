@@ -55,6 +55,7 @@ class EventSerializer(serializers.ModelSerializer):
             "created_at",
             "confirmed_registrations_count",
         ]
+        read_only_fields = ["created_at", "confirmed_registrations_count"]
 
     def validate_date(self, value):
         if value < timezone.now():
@@ -66,7 +67,6 @@ class EventSerializer(serializers.ModelSerializer):
             return obj.confirmed_registrations_count
         return obj.registrations.filter(status="confirmed").count()
 
-
 class ParticipantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Participant
@@ -76,37 +76,19 @@ class ParticipantSerializer(serializers.ModelSerializer):
 class RegistrationSerializer(serializers.ModelSerializer):
     event_title = serializers.CharField(source="event.title", read_only=True)
     participant_email = serializers.EmailField(source="participant.email", read_only=True)
+    participant_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Registration
         fields = "__all__"
 
+    def get_participant_name(self, obj):
+        return f"{obj.participant.first_name} {obj.participant.last_name}".strip()
+
     def validate(self, attrs):
-        request = self.context.get("request")
-        user = getattr(request, "user", None)
         event = attrs.get("event", getattr(self.instance, "event", None))
         participant = attrs.get("participant", getattr(self.instance, "participant", None))
         status_value = attrs.get("status", getattr(self.instance, "status", "confirmed"))
-
-        if user and user.is_authenticated and not user.is_staff:
-            own_participant = sync_participant_for_user(user)
-            if own_participant is None:
-                raise serializers.ValidationError(
-                    {"participant": "Add an email address to your account before registering for events."}
-                )
-
-            if participant and participant != own_participant:
-                raise serializers.ValidationError(
-                    {"participant": "Viewers can register only their own participant profile."}
-                )
-
-            attrs["participant"] = own_participant
-            participant = own_participant
-
-            if status_value != "confirmed":
-                raise serializers.ValidationError(
-                    {"status": "Viewers can only create confirmed registrations."}
-                )
 
         if not event or not participant:
             return attrs

@@ -3,17 +3,13 @@ import { useDeferredValue, useEffect, useEffectEvent, useState } from 'react'
 import { createPortal } from 'react-dom'
 import EmptyStateCard from '../components/cards/EmptyStateCard'
 import InlineNotice from '../components/common/InlineNotice'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { getParticipantRegistrations } from '../utils/eventUtils'
 import { createEmptyParticipantForm, participantToForm } from '../utils/formUtils'
 
-export default function ParticipantsPage({
-  canEdit,
-  onDeleteParticipant,
-  onSaveParticipant,
-  participants,
-  registrations,
-}) {
+export default function ParticipantsPage({ onDeleteParticipant, onSaveParticipant }) {
+  const { canEdit, participants, registrations } = useWorkspace()
   const [query, setQuery] = useState('')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [createFormValues, setCreateFormValues] = useState(() => createEmptyParticipantForm())
@@ -28,7 +24,6 @@ export default function ParticipantsPage({
     error: '',
   })
   const [deletingId, setDeletingId] = useState(null)
-  const isViewerMode = !canEdit
   const deferredQuery = useDeferredValue(query)
   const activeEditingParticipant =
     editingParticipantId === null
@@ -201,8 +196,8 @@ export default function ParticipantsPage({
       <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading section-heading--wrap">
           <div>
-            <p className="panel-label">{isViewerMode ? 'Your profile' : 'Directory'}</p>
-            <h3 className="surface-title">{isViewerMode ? 'Participant profile' : 'Participants'}</h3>
+            <p className="panel-label">Directory</p>
+            <h3 className="surface-title">Participants</h3>
           </div>
 
           <div className="section-heading__actions">
@@ -210,7 +205,7 @@ export default function ParticipantsPage({
               <span>Search</span>
               <input
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder={isViewerMode ? 'Search your profile' : 'Search by name or email'}
+                placeholder="Search by name or email"
                 type="search"
                 value={query}
               />
@@ -241,14 +236,14 @@ export default function ParticipantsPage({
                 </div>
 
                 <div className="list-row__actions">
-                  <span className="metric-pill">
-                    {getParticipantRegistrations(registrations, participant.id).length}{' '}
-                    {getParticipantRegistrations(registrations, participant.id).length === 1
-                      ? 'registration'
-                      : 'registrations'}
-                  </span>
                   {canEdit ? (
                     <>
+                      <span className="metric-pill">
+                        {getParticipantRegistrations(registrations, participant.id).length}{' '}
+                        {getParticipantRegistrations(registrations, participant.id).length === 1
+                          ? 'registration'
+                          : 'registrations'}
+                      </span>
                       <button className={buttonClassNames.ghost} onClick={() => startEditing(participant)} type="button">
                         Edit
                       </button>
@@ -268,12 +263,8 @@ export default function ParticipantsPage({
           </div>
         ) : (
           <EmptyStateCard
-            description={
-              isViewerMode
-                ? 'Your participant profile will appear here once your account is linked.'
-                : 'Add a new profile or change the search term to reveal more attendees.'
-            }
-            title={isViewerMode ? 'No participant profile yet' : 'No matching participants'}
+            description="Add a new profile or change the search term to reveal more attendees."
+            title="No matching participants"
           />
         )}
       </section>

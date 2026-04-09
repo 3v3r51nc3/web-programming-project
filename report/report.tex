@@ -866,7 +866,7 @@ The \textbf{first 7 pages} of this document are the formal report for the projec
 
 EventHub is a full-stack web application for managing events, participants, and registrations. The project combines a React frontend, a main backend in \textbf{Django}, and a smaller comparison backend in \textbf{Node.js and Express}. The wweb app opens on a public landing page, lets users log in or register through a modal, and gives authenticated users access to the dashboard, event pages, participant pages, and registration tools. This report explains both how the project was built and why these technical choices were made.
 
-From a course perspective, the project brings together the main web-programming layers in one application. The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints. One important part of the project is showing that these topics are connected in practice, not only studied separately in class.
+From a course perspective, the project brings together the main web-programming layers in one application. The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -881,7 +881,7 @@ Maksym DOLHOV & Backend developer responsible for the Django API, backend valida
 
 \section{Project Scope and Requirements}
 
-The scope of EventHub comes from the assignment requirements and from the way the team organized the repository. The application needs clear screens for events, participants, and the registration relation that links them. It also needs to work on desktop and mobile screens, so responsive design is not just a visual extra. In the last stage of the project, we also cleaned up the frontend: we redesigned the landing page in a retro 1998 style, removed draft text, simplified navigation, and changed the create or edit flows into smaller pop-up windows that fit the rest of the interface better.
+The application needs clear screens for events, participants, and the registration relation that links them. It also needs to work on desktop and mobile screens, so responsive design is not just a visual extra. In the last stage of the project, we also cleaned up the frontend: we redesigned the landing page in a retro 1998 style, removed draft text, simplified navigation, and changed the create or edit flows into smaller pop-up windows that fit the rest of the interface better.
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -893,18 +893,15 @@ Main backend in Django & Relational models, serializers, viewsets, validation ru
 Backend comparison & Separate Node.js and Express service kept smaller and used as a comparative study backend \\
 Event registration logic & Dedicated \texttt{Registration} model instead of a hidden many-to-many shortcut \\
 Team collaboration & One repository with separate folders for frontend, Django backend, Node backend, and report material \\
-Release readiness & Public landing page, consistent dashboard controls, verified builds, and documentation updated to match the current project state \\
 \bottomrule
 \end{tabularx}
 \end{center}
 
-In practice, the project has to do two things at the same time. First, it has to produce a usable web application. Second, it has to show that the team understands why each layer exists and how the layers connect. That is why this report focuses on architecture and data flow instead of listing files one by one.
 
 \section{System Architecture}
 
 The architecture follows a clear full-stack separation. The browser loads the React SPA, the SPA sends requests to the Django REST API for the main application logic, the database stores persistent data, and a smaller Node.js and Express backend is kept in the repository as a comparative path. In the final local setup, Django runs on \texttt{localhost:8000}, Vite serves the React frontend on its development port, and Express runs independently on \texttt{localhost:3001}. This separation keeps responsibilities clear and allows frontend and backend work to progress in parallel.
 
-\ArchitectureFigure
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -920,13 +917,13 @@ Node.js / Express & Provides a smaller comparison backend for \texttt{/api/event
 \end{tabularx}
 \end{center}
 
-The architecture is intentionally asymmetric: Django is the main service, and Express is only the comparison service. This fits the assignment better than trying to build two full backends. In EventHub, the main application flow goes through Django, while Node.js and Express are kept to show a lighter and more manual backend style. The Express backend does not implement the full authentication or registration workflow; those routes stay on the Django side.
+In EventHub, the main application flow goes through Django, while Node.js and Express are kept to show a lighter and more manual backend style. The Express backend does not implement the full authentication or registration workflow; those routes stay on the Django side.
 
 \section{Backend Design}
 
 \subsection{Django as the primary backend}
 
-Django is the main backend because the project is centered on structured relational data and on business rules that should be enforced consistently. Events, participants, and registrations form a classic business-domain model. Django is well suited for this because it provides models, migrations, validation, an administrative interface, and a predictable project structure. Instead of building every backend concern manually, the team can use Django's conventions to keep the code organized and maintainable.
+Django is the main backend because the project is centered on structured relational data and on business rules that should be enforced consistently. Events, participants, and registrations form a classic business-domain model. Django is well suited for this because it provides models, migrations, validation, an administrative interface, and a predictable project structure. 
 
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
@@ -1011,6 +1008,8 @@ The frontend is a React SPA that provides the main user interface of the applica
 
 The frontend is built on three complementary layers. HTML provides semantic structure. CSS provides visual layout and responsive behavior. React organizes the page into reusable components and keeps the visible interface synchronized with state changes. A weakness in any one of these layers reduces the quality of the final SPA.
 
+In the final frontend, we also introduced a shared \texttt{WorkspaceContext} with React's \texttt{useContext()} hook. This lets the authenticated shell and the main pages read shared data such as the current user, role, events, participants, registrations, and navigation helpers without passing the same props through many intermediate components.
+
 \begin{center}
 \begin{tabularx}{\textwidth}{@{}lY@{}}
 \toprule
@@ -1058,6 +1057,7 @@ Consistent top-right controls & The theme toggle and auth or workspace actions n
 Pop-up CRUD forms & Create and edit actions for events and participants are easier to understand and fit better on narrow layouts \\
 Public event warning modal & Unauthenticated visitors can click public event previews and are clearly prompted to sign in or register for full details \\
 Local browser extras & Visitor counter, stored theme, favicon, and utility links demonstrate small but real browser-side behaviors \\
+Workspace context with \texttt{useContext()} & Reduces prop drilling by sharing authenticated workspace state and navigation helpers across the React shell and pages \\
 \bottomrule
 \end{tabularx}
 \end{center}

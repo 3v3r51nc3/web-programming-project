@@ -12,7 +12,6 @@ from .serializers import (
 from .permissions import (
     IsAdminOrReadOnly,
     IsAuthenticatedReadOnlyOrAdminWrite,
-    IsAuthenticatedReadCreateOrAdminManage,
 )
 from .utils import sync_participant_for_user
 
@@ -35,21 +34,15 @@ class ParticipantViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedReadOnlyOrAdminWrite]
 
     def get_queryset(self):
-        queryset = Participant.objects.all().order_by("id")
         user = self.request.user
-        if user.is_staff:
-            return queryset
-
-        participant = sync_participant_for_user(user)
-        if participant is None:
-            return queryset.none()
-
-        return queryset.filter(pk=participant.pk)
+        if user and user.is_authenticated and not user.is_staff:
+            sync_participant_for_user(user)
+        return Participant.objects.all().order_by("id")
 
 
 class RegistrationViewSet(viewsets.ModelViewSet):
     serializer_class = RegistrationSerializer
-    permission_classes = [IsAuthenticatedReadCreateOrAdminManage]
+    permission_classes = [IsAuthenticatedReadOnlyOrAdminWrite]
 
     def get_queryset(self):
         user = self.request.user

@@ -5,7 +5,7 @@ import { getConfirmedRegistrationsCount, getEventStatus } from '../../utils/even
 import StatusBadge from '../common/StatusBadge'
 
 export default function EventCard({
-  canEdit,
+  canManage,
   deletingId,
   event,
   onDelete,
@@ -40,7 +40,7 @@ export default function EventCard({
         <button className={buttonClassNames.primary} onClick={() => onOpen(event.id)} type="button">
           Open event
         </button>
-        {canEdit ? (
+        {canManage ? (
           <>
             <button className={buttonClassNames.ghost} onClick={() => onEdit(event)} type="button">
               Edit schedule

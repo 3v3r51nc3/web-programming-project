@@ -1,6 +1,6 @@
 // Frontend developer: Mehdi AGHAEI
 import { useEffect, useState } from 'react'
-import { APP_ROUTES } from '../../constants/routes'
+import { useWorkspace } from '../../context/WorkspaceContext'
 import { buttonClassNames } from '../../styles'
 import { formatLastUpdated } from '../../utils/dateUtils'
 import Banner from '../common/Banner'
@@ -12,23 +12,27 @@ const MOBILE_SIDEBAR_MEDIA_QUERY = '(max-width: 780px)'
 
 export default function AppShell({
   banner,
-  canEdit,
   children,
   error,
-  lastUpdated,
   onDismissBanner,
   onLogout,
   onLogoClick,
-  onNavigate,
   onRefresh,
   onToggleTheme,
-  pageMeta,
-  routeName,
   themeMode,
   themeToggleLabel,
-  user,
-  workspaceStatus,
 }) {
+  const {
+    canEdit,
+    lastUpdated,
+    openDashboard,
+    openEvents,
+    openParticipants,
+    pageMeta,
+    routeName,
+    user,
+    workspaceStatus,
+  } = useWorkspace()
   const accessLabel = user?.role === 'admin' ? 'Admin' : canEdit ? 'Editor' : 'Viewer'
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     if (typeof window === 'undefined') {
@@ -63,8 +67,8 @@ export default function AppShell({
     }
   }, [])
 
-  function handleSidebarNavigate(path) {
-    onNavigate(path)
+  function handleSidebarNavigate(onNavigate) {
+    onNavigate()
 
     if (typeof window !== 'undefined' && window.matchMedia(MOBILE_SIDEBAR_MEDIA_QUERY).matches) {
       setIsSidebarOpen(false)
@@ -76,29 +80,29 @@ export default function AppShell({
       utilityItems={[
         {
           label: 'Live events',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.events),
+          onClick: () => handleSidebarNavigate(openEvents),
         },
         {
           label: 'Member access',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.dashboard),
+          onClick: () => handleSidebarNavigate(openDashboard),
         },
         {
-          label: 'Online registration',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.participants),
+          label: 'Participant records',
+          onClick: () => handleSidebarNavigate(openParticipants),
         },
       ]}
       footerItems={[
         {
           label: 'Dashboard',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.dashboard),
+          onClick: () => handleSidebarNavigate(openDashboard),
         },
         {
           label: 'Events',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.events),
+          onClick: () => handleSidebarNavigate(openEvents),
         },
         {
           label: 'Participants',
-          onClick: () => handleSidebarNavigate(APP_ROUTES.participants),
+          onClick: () => handleSidebarNavigate(openParticipants),
         },
       ]}
       footerNote="Plan and join events online."
@@ -136,19 +140,19 @@ export default function AppShell({
                 active={routeName === 'dashboard'}
                 description="Overview, schedule, and quick totals."
                 label="Dashboard"
-                onClick={() => handleSidebarNavigate(APP_ROUTES.dashboard)}
+                onClick={() => handleSidebarNavigate(openDashboard)}
               />
               <NavButton
                 active={routeName === 'events' || routeName === 'event-details'}
                 description="Browse, create, and update events."
                 label="Events"
-                onClick={() => handleSidebarNavigate(APP_ROUTES.events)}
+                onClick={() => handleSidebarNavigate(openEvents)}
               />
               <NavButton
                 active={routeName === 'participants'}
-                description={canEdit ? 'Keep participant records up to date.' : 'See your participant profile and registrations.'}
+                description={canEdit ? 'Keep participant records up to date.' : 'Browse participant records in read-only mode.'}
                 label="Participants"
-                onClick={() => handleSidebarNavigate(APP_ROUTES.participants)}
+                onClick={() => handleSidebarNavigate(openParticipants)}
               />
             </nav>
 
@@ -162,8 +166,8 @@ export default function AppShell({
                 </p>
               </div>
               <p className="micro-copy">
-                Admins can edit events, participants, and registrations. Viewers can see only their
-                own participant profile and register themselves for events.
+                Admins can edit events, participants, and registrations. Viewers can browse the
+                workspace in read-only mode.
               </p>
             </section>
 

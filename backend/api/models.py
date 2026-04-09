@@ -1,10 +1,6 @@
 # Backend developer: Maksym DOLHOV
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.core.validators import MinValueValidator
-from django.utils import timezone
 
 class Event(models.Model):
     title = models.CharField(max_length=200)
@@ -36,7 +32,7 @@ class Registration(models.Model):
 
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='registrations')
     participant = models.ForeignKey(Participant, on_delete=models.CASCADE, related_name='registrations')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='confirmed')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="confirmed")
     registered_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

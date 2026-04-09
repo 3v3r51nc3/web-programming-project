@@ -1,20 +1,22 @@
 // Frontend developer: Mehdi AGHAEI
 import EmptyStateCard from '../components/cards/EmptyStateCard'
 import StatusBadge from '../components/common/StatusBadge'
+import { useWorkspace } from '../context/WorkspaceContext'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { formatDateTime } from '../utils/dateUtils'
 import { getConfirmedRegistrationsCount, getEventStatus } from '../utils/eventUtils'
 
-export default function DashboardPage({
-  canEdit,
-  events,
-  onNavigateToEvent,
-  onNavigateToEvents,
-  onNavigateToParticipants,
-  participants,
-  registrations,
-  user,
-}) {
+export default function DashboardPage() {
+  const {
+    canEdit,
+    events,
+    openEvent,
+    openEvents,
+    openParticipants,
+    participants,
+    registrations,
+    user,
+  } = useWorkspace()
   const accessLabel = user?.role === 'admin' ? 'Admin' : canEdit ? 'Editor' : 'Viewer'
 
   const sortedEvents = [...events].sort((leftEvent, rightEvent) => {
@@ -92,8 +94,8 @@ export default function DashboardPage({
 
         <p className="surface-copy">
           {canEdit
-            ? 'Open any event to view its participants, add new registrations, and keep the schedule and capacity up to date.'
-            : 'Open any event to check seat availability, review your registration, and sign yourself up when places are available.'}
+            ? 'Open any event to update the schedule, manage participants, and keep registrations accurate.'
+            : 'Browse events and participant records in read-only mode.'}
         </p>
         <ul className="rule-list rule-list--compact">
           <li>One participant can register for multiple events.</li>
@@ -101,10 +103,10 @@ export default function DashboardPage({
           <li>The same participant cannot be registered twice for the same event.</li>
         </ul>
         <div className="button-row">
-          <button className={buttonClassNames.primary} onClick={onNavigateToEvents} type="button">
+          <button className={buttonClassNames.primary} onClick={openEvents} type="button">
             Open event list
           </button>
-          <button className={buttonClassNames.ghost} onClick={onNavigateToParticipants} type="button">
+          <button className={buttonClassNames.ghost} onClick={openParticipants} type="button">
             Open participant list
           </button>
         </div>
@@ -126,7 +128,7 @@ export default function DashboardPage({
                 <button
                   className="list-row list-row--interactive"
                   key={event.id}
-                  onClick={() => onNavigateToEvent(event.id)}
+                  onClick={() => openEvent(event.id)}
                   type="button"
                 >
                   <div>

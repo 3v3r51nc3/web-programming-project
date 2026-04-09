@@ -235,7 +235,7 @@ export default function LoginPage({
             <div aria-hidden="true" className="section-divider" />
 
             <div className="login-panel__block" ref={publicEventsRef}>
-              <p className="panel-label">Public events</p>
+              <p className="panel-label">Upcoming events</p>
               <h2 className="surface-title">What is coming up</h2>
 
               {publicEventsState.status === 'ready' && publicEventsState.events.length ? (
@@ -258,11 +258,11 @@ export default function LoginPage({
                   ))}
                 </div>
               ) : publicEventsState.status === 'ready' ? (
-                <p className="surface-copy">No public events are available yet.</p>
+                <p className="surface-copy">No events are available yet.</p>
               ) : publicEventsState.status === 'error' ? (
                 <p className="surface-copy">{publicEventsState.error}</p>
               ) : (
-                <p className="surface-copy">Loading public events...</p>
+                <p className="surface-copy">Loading events...</p>
               )}
             </div>
           </div>

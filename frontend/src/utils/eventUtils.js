@@ -19,6 +19,18 @@ export function getConfirmedRegistrationsCount(event, registrations) {
   ).length
 }
 
+export function getRegistrationStatusMeta(registration) {
+  if (registration.status === 'pending') {
+    return { label: 'Pending', tone: 'accent' }
+  }
+
+  if (registration.status === 'confirmed') {
+    return { label: 'Confirmed', tone: 'success' }
+  }
+
+  return { label: 'Cancelled', tone: 'neutral' }
+}
+
 export function getEventStatus(event, registrations) {
   const confirmedCount = getConfirmedRegistrationsCount(event, registrations)
   if (confirmedCount >= event.capacity) {
