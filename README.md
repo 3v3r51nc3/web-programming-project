@@ -54,9 +54,20 @@ API available at `http://localhost:8000/api/`
 
 Use Node.js 22 for this backend because `better-sqlite3` is a native dependency.
 
+If Node 22 is not installed yet on macOS with Homebrew:
+
+```bash
+brew install node@22
+export PATH="/opt/homebrew/opt/node@22/bin:$PATH"
+node -v
+```
+
+The version should be `v22.x.x`.
+
 ```bash
 cd node
 export PATH="/opt/homebrew/opt/node@22/bin:$PATH"  # macOS Homebrew Node 22
+rm -rf node_modules package-lock.json
 npm install
 npm run dev
 ```
@@ -154,4 +165,3 @@ xelatex -interaction=nonstopmode -output-directory=build report.tex
 xelatex -interaction=nonstopmode -output-directory=build report.tex
 cp build/report.pdf report.pdf
 ```
-

@@ -22,6 +22,10 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## API Documentation
+
+The API documentation is in [API_DOCUMENTATION.md](/Users/sigmoid/Desktop/Coding/GitHub/S2/web-programming-project/backend/API_DOCUMENTATION.md).
+
 ## Main Next Steps
 
 - finish authentication and roles
