@@ -13,7 +13,7 @@ export default function EventCard({
   onOpen,
   registrations,
 }) {
-  const confirmedCount = getConfirmedRegistrationsCount(registrations, event.id)
+  const confirmedCount = getConfirmedRegistrationsCount(event, registrations)
   const status = getEventStatus(event, registrations)
 
   return (

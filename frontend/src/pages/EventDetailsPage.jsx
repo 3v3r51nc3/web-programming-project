@@ -71,13 +71,18 @@ export default function EventDetailsPage({
     )
   }
 
+  const isViewerMode = !canEdit
   const eventRegistrations = getEventRegistrations(registrations, event.id)
   const registeredParticipantIds = new Set(eventRegistrations.map((registration) => registration.participant))
   const availableParticipants = participants.filter(
     (participant) => !registeredParticipantIds.has(participant.id),
   )
-  const confirmedCount = getConfirmedRegistrationsCount(registrations, event.id)
+  const confirmedCount = getConfirmedRegistrationsCount(event, registrations)
   const status = getEventStatus(event, registrations)
+  const viewerParticipant = isViewerMode ? participants[0] || null : null
+  const viewerRegistration = viewerParticipant
+    ? eventRegistrations.find((registration) => registration.participant === viewerParticipant.id) || null
+    : null
 
   function updateField(eventData) {
     const { name, value } = eventData.target
@@ -134,10 +139,14 @@ export default function EventDetailsPage({
     })
 
     try {
+      const participantId = canEdit
+        ? registrationForm.participantId
+        : availableParticipants[0]?.id || viewerParticipant?.id || ''
+
       await onCreateRegistration({
         eventId: event.id,
-        participantId: registrationForm.participantId,
-        status: registrationForm.status,
+        participantId,
+        status: canEdit ? registrationForm.status : 'confirmed',
       })
       setRegistrationForm({
         participantId: '',
@@ -226,8 +235,11 @@ export default function EventDetailsPage({
         <EventRegistrationForm
           availableParticipants={availableParticipants}
           canEdit={canEdit}
+          currentParticipant={viewerParticipant}
+          currentRegistration={viewerRegistration}
           formState={formState}
           formClassName="event-details-form-grid"
+          isEventFull={status.label === 'Full'}
           onChange={updateField}
           onGoToParticipants={onGoToParticipants}
           onSubmit={handleSubmit}
@@ -260,8 +272,10 @@ export default function EventDetailsPage({
       <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading">
           <div>
-            <p className="panel-label">Current list</p>
-            <h3 className="surface-title">People registered for this event</h3>
+            <p className="panel-label">{isViewerMode ? 'Your registration' : 'Current list'}</p>
+            <h3 className="surface-title">
+              {isViewerMode ? 'Your registration for this event' : 'People registered for this event'}
+            </h3>
           </div>
         </div>
 

@@ -3,7 +3,7 @@ import EmptyStateCard from '../components/cards/EmptyStateCard'
 import StatusBadge from '../components/common/StatusBadge'
 import { buttonClassNames, surfaceClassNames } from '../styles'
 import { formatDateTime } from '../utils/dateUtils'
-import { getEventStatus } from '../utils/eventUtils'
+import { getConfirmedRegistrationsCount, getEventStatus } from '../utils/eventUtils'
 
 export default function DashboardPage({
   canEdit,
@@ -22,9 +22,10 @@ export default function DashboardPage({
   })
   const nextEvents = sortedEvents.slice(0, 4)
   const fullEvents = events.filter((event) => getEventStatus(event, registrations).label === 'Full')
-  const confirmedRegistrations = registrations.filter(
-    (registration) => registration.status === 'confirmed',
-  ).length
+  const confirmedRegistrations = events.reduce(
+    (total, event) => total + getConfirmedRegistrationsCount(event, registrations),
+    0,
+  )
   const locationSummary = Object.values(
     events.reduce((locations, event) => {
       const locationKey = event.location?.trim() || 'Unknown location'
@@ -90,8 +91,9 @@ export default function DashboardPage({
         </div>
 
         <p className="surface-copy">
-          Open any event to view its participants, add new registrations, and keep the schedule
-          and capacity up to date.
+          {canEdit
+            ? 'Open any event to view its participants, add new registrations, and keep the schedule and capacity up to date.'
+            : 'Open any event to check seat availability, review your registration, and sign yourself up when places are available.'}
         </p>
         <ul className="rule-list rule-list--compact">
           <li>One participant can register for multiple events.</li>

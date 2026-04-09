@@ -9,14 +9,18 @@ export function getParticipantRegistrations(registrations, participantId) {
   return registrations.filter((registration) => registration.participant === participantId)
 }
 
-export function getConfirmedRegistrationsCount(registrations, eventId) {
-  return getEventRegistrations(registrations, eventId).filter(
+export function getConfirmedRegistrationsCount(event, registrations) {
+  if (Number.isFinite(event?.confirmed_registrations_count)) {
+    return event.confirmed_registrations_count
+  }
+
+  return getEventRegistrations(registrations, event.id).filter(
     (registration) => registration.status === 'confirmed',
   ).length
 }
 
 export function getEventStatus(event, registrations) {
-  const confirmedCount = getConfirmedRegistrationsCount(registrations, event.id)
+  const confirmedCount = getConfirmedRegistrationsCount(event, registrations)
   if (confirmedCount >= event.capacity) {
     return { label: 'Full', tone: 'warning' }
   }

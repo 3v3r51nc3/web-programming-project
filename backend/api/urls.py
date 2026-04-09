@@ -11,8 +11,8 @@ from .views import (
 )
 
 router = DefaultRouter()
-router.register(r"events", EventViewSet)
-router.register(r"participants", ParticipantViewSet)
+router.register(r"events", EventViewSet, basename="event")
+router.register(r"participants", ParticipantViewSet, basename="participant")
 router.register(r"registrations", RegistrationViewSet, basename="registration")
 
 urlpatterns = [

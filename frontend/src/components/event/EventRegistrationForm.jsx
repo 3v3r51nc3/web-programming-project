@@ -6,19 +6,64 @@ import InlineNotice from '../common/InlineNotice'
 export default function EventRegistrationForm({
   availableParticipants,
   canEdit,
+  currentParticipant,
+  currentRegistration,
   formState,
   formClassName = '',
+  isEventFull = false,
   onChange,
   onGoToParticipants,
   onSubmit,
   values,
 }) {
   if (!canEdit) {
+    if (!currentParticipant) {
+      return (
+        <EmptyStateCard
+          description="Your participant profile is not ready yet. Refresh the workspace or sign in again to finish linking your account."
+          title="Profile needed"
+        />
+      )
+    }
+
+    if (currentRegistration) {
+      return (
+        <EmptyStateCard
+          description={`You already have a ${currentRegistration.status} registration for this event.`}
+          title="Already registered"
+        />
+      )
+    }
+
+    if (isEventFull) {
+      return (
+        <EmptyStateCard
+          description="This event has reached capacity. If a seat opens later, you can register yourself here."
+          title="Event is full"
+        />
+      )
+    }
+
     return (
-      <EmptyStateCard
-        description="This account can view the participant list, but only admins can add or update registrations."
-        title="View only"
-      />
+      <form className={`form-grid ${formClassName}`.trim()} onSubmit={onSubmit}>
+        <p className="micro-copy field--full">
+          This viewer account can register only its own participant profile for an event.
+        </p>
+
+        <label className="field field--full">
+          <span>Participant</span>
+          <input
+            readOnly
+            value={`${currentParticipant.first_name} ${currentParticipant.last_name} · ${currentParticipant.email}`}
+          />
+        </label>
+
+        {formState.error ? <InlineNotice message={formState.error} tone="error" /> : null}
+
+        <button className={`${buttonClassNames.primaryWide} field--full`} disabled={formState.pending} type="submit">
+          {formState.pending ? 'Saving registration...' : 'Register me for this event'}
+        </button>
+      </form>
     )
   }
 

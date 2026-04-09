@@ -38,6 +38,8 @@
 \definecolor{mintwash}{HTML}{EDF8F1}
 \definecolor{rosewash}{HTML}{FFF0EC}
 \definecolor{sunwash}{HTML}{FFF4CF}
+\definecolor{alertwash}{HTML}{FFF1F1}
+\definecolor{alertred}{HTML}{C62828}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -132,6 +134,15 @@
 
 \newcommand{\ChecklistBox}[1]{%
   \LearningCallout{mintwash}{\textbf{Checklist.} #1}%
+}
+
+\newcommand{\AttentionBox}[1]{%
+  \begin{center}
+  \setlength{\fboxsep}{10pt}%
+  \fcolorbox{alertred}{alertwash}{%
+    \parbox{0.94\linewidth}{\textbf{\textcolor{alertred}{Attention !!!}}\par #1}%
+  }%
+  \end{center}
 }
 
 \newcommand{\CodePill}[1]{%
@@ -843,14 +854,17 @@ Events list\\[0.8em]
 \ProjectSnapshotFigure
 
 \PanelBox{
-EventHub is a full-stack course project about event management. We built a responsive React SPA, used Django for the main backend, and kept a smaller Node.js / Express backend for comparison. In the current version, the frontend includes a public home page at \texttt{/}, a retro 1998-inspired style, clearer dashboard navigation, and modal CRUD flows. The first pages of this document are the formal report for the project, and the appendix after that contains extra explanations, examples, and revision notes.
+EventHub is a full-stack course project about event management. We built a responsive React SPA, used Django for the main backend, and kept a smaller Node.js / Express backend for comparison. The frontend includes a public home page at \texttt{/}, a retro 1998-inspired style, dashboard navigation, and modal CRUD flows.
+}
+\AttentionBox{
+The \textbf{first 7 pages} of this document are the formal report for the project, and the appendix after that contains extra explanations, examples, and notes.
 }
 \end{titlepage}
 \newpage
 
 \section{Introduction}
 
-EventHub is a full-stack web application for managing events, participants, and registrations. The project combines a React frontend, a main backend in \textbf{Django}, and a smaller comparison backend in \textbf{Node.js and Express}. In the current version, the app opens on a public landing page, lets users log in or register through a modal, and gives authenticated users access to the dashboard, event pages, participant pages, and registration tools. This report explains both how the project was built and why these technical choices were made.
+EventHub is a full-stack web application for managing events, participants, and registrations. The project combines a React frontend, a main backend in \textbf{Django}, and a smaller comparison backend in \textbf{Node.js and Express}. The wweb app opens on a public landing page, lets users log in or register through a modal, and gives authenticated users access to the dashboard, event pages, participant pages, and registration tools. This report explains both how the project was built and why these technical choices were made.
 
 From a course perspective, the project brings together the main web-programming layers in one application. The frontend handles interaction, layout, navigation, rendering, and browser storage. The backend handles data models, validation, routing, and JSON responses. The two sides communicate through HTTP requests and REST-style API endpoints. One important part of the project is showing that these topics are connected in practice, not only studied separately in class.
 

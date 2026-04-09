@@ -180,7 +180,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = clean_env_value(os.getenv('DJANGO_TIME_ZONE', 'Europe/Paris'))
 
 USE_I18N = True
 

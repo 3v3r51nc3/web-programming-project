@@ -28,6 +28,7 @@ export default function ParticipantsPage({
     error: '',
   })
   const [deletingId, setDeletingId] = useState(null)
+  const isViewerMode = !canEdit
   const deferredQuery = useDeferredValue(query)
   const activeEditingParticipant =
     editingParticipantId === null
@@ -200,8 +201,8 @@ export default function ParticipantsPage({
       <section className={`${surfaceClassNames.wide} simple-section`}>
         <div className="section-heading section-heading--wrap">
           <div>
-            <p className="panel-label">Directory</p>
-            <h3 className="surface-title">Participants</h3>
+            <p className="panel-label">{isViewerMode ? 'Your profile' : 'Directory'}</p>
+            <h3 className="surface-title">{isViewerMode ? 'Participant profile' : 'Participants'}</h3>
           </div>
 
           <div className="section-heading__actions">
@@ -209,7 +210,7 @@ export default function ParticipantsPage({
               <span>Search</span>
               <input
                 onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search by name or email"
+                placeholder={isViewerMode ? 'Search your profile' : 'Search by name or email'}
                 type="search"
                 value={query}
               />
@@ -267,8 +268,12 @@ export default function ParticipantsPage({
           </div>
         ) : (
           <EmptyStateCard
-            description="Add a new profile or change the search term to reveal more attendees."
-            title="No matching participants"
+            description={
+              isViewerMode
+                ? 'Your participant profile will appear here once your account is linked.'
+                : 'Add a new profile or change the search term to reveal more attendees.'
+            }
+            title={isViewerMode ? 'No participant profile yet' : 'No matching participants'}
           />
         )}
       </section>

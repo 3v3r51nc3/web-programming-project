@@ -6,6 +6,7 @@ from datetime import timedelta
 from rest_framework.test import APITestCase
 from rest_framework import status
 from .models import Event, Participant, Registration
+from .utils import sync_participant_for_user
 
 
 # ---------------------------------------------------------------------------
@@ -98,6 +99,7 @@ class AuthTests(APITestCase):
         })
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertTrue(User.objects.filter(username="newuser").exists())
+        self.assertTrue(Participant.objects.filter(email="newuser@example.com").exists())
 
     def test_register_password_mismatch(self):
         resp = self.client.post(self.REGISTER_URL, {
@@ -113,6 +115,16 @@ class AuthTests(APITestCase):
         resp = self.client.post(self.REGISTER_URL, {
             "username": "taken",
             "email": "x@example.com",
+            "password": "GoodPass1!",
+            "password2": "GoodPass1!",
+        })
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_register_duplicate_email_rejected(self):
+        User.objects.create_user(username="existing", email="existing@example.com", password="GoodPass1!")
+        resp = self.client.post(self.REGISTER_URL, {
+            "username": "new-account",
+            "email": "existing@example.com",
             "password": "GoodPass1!",
             "password2": "GoodPass1!",
         })
@@ -229,6 +241,24 @@ class EventTests(APITestCase):
         resp = self.client.post("/api/events/", payload)
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
+    def test_event_list_includes_confirmed_registration_count(self):
+        Participant.objects.create(first_name="Ada", last_name="Lovelace", email="ada@example.com")
+        event = Event.objects.create(
+            title="Counted Event",
+            date=timezone.now() + timedelta(days=2),
+            location="Paris",
+            capacity=10,
+        )
+        Registration.objects.create(
+            event=event,
+            participant=Participant.objects.get(email="ada@example.com"),
+            status="confirmed",
+        )
+        resp = self.client.get("/api/events/")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        counted_event = next(item for item in resp.data if item["id"] == event.id)
+        self.assertEqual(counted_event["confirmed_registrations_count"], 1)
+
 
 # ---------------------------------------------------------------------------
 # Participant tests
@@ -237,20 +267,39 @@ class EventTests(APITestCase):
 class ParticipantTests(APITestCase):
     def setUp(self):
         self.admin = User.objects.create_user(username="adminpt", password="pass!", is_staff=True)
-        self.user = User.objects.create_user(username="userpt", password="pass!")
+        self.user = User.objects.create_user(
+            username="userpt",
+            email="userpt@example.com",
+            password="pass!",
+        )
         self.payload = {"first_name": "Jane", "last_name": "Doe", "email": "jane@example.com"}
 
     def test_list_participants_unauthenticated_forbidden(self):
         resp = self.client.get("/api/participants/")
         self.assertEqual(resp.status_code, status.HTTP_401_UNAUTHORIZED)
 
-    def test_list_participants_authenticated(self):
+    def test_list_participants_authenticated_user_sees_only_own_profile(self):
+        Participant.objects.create(first_name="Other", last_name="Person", email="other@example.com")
         self.client.force_authenticate(user=self.user)
         resp = self.client.get("/api/participants/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(resp.data), 1)
+        self.assertEqual(resp.data[0]["email"], self.user.email)
 
-    def test_create_participant_authenticated(self):
+    def test_list_participants_admin_sees_all(self):
+        Participant.objects.create(first_name="Other", last_name="Person", email="other@example.com")
+        self.client.force_authenticate(user=self.admin)
+        resp = self.client.get("/api/participants/")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(resp.data), 1)
+
+    def test_create_participant_regular_user_forbidden(self):
         self.client.force_authenticate(user=self.user)
+        resp = self.client.post("/api/participants/", self.payload)
+        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_create_participant_admin(self):
+        self.client.force_authenticate(user=self.admin)
         resp = self.client.post("/api/participants/", self.payload)
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
@@ -294,12 +343,13 @@ class RegistrationTests(APITestCase):
         self.participant = Participant.objects.create(
             first_name="Tom", last_name="Brown", email="tom@example.com"
         )
+        self.own_participant = sync_participant_for_user(self.user)
 
     def test_create_registration_authenticated(self):
         self.client.force_authenticate(user=self.user)
         resp = self.client.post("/api/registrations/", {
             "event": self.event.id,
-            "participant": self.participant.id,
+            "participant": self.own_participant.id,
         })
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         self.assertEqual(resp.data["status"], "confirmed")
@@ -313,8 +363,16 @@ class RegistrationTests(APITestCase):
 
     def test_duplicate_registration_rejected(self):
         self.client.force_authenticate(user=self.user)
-        self.client.post("/api/registrations/", {"event": self.event.id, "participant": self.participant.id})
-        resp = self.client.post("/api/registrations/", {"event": self.event.id, "participant": self.participant.id})
+        self.client.post("/api/registrations/", {"event": self.event.id, "participant": self.own_participant.id})
+        resp = self.client.post("/api/registrations/", {"event": self.event.id, "participant": self.own_participant.id})
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_regular_user_cannot_register_someone_else(self):
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.post("/api/registrations/", {
+            "event": self.event.id,
+            "participant": self.participant.id,
+        })
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_capacity_exceeded_rejected(self):
@@ -353,16 +411,13 @@ class RegistrationTests(APITestCase):
         self.assertGreaterEqual(len(resp.data), 1)
 
     def test_regular_user_sees_only_own_registrations(self):
-        own_participant = Participant.objects.create(
-            first_name="Own", last_name="User", email=self.user.email
-        )
         other_participant = Participant.objects.create(
             first_name="Other", last_name="User", email="other@x.com"
         )
         event2 = Event.objects.create(
             title="Event2", date=timezone.now() + timedelta(days=10), location="X", capacity=5
         )
-        Registration.objects.create(event=self.event, participant=own_participant)
+        Registration.objects.create(event=self.event, participant=self.own_participant)
         Registration.objects.create(event=event2, participant=other_participant)
 
         self.client.force_authenticate(user=self.user)
@@ -370,3 +425,9 @@ class RegistrationTests(APITestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         emails = [r["participant_email"] for r in resp.data]
         self.assertTrue(all(e == self.user.email for e in emails))
+
+    def test_regular_user_cannot_delete_registration(self):
+        registration = Registration.objects.create(event=self.event, participant=self.own_participant)
+        self.client.force_authenticate(user=self.user)
+        resp = self.client.delete(f"/api/registrations/{registration.id}/")
+        self.assertEqual(resp.status_code, status.HTTP_403_FORBIDDEN)

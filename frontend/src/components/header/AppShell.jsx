@@ -146,7 +146,7 @@ export default function AppShell({
               />
               <NavButton
                 active={routeName === 'participants'}
-                description="Keep participant records up to date."
+                description={canEdit ? 'Keep participant records up to date.' : 'See your participant profile and registrations.'}
                 label="Participants"
                 onClick={() => handleSidebarNavigate(APP_ROUTES.participants)}
               />
@@ -162,8 +162,8 @@ export default function AppShell({
                 </p>
               </div>
               <p className="micro-copy">
-                Admins can edit events, participants, and registrations. Viewers can browse the data
-                in read-only mode.
+                Admins can edit events, participants, and registrations. Viewers can see only their
+                own participant profile and register themselves for events.
               </p>
             </section>
 
