@@ -64,8 +64,8 @@
   \end{beamercolorbox}%
 }
 
-\title[EventHub]{EventHub Project Presentation}
-\subtitle{What We Built and How It Runs}
+\title[EventHub]{EventHub}
+\subtitle{checklist-aligned defense presentation}
 \author[Mehdi AGHAEI / Maksym DOLHOV]{Mehdi AGHAEI \and Maksym DOLHOV}
 \institute[UPCite]{Universite Paris Cite}
 \titlegraphic{\includegraphics[width=0.28\textwidth]{../upcite-logo.png}}
@@ -75,10 +75,10 @@
 
 \begin{frame}[plain]
   \begin{beamercolorbox}[wd=\textwidth,sep=0.35em,leftskip=0.7em,rightskip=0.7em]{browserbar}
-    {\ttfamily EventHub Online}\hfill{\ttfamily [ ] [ ] [x]}
+    {\ttfamily defense mode}\hfill{\ttfamily 6 min \quad 7 slides}
   \end{beamercolorbox}
   \begin{beamercolorbox}[wd=\textwidth,sep=0.35em,leftskip=0.7em,rightskip=0.7em]{urlbar}
-    {\ttfamily http://localhost:5173/}\hfill{\ttfamily API :8000 \quad Express :3001}
+    {\ttfamily public url: [add deployed frontend url before defense]}\hfill{\ttfamily backup: localhost}
   \end{beamercolorbox}
 
   \vspace{0.75em}
@@ -89,16 +89,18 @@
         {\usebeamerfont{title}\inserttitle\par}
         \vspace{0.45em}
         {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle\par}
+        \vspace{0.65em}
+        \textbf{what it does:} eventhub manages events, participants, and registrations with authentication and role-based access.
       \end{beamercolorbox}
 
       \vspace{0.8em}
 
       \begin{beamercolorbox}[wd=\linewidth,sep=0.8em]{rolebox}
-        \textbf{Frontend:} Mehdi AGHAEI\par
-        \textbf{Backend:} Maksym DOLHOV\par
+        \textbf{frontend and react integration:} mehdi aghaei\par
+        \textbf{django backend and api logic:} maksym dolhov\par
         \vspace{0.5em}
-        \textbf{Institution:} Universite Paris Cite\par
-        \textbf{Date:} \today
+        \textbf{shared:} node.js comparison, deployment, defense prep\par
+        \textbf{institution:} universite paris cite
       \end{beamercolorbox}
     \end{column}
     \begin{column}{0.34\textwidth}
@@ -108,228 +110,202 @@
       \vspace{0.8em}
 
       \begin{beamercolorbox}[wd=\linewidth,sep=0.7em,center]{tagbox}
-        \textbf{Responsive EventHub SPA}\\[0.25em]
-        React frontend, Django backend, Express comparison
+        \textbf{stack}\\[0.25em]
+        react + django + express + sqlite
       \end{beamercolorbox}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Project Overview}
-  \small
-  \begin{exampleblock}{Project goal}
-    In this project, we built \textbf{EventHub}, a responsive web app for
-    \textbf{events}, \textbf{participants}, and \textbf{registrations}. It combines
-    a public landing page with a protected React workspace connected to a Django REST API.
-  \end{exampleblock}
-
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{What the project must show}
-        \begin{itemize}
-          \item Public event discovery and protected user access
-          \item CRUD workflows on real database entities
-          \item Clear separation between frontend, backend, and API
-          \item Responsive behavior on desktop and mobile
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \begin{exampleblock}{Core entities}
-        \begin{itemize}
-          \item \texttt{Event}: title, date, location, capacity
-          \item \texttt{Participant}: identity and email
-          \item \texttt{Registration}: event-participant link
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Main User Flow}
-  \begin{columns}[T]
-    \begin{column}{0.56\textwidth}
-      \begin{block}{Typical user flow}
-        \begin{enumerate}
-          \item Open the landing page and preview upcoming events
-          \item Register or log in with the modal
-          \item Enter the dashboard and load live API data
-          \item Create, edit, filter, and inspect events and participants
-          \item Manage registrations from the event details page
-        \end{enumerate}
-      \end{block}
-    \end{column}
-    \begin{column}{0.40\textwidth}
-      \begin{exampleblock}{Visible features}
-        \begin{itemize}
-          \item Event filtering by text, date, and status
-          \item Theme toggle and consistent navigation controls
-          \item Modal-based sign-in, register, create, and edit flows
-          \item Loading, refresh, warning, success, and error states
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Architecture and Data Model}
-  \begin{block}{Main system flow}
-    Browser $\rightarrow$ Vite / React SPA $\rightarrow$ Django REST API on \texttt{:8000} $\rightarrow$ SQLite database
+\begin{frame}{architecture}
+  \begin{block}{main runtime path}
+    browser / deployed frontend $\rightarrow$ react spa $\rightarrow$ django rest api $\rightarrow$ sqlite database
   \end{block}
 
-  \begin{alertblock}{Comparison backend}
-    Node.js / Express runs separately on \texttt{:3001}. It is here for comparison,
-    while Django remains the main backend of the project.
-  \end{alertblock}
-
-  \vspace{0.25em}
-
-  \begin{tabularx}{\textwidth}{@{}lX@{}}
-    \toprule
-    \textbf{Entity} & \textbf{Role in the system} \\
-    \midrule
-    Event & stores title, description, date, location, capacity, and creation time \\
-    Participant & stores attendee identity information and unique email \\
-    Registration & links one participant to one event; enforces uniqueness, status, and capacity validation \\
-    \bottomrule
-  \end{tabularx}
-\end{frame}
-
-\begin{frame}{Frontend Implementation}
-  \begin{block}{Reusable frontend structure}
-    \begin{itemize}
-      \item \texttt{components/common}: shared site frame, banners, and loading states
-      \item \texttt{components/auth}: login, register, social buttons, and auth modal
-      \item \texttt{components/event}: CRUD forms, filters, cards, and registration widgets
-      \item \texttt{pages}, \texttt{services}, \texttt{constants}, \texttt{utils}, and \texttt{styles} separate screen, API, and helper logic
-    \end{itemize}
-  \end{block}
-
-  \begin{exampleblock}{Frontend engineering choices}
-    \begin{itemize}
-      \item \texttt{VITE\_API\_BASE\_URL} controls which backend the SPA calls
-      \item API calls are isolated in \texttt{src/services}
-      \item Local storage keeps theme, session, and profile metadata
-      \item \texttt{WorkspaceContext} with \texttt{useContext()} shares user, role, and workspace data and reduces prop drilling
-      \item Responsive CSS and reusable UI states keep the pages consistent
-    \end{itemize}
-  \end{exampleblock}
-\end{frame}
-
-\begin{frame}{Frontend Changes in the Final Version}
   \begin{columns}[T]
-    \begin{column}{0.53\textwidth}
-      \begin{block}{Main improvements}
+    \begin{column}{0.54\textwidth}
+      \begin{exampleblock}{frontend $\leftrightarrow$ backend interaction}
         \begin{itemize}
-          \item Public home page introduces the project before authentication
-          \item Retro-inspired redesign gives the app a clear identity
-          \item Event and participant create/edit flows use compact modal windows
-          \item Protected workspace uses a reusable shell and sidebar navigation
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.43\textwidth}
-      \begin{exampleblock}{Extra frontend details}
-        \begin{itemize}
-          \item Theme toggle and persistent visitor-facing preferences
-          \item Public event previews with an access-warning modal
-          \item Inline banners for success, error, refresh, and session state
-          \item Production build output in \texttt{frontend/dist}
+          \item react calls the api through a centralized service layer
+          \item jwt auth loads \texttt{/auth/token/}, refreshes tokens, and reads \texttt{/auth/me/}
+          \item workspace data comes from \texttt{/events/}, \texttt{/participants/}, and \texttt{/registrations/}
+          \item serializers and permissions decide what is saved and who can access it
         \end{itemize}
       \end{exampleblock}
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \begin{alertblock}{comparison backend}
+        express runs as a smaller separate api for comparison only.
+        django is the main backend for auth, business rules, and registrations.
+      \end{alertblock}
+
+      \begin{beamercolorbox}[wd=\linewidth,sep=0.7em]{tagbox}
+        \textbf{comparison routes}\\[0.25em]
+        \texttt{:3001/api/events}\\
+        \texttt{:3001/api/participants}
+      \end{beamercolorbox}
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}{Backend Design and Integration}
-  \begin{columns}[T]
-    \begin{column}{0.52\textwidth}
-      \begin{block}{Django}
-        \begin{itemize}
-          \item Models, serializers, and viewsets
-          \item JWT endpoints for register, login, refresh, and profile
-          \item CRUD endpoints for events, participants, and registrations
-          \item Validation for dates, duplicates, permissions, and capacity
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.44\textwidth}
-      \begin{exampleblock}{Frontend integration contract}
-        \begin{itemize}
-          \item \texttt{/auth/register/}, \texttt{/auth/token/}
-          \item \texttt{/auth/token/refresh/}, \texttt{/auth/me/}
-          \item \texttt{/events/}, \texttt{/participants/}
-          \item \texttt{/registrations/}
-          \item Express comparison: \texttt{:3001/api/events} and \texttt{:3001/api/participants}
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Django vs Node.js / Express}
-  \small
-  \begin{columns}[T]
-    \begin{column}{0.48\textwidth}
-      \begin{block}{Django}
-        \begin{itemize}
-          \item Full framework with models, serializers, auth, admin, and migrations
-          \item Strong project structure and clear CRUD organization
-          \item Better fit for EventHub because registrations and validation are central
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.48\textwidth}
-      \begin{exampleblock}{Node.js / Express}
-        \begin{itemize}
-          \item Node.js runtime with Express as a lightweight HTTP framework
-          \item More flexible file structure, but more manual validation and setup
-          \item Useful for smaller APIs and I/O-heavy services
-        \end{itemize}
-      \end{exampleblock}
-    \end{column}
-  \end{columns}
-
-  \vspace{0.25em}
-
-  \begin{alertblock}{Why both appear in this project}
-    Django is the main backend because EventHub needs models, authentication,
-    and registration logic. Express stays as the comparison backend to show the lighter approach.
-  \end{alertblock}
-\end{frame}
-
-\begin{frame}{Current State and Conclusion}
+\begin{frame}{backend and database}
   \footnotesize
-  \begin{exampleblock}{Key message}
-    EventHub is a complete full-stack course project with a clear domain, a reusable frontend,
-    a structured Django backend, and a smaller Express comparison backend.
-  \end{exampleblock}
-
   \begin{columns}[T]
-    \begin{column}{0.5\textwidth}
-      \begin{block}{Current result}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{data model}
         \begin{itemize}
-          \item Django runs from the single project \texttt{.venv} on \texttt{:8000}
-          \item React runs with Vite and calls \texttt{http://localhost:8000/api}
-          \item Express runs with Homebrew Node.js 22 on \texttt{:3001}
-          \item Local CORS is configured for Vite development ports
+          \item \texttt{event}: title, date, location, capacity
+          \item \texttt{participant}: first name, last name, email
+          \item \texttt{registration}: event + participant + status
+        \end{itemize}
+        \vspace{0.35em}
+        \centering
+        \texttt{participant 1 --- n registration n --- 1 event}
+      \end{block}
+
+      \begin{alertblock}{why a separate registration model}
+        the many-to-many link is not just a hidden join table. it has its own business meaning,
+        its own status, and its own validation rules.
+      \end{alertblock}
+    \end{column}
+    \begin{column}{0.49\textwidth}
+      \begin{exampleblock}{business rules and api}
+        \begin{itemize}
+          \item duplicate registration is blocked in the backend
+          \item capacity and past-date validation are enforced server-side
+          \item admin can create, update, and delete
+          \item viewer is read-only
+          \item endpoints: \texttt{/events/}, \texttt{/participants/}, \texttt{/registrations/}
+          \item auth: \texttt{/auth/register/}, \texttt{/auth/token/}, \texttt{/auth/me/}
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{frontend}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.50\textwidth}
+      \begin{block}{real component structure}
+        \begin{itemize}
+          \item \texttt{LoginPage}
+          \item \texttt{DashboardPage}
+          \item \texttt{EventsPage}
+          \item \texttt{ParticipantsPage}
+          \item \texttt{EventDetailsPage}
+          \item \texttt{AppShell}
+          \item \texttt{AuthModal}
+          \item \texttt{EventCrudForm}
         \end{itemize}
       \end{block}
     \end{column}
     \begin{column}{0.46\textwidth}
-      \begin{exampleblock}{Closing message}
+      \begin{exampleblock}{hooks and integration}
         \begin{itemize}
-          \item The project is based on real workflows, not isolated pages
-          \item Django is the main backend, and Express is used for comparison
-          \item The report and slides match the final runnable workspace
+          \item \texttt{useState()} for forms, filters, session, theme, and banners
+          \item \texttt{useEffect()} for api loading, route sync, theme sync, and timers
+          \item \texttt{useContext()} through \texttt{WorkspaceContext}
+          \item auth tokens are stored in the browser and refreshed when needed
+          \item route protection uses a session guard plus backend permission checks
+          \item loading, error, success, and refresh states are visible in the ui
+        \end{itemize}
+      \end{exampleblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{django vs node.js}
+  \small
+  \begin{tabularx}{\textwidth}{@{}lXX@{}}
+    \toprule
+    \textbf{criteria} & \textbf{django} & \textbf{node.js / express} \\
+    \midrule
+    architecture & full framework with models, auth, serializers, admin, migrations & lightweight runtime + framework with more manual structure \\
+    complexity & more initial structure, less custom wiring for this project & simpler start, but more manual validation and setup \\
+    scalability & strong for structured business apps with permissions and data rules & flexible for smaller services and custom api layouts \\
+    role in eventhub & main backend for auth, roles, registrations, and validation & comparison backend for smaller CRUD endpoints \\
+    \bottomrule
+  \end{tabularx}
+
+  \vspace{0.55em}
+
+  \begin{alertblock}{conclusion}
+    django is the better main backend for eventhub because authentication,
+    many-to-many registration logic, and permission rules are central to the system.
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{deployment}
+  \small
+  \begin{columns}[T]
+    \begin{column}{0.49\textwidth}
+      \begin{block}{deployment shape}
+        \begin{itemize}
+          \item frontend target: vercel
+          \item backend target: railway
+          \item database: sqlite stored on a mounted railway volume
+          \item local fallback remains available for the live defense if needed
+        \end{itemize}
+      \end{block}
+
+      \begin{exampleblock}{public urls to show live}
+        \texttt{frontend: [paste vercel url here]}\\[0.25em]
+        \texttt{backend: [paste railway url here]}
+      \end{exampleblock}
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{environment variables}
+        \begin{itemize}
+          \item \texttt{VITE\_API\_BASE\_URL}
+          \item \texttt{DJANGO\_ALLOWED\_HOSTS}
+          \item \texttt{DJANGO\_CORS\_ALLOWED\_ORIGINS}
+          \item \texttt{DJANGO\_CSRF\_TRUSTED\_ORIGINS}
+          \item \texttt{SQLITE\_PATH}
+        \end{itemize}
+      \end{block}
+
+      \begin{alertblock}{main challenges}
+        cors between frontend and backend, persistent sqlite storage,
+        and keeping local and deployed environment values separate.
+      \end{alertblock}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{live demo route}
+  \footnotesize
+  \begin{columns}[T]
+    \begin{column}{0.52\textwidth}
+      \begin{block}{3-minute proof path}
+        \begin{enumerate}
+          \item log in as admin
+          \item create an event
+          \item create a participant
+          \item register the participant
+          \item repeat registration and show the error
+          \item filter events
+          \item switch to viewer
+        \end{enumerate}
+      \end{block}
+    \end{column}
+    \begin{column}{0.44\textwidth}
+      \begin{exampleblock}{what this proves}
+        \begin{itemize}
+          \item auth works end-to-end
+          \item create flows reach the database
+          \item the many-to-many model is real
+          \item business validation is enforced
+          \item filtering is state-driven in react
+          \item permissions work in frontend and backend
         \end{itemize}
       \end{exampleblock}
     \end{column}
   \end{columns}
 
-  \vspace{0.2em}
+  \vspace{0.35em}
   \centering
-  {\color{hotpink}\large Questions?}
+  {\color{hotpink}\textbf{the slides guide the story, but the live system is the real proof.}}
 \end{frame}
 
 \end{document}
